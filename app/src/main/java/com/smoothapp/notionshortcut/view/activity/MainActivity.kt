@@ -1,6 +1,7 @@
 package com.smoothapp.notionshortcut.view.activity
 
 import android.content.Intent
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -25,7 +26,19 @@ class MainActivity : AppCompatActivity() {
         //todo: 削除 テスト用
         startActivity(Intent(this, ShortcutActivity::class.java))
 
+        when(intent?.action) {
+            Intent.ACTION_VIEW -> {
+                val data: Uri? = intent.data
+                if (data != null) {
+                    val code = data.getQueryParameter("code")
+                    Log.d("response", "code: $code")
+                }
+            }
+        }
+
         binding.apply {
+
+
 
             root.setOnClickListener {
 //                val intent = Intent(Intent.ACTION_EDIT, Uri.EMPTY, this@MainActivity, ShortcutActivity::class.java)
