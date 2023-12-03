@@ -24,14 +24,14 @@ class MainActivity : AppCompatActivity() {
         window.statusBarColor = this.getColor(R.color.transparent)
 
         //todo: 削除 テスト用
-        startActivity(Intent(this, ShortcutActivity::class.java))
+//        startActivity(Intent(this, ShortcutActivity::class.java))
 
         when(intent?.action) {
             Intent.ACTION_VIEW -> {
                 val data: Uri? = intent.data
                 if (data != null) {
-                    val code = data.getQueryParameter("code")
-                    Log.d("response", "code: $code")
+                    val code = data.getQueryParameter("key")
+                    Log.d("response", "key: $code")
                 }
             }
         }
