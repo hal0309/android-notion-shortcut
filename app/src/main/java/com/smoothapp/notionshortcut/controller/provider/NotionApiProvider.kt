@@ -1,5 +1,6 @@
 package com.smoothapp.notionshortcut.controller.provider
 
+import com.smoothapp.notionshortcut.controller.util.ApiCommonUtil.getResponseBody
 import com.smoothapp.notionshortcut.controller.util.NotionApiPostPageUtil
 import com.smoothapp.notionshortcut.controller.util.SecretTestUtil
 import com.smoothapp.notionshortcut.model.entity.NotionApiPostPageObj
@@ -42,12 +43,5 @@ class NotionApiProvider {
             .build()
 
         return getResponseBody(request)
-    }
-
-    private suspend fun getResponseBody(request: Request) = withContext(Dispatchers.IO){
-        val client = OkHttpClient()
-        val response = client.newCall(request).execute()
-
-        return@withContext response.body?.string().orEmpty()
     }
 }

@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import com.smoothapp.notionshortcut.R
+import com.smoothapp.notionshortcut.controller.provider.NotionOauthProvider
 import com.smoothapp.notionshortcut.controller.util.NotionApiGetPageUtil
 import com.smoothapp.notionshortcut.databinding.ActivityMainBinding
 import kotlinx.coroutines.MainScope
@@ -30,8 +31,13 @@ class MainActivity : AppCompatActivity() {
             Intent.ACTION_VIEW -> {
                 val data: Uri? = intent.data
                 if (data != null) {
-                    val code = data.getQueryParameter("key")
-                    Log.d("response", "key: $code")
+                    val code = data.getQueryParameter("code")
+                    Log.d("response", "code: $code")
+                    val provider = NotionOauthProvider()
+                    MainScope().launch {
+                        val response = provider.postGrant(code.orEmpty())
+                        Log.d("response", response)
+                    }
                 }
             }
         }
