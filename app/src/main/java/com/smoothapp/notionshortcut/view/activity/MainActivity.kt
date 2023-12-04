@@ -6,7 +6,9 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import com.smoothapp.notionshortcut.R
+import com.smoothapp.notionshortcut.controller.provider.NotionApiProvider
 import com.smoothapp.notionshortcut.controller.provider.NotionOauthProvider
+import com.smoothapp.notionshortcut.controller.util.ApiCommonUtil
 import com.smoothapp.notionshortcut.controller.util.NotionApiGetPageUtil
 import com.smoothapp.notionshortcut.databinding.ActivityMainBinding
 import kotlinx.coroutines.MainScope
@@ -36,8 +38,12 @@ class MainActivity : AppCompatActivity() {
                     val provider = NotionOauthProvider()
                     MainScope().launch {
                         val response = provider.postGrant(code.orEmpty())
-                        Log.d("response", response)
+                        val map = ApiCommonUtil.jsonStringToMap(response)
+                        println("response: $response")
+                        println("access_token: ${map["access_token"]}")
+                        println("owner: ${map["owner"]}")
                     }
+
                 }
             }
         }
@@ -57,10 +63,36 @@ class MainActivity : AppCompatActivity() {
 //                ShortcutManagerCompat.pushDynamicShortcut(this@MainActivity, shortcut)
 
                 MainScope().launch {
-                    val list = NotionApiGetPageUtil.getAllNotionPageAndDatabase()
-                    Log.d("response", list.toString())
-                    Log.d("response", NotionApiGetPageUtil.createPageOrDatabaseTree(list.results).toString())
-                    Log.d("response", NotionApiGetPageUtil.createPageOrDatabaseTree(list.results).toString())
+//                    val list = NotionApiGetPageUtil.getAllNotionPageAndDatabase()
+//                    Log.d("response", list.toString())
+//                    Log.d("response", NotionApiGetPageUtil.createPageOrDatabaseTree(list.results).toString())
+//                    Log.d("response", NotionApiGetPageUtil.createPageOrDatabaseTree(list.results).toString())
+
+                    val provider = NotionApiProvider()
+                    var nextCursor: String? = null
+                    var count = 0
+
+                    do {
+                        val response = provider.getAllObjects(startCursor = nextCursor)
+                        val map = ApiCommonUtil.jsonStringToMap(response)
+                        nextCursor = map["next_cursor"] as String?
+
+                        println("keys  ${map.keys}")
+                        println("next $nextCursor")
+
+                        val resultList = map["results"] as List<Map<String, Any>>
+
+                        println("size ${resultList.size}")
+                        count += resultList.size
+                        println("total $count")
+                        for (result in resultList) {
+//                            println("${result["object"]} ${result["parent"]}")
+                        }
+                    }while (nextCursor != null)
+
+
+
+
                 }
             }
 

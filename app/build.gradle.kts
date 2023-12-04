@@ -59,4 +59,8 @@ dependencies {
 
     /* secret */
     implementation("com.google.android.libraries.mapsplatform.secrets-gradle-plugin:secrets-gradle-plugin:2.0.1")
+
+    /* jackson */
+    implementation("com.fasterxml.jackson.core:jackson-core:2.16.0")
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.16.0")
 }

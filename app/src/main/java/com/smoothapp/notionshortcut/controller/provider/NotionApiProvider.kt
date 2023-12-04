@@ -31,8 +31,8 @@ class NotionApiProvider {
         return getResponseBody(request)
     }
 
-    suspend fun getAllObjects(): String {
-        val requestBody = "".toRequestBody("application/json".toMediaType())
+    suspend fun postSearch(requestBodyString: String): String {
+        val requestBody = requestBodyString.toRequestBody("application/json".toMediaType())
         val request = Request.Builder()
             .url("https://api.notion.com/v1/search")
             .addHeader("Notion-Version", "2022-06-28")
@@ -43,5 +43,41 @@ class NotionApiProvider {
             .build()
 
         return getResponseBody(request)
+    }
+
+    suspend fun getAllObjects(startCursor: String? = null): String {
+        val requestBody = """
+                {
+                    ${if(startCursor == null) "" else "\"start_cursor\": \"$startCursor\""}
+                }
+            """.trimIndent()
+
+        return postSearch(requestBody)
+    }
+
+    suspend fun getAllDatabase(startCursor: String? = null): String {
+        val requestBody = """
+                {
+                    "filter": {
+                        "value": "database",
+                        "property": "object"
+                    }
+                    ${if(startCursor == null) "" else ", \"start_cursor\": \"$startCursor\""}
+                }
+            """.trimIndent()
+        return postSearch(requestBody)
+    }
+
+    suspend fun getAllPage(startCursor: String? = null): String {
+        val requestBody = """
+                {
+                    "filter": {
+                        "value": "page",
+                        "property": "object"
+                    }
+                    ${if(startCursor == null) "" else ", \"start_cursor\": \"$startCursor\""}
+                }
+            """.trimIndent()
+        return postSearch(requestBody)
     }
 }
