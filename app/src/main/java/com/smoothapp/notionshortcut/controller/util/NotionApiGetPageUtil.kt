@@ -1,56 +1,38 @@
 package com.smoothapp.notionshortcut.controller.util
 
+import com.smoothapp.notionshortcut.controller.exception.IllegalApiStateException
 import com.smoothapp.notionshortcut.controller.provider.NotionApiProvider
-import com.smoothapp.notionshortcut.model.entity.NotionApiGetPageObj
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 object NotionApiGetPageUtil {
-    suspend fun getAllNotionPageAndDatabase(): NotionApiGetPageObj.Root{
+
+    interface GetPageListener {
+        fun onUpdate(count: Int)
+    }
+
+    suspend fun getAllObjects(listener: GetPageListener) = withContext(Dispatchers.IO) {
         val provider = NotionApiProvider()
-        val json = Json{ignoreUnknownKeys = true}
-        return json.decodeFromString(provider.getAllObjects())
-    }
+        var nextCursor: String? = null
 
-    class PageOrDatabaseTree(val me: NotionApiGetPageObj.PageOrDatabase){
-        val children: MutableList<PageOrDatabaseTree> = mutableListOf()
-    }
+        launch {
+            do {
+                val response = provider.getAllObjects(startCursor = nextCursor)
+                val map = ApiCommonUtil.jsonStringToMap(response)
+                // error [object, status, code, message, request_id]
+                // correct [object, results, next_cursor, has_more, type, page_or_database, request_id]
 
-    fun createPageOrDatabaseTree(list: List<NotionApiGetPageObj.PageOrDatabase>, parent: NotionApiGetPageObj.PageOrDatabase? = null): List<PageOrDatabaseTree>{
+                if("message" in map.keys) throw IllegalApiStateException("status: ${map["status"]}, code: ${map["code"]}, message: ${map["message"]}")
 
-        return when(parent){
-            null -> {
-                val root = NotionApiGetPageObj.PageOrDatabase("workspace", "", NotionApiGetPageObj.Parent(""))
+                nextCursor = map["next_cursor"] as String?
+                val resultList = map["results"] as List<Map<String, Any>>
+                listener.onUpdate(resultList.size)
 
-                listOf(PageOrDatabaseTree(root).apply {
-                    children.addAll(createPageOrDatabaseTree(list, root))
-                })
-            }
-            else -> {
-                val mList = list.toMutableList()
-                val treeList = mutableListOf<PageOrDatabaseTree>()
-                val childList = when(parent.obj){
-                    "workspace" -> {
-                        mList.filter { it.parent.type == "workspace" }
-                    }
-                    "page" -> {
-                        mList.filter { it.parent.pageId == parent.id}
-                    }
-                    "database" -> {
-                        mList.filter { it.parent.databaseId == parent.id}
-                    }
-                    else -> {
-                        mutableListOf()
-                    }
+                for (result in resultList) {
+//                            println("${result["object"]} ${result["parent"]}")
                 }
-                mList.removeAll(childList)
-                for(child in childList){
-                    val tree = PageOrDatabaseTree(child).apply {
-                        children.addAll(createPageOrDatabaseTree(mList, child))
-                    }
-                    treeList.add(tree)
-//                    Log.d("", tree.me.toString())
-                }
-                treeList
-            }
+            }while (nextCursor != null)
         }
     }
 }
