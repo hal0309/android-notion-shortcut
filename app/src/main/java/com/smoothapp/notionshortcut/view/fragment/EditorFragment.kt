@@ -11,6 +11,7 @@ import com.smoothapp.notionshortcut.controller.provider.NotionApiProvider
 import com.smoothapp.notionshortcut.controller.util.ApiCommonUtil
 import com.smoothapp.notionshortcut.controller.util.NotionApiGetPageUtil
 import com.smoothapp.notionshortcut.databinding.FragmentEditorBinding
+import com.smoothapp.notionshortcut.model.entity.NotionApiGetPageObj
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
@@ -30,19 +31,24 @@ class EditorFragment : Fragment() {
                 var total = 0
                 try {
                     NotionApiGetPageUtil.getAllObjects(object : NotionApiGetPageUtil.GetPageListener {
-                        override fun onUpdate(count: Int) {
-                            println("size $count")
-                            total += count
+                        override fun doOnUpdate(total: Int) {
                             println("total $total")
-                            binding.textView.text = "now: $count total: $total"
+                            binding.textView.text = "total: $total"
+                        }
+
+                        override fun doOnEndGetApi() {
+                        }
+
+                        override fun doOnEndAll(pageOrDatabaseList: List<NotionApiGetPageObj.PageOrDatabase>) {
+                            for (pageOrDatabase in pageOrDatabaseList) {
+                                println(pageOrDatabase)
+                            }
                         }
                     })
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
             }
-
-
         }
         return binding.root
     }
