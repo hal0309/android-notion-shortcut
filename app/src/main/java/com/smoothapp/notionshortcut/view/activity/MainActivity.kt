@@ -50,6 +50,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.apply {
+            startEditorFragment()
 
 
 
@@ -64,7 +65,7 @@ class MainActivity : AppCompatActivity() {
 //                ShortcutManagerCompat.pushDynamicShortcut(this@MainActivity, shortcut)
 
                 MainScope().launch {
-                    startEditorFragment()
+
 
 
 
