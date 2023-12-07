@@ -1,4 +1,4 @@
-package com.smoothapp.notionshortcut.view.fragment
+package com.smoothapp.notionshortcut.view.fragment.shortcut
 
 import android.animation.ObjectAnimator
 import android.os.Bundle

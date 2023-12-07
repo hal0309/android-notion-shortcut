@@ -5,15 +5,6 @@ import kotlinx.serialization.Serializable
 
 object NotionApiGetPageObj {
 
-    data class PageOrDatabase(
-        val type: String,
-        val id: String,
-        val title: String?,
-        val parentType: String,
-        val parentId: String?,
-        var parentTitle: String? = null
-    )
-
 //    @Serializable
 //    data class Root(
 //        val results: List<PageOrDatabase>

@@ -2,7 +2,7 @@ package com.smoothapp.notionshortcut.controller.util
 
 import com.smoothapp.notionshortcut.controller.exception.IllegalApiStateException
 import com.smoothapp.notionshortcut.controller.provider.NotionApiProvider
-import com.smoothapp.notionshortcut.model.entity.NotionApiGetPageObj.PageOrDatabase
+import com.smoothapp.notionshortcut.model.entity.get.PageOrDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -11,7 +11,7 @@ object NotionApiGetPageUtil {
 
     interface GetPageListener {
         fun doOnUpdate(total: Int)
-        fun doOnEndGetApi()
+        fun doOnEndGetApi(total: Int)
         fun doOnEndAll(pageOrDatabaseList: List<PageOrDatabase>)
     }
 
@@ -37,12 +37,10 @@ object NotionApiGetPageUtil {
                 }
             }while (nextCursor != null)
 
-            listener.doOnEndGetApi()
+            listener.doOnEndGetApi(resultMapList.size)
             val pageOrDatabaseList = mutableListOf<PageOrDatabase>()
 
             for (result in resultMapList) {
-                val parent = result["parent"] as Map<String, Any>
-
                 val type = result["object"] as String
                 val id = result["id"] as String
                 val title = when(type) {
@@ -62,8 +60,9 @@ object NotionApiGetPageUtil {
                     }
                     else -> null
                 }
+                val parent = result["parent"] as Map<String, Any>
                 val parentType = parent["type"] as String
-                val parentId = when(parent["type"]) {
+                val parentId = when(parentType) {
                     "page_id" -> parent["page_id"] as String?
                     "database_id" -> parent["database_id"] as String?
                     else -> null
@@ -83,7 +82,9 @@ object NotionApiGetPageUtil {
                 val parentTitle = pageOrDatabaseList.firstOrNull { it.id == pageOrDatabase.parentId }?.title
                 pageOrDatabaseList[i].parentTitle = parentTitle
             }
-            listener.doOnEndAll(pageOrDatabaseList)
+            withContext(Dispatchers.Main){
+                listener.doOnEndAll(pageOrDatabaseList)
+            }
         }
 
     }

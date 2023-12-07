@@ -1,21 +1,18 @@
 package com.smoothapp.notionshortcut.view.fragment
 
+import android.content.Context
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.smoothapp.notionshortcut.R
-import com.smoothapp.notionshortcut.controller.exception.IllegalApiStateException
-import com.smoothapp.notionshortcut.controller.provider.NotionApiProvider
-import com.smoothapp.notionshortcut.controller.util.ApiCommonUtil
+import android.view.inputmethod.InputMethodManager
+import androidx.fragment.app.Fragment
 import com.smoothapp.notionshortcut.controller.util.NotionApiGetPageUtil
 import com.smoothapp.notionshortcut.databinding.FragmentEditorBinding
-import com.smoothapp.notionshortcut.model.entity.NotionApiGetPageObj
-import kotlinx.coroutines.Dispatchers
+import com.smoothapp.notionshortcut.model.entity.get.PageOrDatabase
+import com.smoothapp.notionshortcut.view.fragment.editor.NotionDatabaseSelectorFragment
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 
 class EditorFragment : Fragment() {
@@ -26,23 +23,24 @@ class EditorFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentEditorBinding.inflate(inflater, container, false)
+        setBalloonText("Connecting to Notion...")
         binding.apply {
             MainScope().launch {
-                var total = 0
                 try {
                     NotionApiGetPageUtil.getAllObjects(object : NotionApiGetPageUtil.GetPageListener {
                         override fun doOnUpdate(total: Int) {
-                            println("total $total")
-                            binding.textView.text = "total: $total"
+                            setBalloonText("Connecting to Notion... ($total/???)")
                         }
 
-                        override fun doOnEndGetApi() {
+                        override fun doOnEndGetApi(total: Int) {
+                            setBalloonText("Connecting to Notion... ($total/$total)")
                         }
 
-                        override fun doOnEndAll(pageOrDatabaseList: List<NotionApiGetPageObj.PageOrDatabase>) {
+                        override fun doOnEndAll(pageOrDatabaseList: List<PageOrDatabase>) {
                             for (pageOrDatabase in pageOrDatabaseList) {
                                 println(pageOrDatabase)
                             }
+                            startSelectorFragment(pageOrDatabaseList.filter { it.isDatabase})
                         }
                     })
                 } catch (e: Exception) {
@@ -51,6 +49,31 @@ class EditorFragment : Fragment() {
             }
         }
         return binding.root
+    }
+
+    fun confirmSelectedDatabase(notionDatabase: PageOrDatabase) {
+        setBalloonText("Selected database: ${notionDatabase.title}")
+
+    }
+
+    fun hideKeyboard(view: View) {
+        binding.apply {
+            val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+            imm?.hideSoftInputFromWindow(view.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
+            view.clearFocus()
+        }
+
+    }
+
+    fun startSelectorFragment(pageOrDatabaseList: List<PageOrDatabase>) {
+        childFragmentManager.beginTransaction()
+            .replace(binding.mainContainer.id, NotionDatabaseSelectorFragment.newInstance(pageOrDatabaseList))
+            .addToBackStack(null)
+            .commit()
+    }
+
+    fun setBalloonText(text: String) {
+        binding.balloonText.text = text
     }
 
 
