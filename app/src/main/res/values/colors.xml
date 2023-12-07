@@ -5,6 +5,7 @@
     <color name="gray">#FFEEEEEE</color>
 
     <color name="transparent">#00000000</color>
+    <color name="transparent_gray">#33000000</color>
 
     <color name="notion_light_default">#F1F0EF</color>
     <color name="notion_light_gray"   >#E3E2E0</color>

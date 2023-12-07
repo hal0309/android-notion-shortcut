@@ -11,6 +11,7 @@ import com.smoothapp.notionshortcut.controller.util.NotionApiGetPageUtil
 import com.smoothapp.notionshortcut.databinding.FragmentEditorBinding
 import com.smoothapp.notionshortcut.model.entity.get.NotionDatabase
 import com.smoothapp.notionshortcut.model.entity.get.PageOrDatabase
+import com.smoothapp.notionshortcut.view.fragment.editor.CharacterFragment
 import com.smoothapp.notionshortcut.view.fragment.editor.NotionDatabaseSelectorFragment
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
@@ -19,13 +20,16 @@ import kotlinx.coroutines.launch
 class EditorFragment : Fragment() {
 
     private lateinit var binding: FragmentEditorBinding
+    private val characterFragment = CharacterFragment.newInstance("Connecting to Notion...")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentEditorBinding.inflate(inflater, container, false)
-        setBalloonText("Connecting to Notion...")
         binding.apply {
+
+            startCharacterFragment()
+
             MainScope().launch {
                 try {
                     NotionApiGetPageUtil.getAllObjects(object : NotionApiGetPageUtil.GetPageListener {
@@ -53,11 +57,12 @@ class EditorFragment : Fragment() {
     }
 
     fun confirmSelectedDatabase(notionDatabase: PageOrDatabase) {
-        setBalloonText("Selected database: ${notionDatabase.title}")
+        setBalloonText("Loading ${notionDatabase.title}")
+        enableBlocker(true)
         MainScope().launch {
             NotionApiGetPageUtil.getDatabaseDetail(notionDatabase.id, object : NotionApiGetPageUtil.GetDatabaseDetailListener {
                 override fun doOnEnd(notionDatabase: NotionDatabase) {
-                    setBalloonText("Selected database: $notionDatabase")
+                    showLargeBalloon("Selected database: $notionDatabase")
                 }
             })
         }
@@ -72,15 +77,30 @@ class EditorFragment : Fragment() {
 
     }
 
-    fun startSelectorFragment(pageOrDatabaseList: List<PageOrDatabase>) {
+    private fun startCharacterFragment() {
+        childFragmentManager.beginTransaction()
+            .replace(binding.characterContainer.id, characterFragment)
+            .addToBackStack(null)
+            .commit()
+    }
+
+    private fun startSelectorFragment(pageOrDatabaseList: List<PageOrDatabase>) {
         childFragmentManager.beginTransaction()
             .replace(binding.mainContainer.id, NotionDatabaseSelectorFragment.newInstance(pageOrDatabaseList))
             .addToBackStack(null)
             .commit()
     }
 
-    fun setBalloonText(text: String) {
-        binding.balloonText.text = text
+    fun enableBlocker(enabled: Boolean){
+        characterFragment.enableBlocker(enabled)
+    }
+
+    fun setBalloonText(text: String) { //todo: characterFragmentのbindingが初期化されてから呼ばれる設計 or viewModelを使う
+        characterFragment.setBalloonText(text)
+    }
+
+    fun showLargeBalloon(text: String) {
+        characterFragment.showLargeBalloon(text)
     }
 
 

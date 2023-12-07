@@ -66,12 +66,6 @@ class MainActivity : AppCompatActivity() {
 
                 MainScope().launch {
 
-
-
-
-
-
-
                 }
             }
 
