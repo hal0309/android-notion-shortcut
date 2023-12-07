@@ -4,8 +4,9 @@ import com.smoothapp.notionshortcut.model.constant.NotionApiPropertyEnum
 
 class NotionDatabasePropertyTitle(
     name: String,
-    private var title: String?
-) : NotionDatabaseProperty(NotionApiPropertyEnum.TITLE, name, listOf(title)) {
+    private var title: String?,
+    id: String? = null
+) : NotionDatabaseProperty(NotionApiPropertyEnum.TITLE, name, listOf(title), id) {
 
     init {
         updateParentContents()

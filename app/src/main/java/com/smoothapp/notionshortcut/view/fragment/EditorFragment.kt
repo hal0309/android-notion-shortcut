@@ -9,6 +9,7 @@ import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import com.smoothapp.notionshortcut.controller.util.NotionApiGetPageUtil
 import com.smoothapp.notionshortcut.databinding.FragmentEditorBinding
+import com.smoothapp.notionshortcut.model.entity.NotionPostTemplate
 import com.smoothapp.notionshortcut.model.entity.get.NotionDatabase
 import com.smoothapp.notionshortcut.model.entity.get.PageOrDatabase
 import com.smoothapp.notionshortcut.view.fragment.editor.CharacterFragment
@@ -29,44 +30,12 @@ class EditorFragment : Fragment() {
         binding.apply {
 
             startCharacterFragment()
-
-            MainScope().launch {
-                try {
-                    NotionApiGetPageUtil.getAllObjects(object : NotionApiGetPageUtil.GetPageListener {
-                        override fun doOnUpdate(total: Int) {
-                            setBalloonText("Connecting to Notion... ($total/???)")
-                        }
-
-                        override fun doOnEndGetApi(total: Int) {
-                            setBalloonText("Connecting to Notion... ($total/$total)")
-                        }
-
-                        override fun doOnEndAll(pageOrDatabaseList: List<PageOrDatabase>) {
-                            for (pageOrDatabase in pageOrDatabaseList) {
-                                println(pageOrDatabase)
-                            }
-                            startSelectorFragment(pageOrDatabaseList.filter { it.isDatabase})
-                        }
-                    })
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }
+            startDownload()
         }
         return binding.root
     }
 
-    fun confirmSelectedDatabase(notionDatabase: PageOrDatabase) {
-        setBalloonText("Loading ${notionDatabase.title}")
-        enableBlocker(true)
-        MainScope().launch {
-            NotionApiGetPageUtil.getDatabaseDetail(notionDatabase.id, object : NotionApiGetPageUtil.GetDatabaseDetailListener {
-                override fun doOnEnd(notionDatabase: NotionDatabase) {
-                    showLargeBalloon("Selected database: $notionDatabase")
-                }
-            })
-        }
-    }
+
 
     fun hideKeyboard(view: View) {
         binding.apply {
@@ -84,11 +53,79 @@ class EditorFragment : Fragment() {
             .commit()
     }
 
-    private fun startSelectorFragment(pageOrDatabaseList: List<PageOrDatabase>) {
+    private fun startDownload() {
+        MainScope().launch {
+            try {
+                NotionApiGetPageUtil.getAllObjects(object : NotionApiGetPageUtil.GetPageListener {
+                    override fun doOnUpdate(total: Int) {
+                        setBalloonText("Connecting to Notion... ($total/???)")
+                    }
+
+                    override fun doOnEndGetApi(total: Int) {
+                        setBalloonText("Connecting to Notion... ($total/$total)")
+                    }
+
+                    override fun doOnEndAll(pageOrDatabaseList: List<PageOrDatabase>) {
+                        for (pageOrDatabase in pageOrDatabaseList) {
+                            println(pageOrDatabase)
+                        }
+                        startDatabaseSelectFragment(pageOrDatabaseList.filter { it.isDatabase})
+                    }
+                })
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    private fun startDatabaseSelectFragment(pageOrDatabaseList: List<PageOrDatabase>) {
+        val listener: NotionDatabaseSelectorFragment.Listener = object : NotionDatabaseSelectorFragment.Listener {
+            override fun onItemSelected(notionDatabase: PageOrDatabase) {
+                confirmSelectedDatabase(notionDatabase)
+            }
+
+            override fun doOnEnd() {}
+        }
+
         childFragmentManager.beginTransaction()
-            .replace(binding.mainContainer.id, NotionDatabaseSelectorFragment.newInstance(pageOrDatabaseList))
+            .replace(binding.mainContainer.id, NotionDatabaseSelectorFragment.newInstance(pageOrDatabaseList, listener))
             .addToBackStack(null)
             .commit()
+    }
+
+    fun confirmSelectedDatabase(notionDatabase: PageOrDatabase) {
+        setBalloonText("Loading ${notionDatabase.title}")
+        enableBlocker(true)
+        MainScope().launch {
+            NotionApiGetPageUtil.getDatabaseDetail(notionDatabase.id, object : NotionApiGetPageUtil.GetDatabaseDetailListener {
+                override fun doOnEnd(notionDatabase: NotionDatabase) {
+                    showLargeBalloon("Selected database: $notionDatabase", object : CharacterFragment.LargeBalloonListener {
+                        override fun onCanceled() {}
+
+                        override fun onConfirmed() {
+                            val template = NotionPostTemplate.from(notionDatabase) //todo: テスト
+                            startTemplateSelectFragment(template)
+                        }
+                    })
+                }
+            })
+        }
+    }
+
+    fun startTemplateSelectFragment(template: NotionPostTemplate?) {
+        when(template){
+            null -> {
+                setBalloonText("Failed to load template")
+            }
+            else -> {
+                println(template.title)
+                println(template.dbId)
+                println(template.dbTitle)
+                println(template.propertyList.map{it.getName()})
+                setBalloonText("template ${template.propertyList.map{it.getName()}}")
+            }
+        }
+
     }
 
     fun enableBlocker(enabled: Boolean){
@@ -99,8 +136,8 @@ class EditorFragment : Fragment() {
         characterFragment.setBalloonText(text)
     }
 
-    fun showLargeBalloon(text: String) {
-        characterFragment.showLargeBalloon(text)
+    fun showLargeBalloon(text: String, listener: CharacterFragment.LargeBalloonListener) {
+        characterFragment.showLargeBalloon(text, listener)
     }
 
 

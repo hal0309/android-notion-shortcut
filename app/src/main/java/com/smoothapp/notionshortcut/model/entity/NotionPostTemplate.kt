@@ -2,16 +2,15 @@ package com.smoothapp.notionshortcut.model.entity
 
 import com.smoothapp.notionshortcut.model.constant.NotionApiPropertyEnum
 import com.smoothapp.notionshortcut.model.constant.NotionColorEnum
+import com.smoothapp.notionshortcut.model.entity.get.NotionDatabase
 import com.smoothapp.notionshortcut.model.entity.notiondatabaseproperty.NotionDatabaseProperty
 
 class NotionPostTemplate(
-    val templateType: TemplateType,
+    val title: String,
+    val dbId: String,
+    val dbTitle: String,
     val propertyList: List<NotionDatabaseProperty>
 ){
-    enum class TemplateType{
-        PAGE,
-        DATABASE
-    }
 
     data class Property(
         val type: NotionApiPropertyEnum,
@@ -28,4 +27,22 @@ class NotionPostTemplate(
     data class Preset(
         val contentList: List<String?>
     )
+
+
+    companion object {
+        fun from(notionDatabase: NotionDatabase): NotionPostTemplate {
+            val propertyList = mutableListOf<NotionDatabaseProperty>()
+            notionDatabase.properties.forEach { (key, value) ->
+                val property = NotionDatabaseProperty.from(key, value as Map<String, Any>)
+                if (property != null) propertyList.add(property)
+            }
+            return NotionPostTemplate(
+                "new template",
+                notionDatabase.id,
+                notionDatabase.title.orEmpty(),
+                propertyList
+            )
+
+        }
+    }
 }

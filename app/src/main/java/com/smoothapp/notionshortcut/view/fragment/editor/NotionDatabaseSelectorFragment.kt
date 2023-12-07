@@ -14,7 +14,7 @@ import com.smoothapp.notionshortcut.model.entity.get.PageOrDatabase
 import com.smoothapp.notionshortcut.view.adapter.NotionDatabaseListAdapter
 import com.smoothapp.notionshortcut.view.fragment.EditorFragment
 
-class NotionDatabaseSelectorFragment(private var notionDatabaseList: List<PageOrDatabase>) : Fragment() {
+class NotionDatabaseSelectorFragment(private var notionDatabaseList: List<PageOrDatabase>, private val listener: Listener) : Fragment() {
 
     private lateinit var binding: FragmentNotionDatabaseSelectorBinding
     private lateinit var parent: EditorFragment
@@ -32,7 +32,7 @@ class NotionDatabaseSelectorFragment(private var notionDatabaseList: List<PageOr
             listAdapter = NotionDatabaseListAdapter(object : NotionDatabaseListAdapter.Listener{
                 override fun onClickItem(notionDatabase: PageOrDatabase) {
                     parent.apply{
-                        confirmSelectedDatabase(notionDatabase)
+                        listener.onItemSelected(notionDatabase)
                         hideKeyboard(searchView)
                     }
                 }
@@ -71,8 +71,15 @@ class NotionDatabaseSelectorFragment(private var notionDatabaseList: List<PageOr
         }
     }
 
+
+    interface Listener {
+
+        fun onItemSelected(notionDatabase: PageOrDatabase)
+        fun doOnEnd()
+    }
+
     companion object {
         @JvmStatic
-        fun newInstance(pageOrDatabaseList: List<PageOrDatabase>) = NotionDatabaseSelectorFragment(pageOrDatabaseList)
+        fun newInstance(pageOrDatabaseList: List<PageOrDatabase>, listener: Listener) = NotionDatabaseSelectorFragment(pageOrDatabaseList, listener)
     }
 }
