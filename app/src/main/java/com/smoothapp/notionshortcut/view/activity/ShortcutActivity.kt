@@ -77,7 +77,9 @@ class ShortcutActivity : AppCompatActivity() {
                 val toNotionDateTIme = NotionDateTime(formatD)
                 setTemplate(
                     NotionPostTemplate(
-                        NotionPostTemplate.TemplateType.DATABASE,
+                        "",
+                        "", //todo: 用途調査
+                        "",
                         listOf(
                             NotionDatabasePropertyTitle("名前", "タイトルプリセット"),
                             NotionDatabasePropertyRichText("テキスト 1", "リッチテキストプリセット"),

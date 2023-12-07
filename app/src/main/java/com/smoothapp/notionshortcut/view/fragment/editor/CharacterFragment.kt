@@ -28,7 +28,7 @@ class CharacterFragment(private val initialText: String) : Fragment() {
         binding.blocker.visibility = if(enabled) View.VISIBLE else View.GONE
     }
 
-    fun showLargeBalloon(text: String) {
+    fun showLargeBalloon(text: String, listener: LargeBalloonListener) {
         binding.apply {
             largeBalloonText.text = text
             largeBalloonContainer.visibility = View.VISIBLE
@@ -37,6 +37,12 @@ class CharacterFragment(private val initialText: String) : Fragment() {
             largeBalloonCancelBtn.setOnClickListener {
                 largeBalloonContainer.visibility = View.GONE
                 enableBlocker(false)
+                listener?.onCanceled()
+            }
+            largeBalloonAcceptBtn.setOnClickListener { //todo: confirmボタンの方がよい
+                largeBalloonContainer.visibility = View.GONE
+                enableBlocker(false)
+                listener?.onConfirmed()
             }
         }
     }
@@ -45,6 +51,11 @@ class CharacterFragment(private val initialText: String) : Fragment() {
         binding.balloonText.run{
             this.text = text
         }
+    }
+
+    interface LargeBalloonListener {
+        fun onCanceled()
+        fun onConfirmed()
     }
 
     companion object {
