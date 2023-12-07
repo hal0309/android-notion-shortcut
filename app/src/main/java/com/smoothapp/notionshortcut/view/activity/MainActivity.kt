@@ -11,6 +11,7 @@ import com.smoothapp.notionshortcut.controller.provider.NotionOauthProvider
 import com.smoothapp.notionshortcut.controller.util.ApiCommonUtil
 import com.smoothapp.notionshortcut.controller.util.NotionApiGetPageUtil
 import com.smoothapp.notionshortcut.databinding.ActivityMainBinding
+import com.smoothapp.notionshortcut.view.fragment.EditorFragment
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 
@@ -49,6 +50,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.apply {
+            startEditorFragment()
 
 
 
@@ -63,32 +65,9 @@ class MainActivity : AppCompatActivity() {
 //                ShortcutManagerCompat.pushDynamicShortcut(this@MainActivity, shortcut)
 
                 MainScope().launch {
-//                    val list = NotionApiGetPageUtil.getAllNotionPageAndDatabase()
-//                    Log.d("response", list.toString())
-//                    Log.d("response", NotionApiGetPageUtil.createPageOrDatabaseTree(list.results).toString())
-//                    Log.d("response", NotionApiGetPageUtil.createPageOrDatabaseTree(list.results).toString())
 
-                    val provider = NotionApiProvider()
-                    var nextCursor: String? = null
-                    var count = 0
 
-                    do {
-                        val response = provider.getAllObjects(startCursor = nextCursor)
-                        val map = ApiCommonUtil.jsonStringToMap(response)
-                        nextCursor = map["next_cursor"] as String?
 
-                        println("keys  ${map.keys}")
-                        println("next $nextCursor")
-
-                        val resultList = map["results"] as List<Map<String, Any>>
-
-                        println("size ${resultList.size}")
-                        count += resultList.size
-                        println("total $count")
-                        for (result in resultList) {
-//                            println("${result["object"]} ${result["parent"]}")
-                        }
-                    }while (nextCursor != null)
 
 
 
@@ -97,5 +76,11 @@ class MainActivity : AppCompatActivity() {
             }
 
         }
+    }
+
+    private fun startEditorFragment() {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.mainContainer, EditorFragment.newInstance())
+            .commit()
     }
 }

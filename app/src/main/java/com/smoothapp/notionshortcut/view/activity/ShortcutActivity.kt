@@ -25,9 +25,9 @@ import com.smoothapp.notionshortcut.view.component.notionshortcut.ShortcutRootVi
 import com.smoothapp.notionshortcut.view.component.notionshortcut.mainelement.ShortcutDateView
 import com.smoothapp.notionshortcut.view.component.notionshortcut.mainelement.ShortcutStatusView
 import com.smoothapp.notionshortcut.view.component.notionshortcut.mainelement.select.BaseShortcutSelectView
-import com.smoothapp.notionshortcut.view.fragment.NotionDateFragment
-import com.smoothapp.notionshortcut.view.fragment.NotionSelectFragment
-import com.smoothapp.notionshortcut.view.fragment.NotionStatusFragment
+import com.smoothapp.notionshortcut.view.fragment.shortcut.NotionDateFragment
+import com.smoothapp.notionshortcut.view.fragment.shortcut.NotionSelectFragment
+import com.smoothapp.notionshortcut.view.fragment.shortcut.NotionStatusFragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch

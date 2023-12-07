@@ -17,6 +17,17 @@ class NotionApiProvider {
         return SecretTestUtil.API_KEY
     }
 
+    suspend fun retrieveDatabase(dbId: String): String {
+        val request = Request.Builder()
+            .url("https://api.notion.com/v1/databases/$dbId")
+            .addHeader("Notion-Version", "2022-06-28")
+            .addHeader("accept", "application/json")
+            .addHeader("Authorization", "Bearer ${getApiKey()}")
+            .build()
+
+        return getResponseBody(request)
+    }
+
     suspend fun postPage(requestBodyString: String): String {
         val requestBody = requestBodyString.toRequestBody("application/json".toMediaType())
         val request = Request.Builder()
@@ -24,14 +35,14 @@ class NotionApiProvider {
             .addHeader("Notion-Version", "2022-06-28")
             .addHeader("accept", "application/json")
             .addHeader("Authorization", "Bearer ${getApiKey()}")
-            .addHeader("Content-Type", "application/json")
+            .addHeader("Content-Type", "application/json") //todo: 削除可能? 未検証
             .post(requestBody)
             .build()
 
         return getResponseBody(request)
     }
 
-    suspend fun postSearch(requestBodyString: String): String {
+    private suspend fun postSearch(requestBodyString: String): String {
         val requestBody = requestBodyString.toRequestBody("application/json".toMediaType())
         val request = Request.Builder()
             .url("https://api.notion.com/v1/search")
@@ -55,29 +66,29 @@ class NotionApiProvider {
         return postSearch(requestBody)
     }
 
-    suspend fun getAllDatabase(startCursor: String? = null): String {
-        val requestBody = """
-                {
-                    "filter": {
-                        "value": "database",
-                        "property": "object"
-                    }
-                    ${if(startCursor == null) "" else ", \"start_cursor\": \"$startCursor\""}
-                }
-            """.trimIndent()
-        return postSearch(requestBody)
-    }
-
-    suspend fun getAllPage(startCursor: String? = null): String {
-        val requestBody = """
-                {
-                    "filter": {
-                        "value": "page",
-                        "property": "object"
-                    }
-                    ${if(startCursor == null) "" else ", \"start_cursor\": \"$startCursor\""}
-                }
-            """.trimIndent()
-        return postSearch(requestBody)
-    }
+//    suspend fun getAllDatabase(startCursor: String? = null): String {
+//        val requestBody = """
+//                {
+//                    "filter": {
+//                        "value": "database",
+//                        "property": "object"
+//                    }
+//                    ${if(startCursor == null) "" else ", \"start_cursor\": \"$startCursor\""}
+//                }
+//            """.trimIndent()
+//        return postSearch(requestBody)
+//    }
+//
+//    suspend fun getAllPage(startCursor: String? = null): String {
+//        val requestBody = """
+//                {
+//                    "filter": {
+//                        "value": "page",
+//                        "property": "object"
+//                    }
+//                    ${if(startCursor == null) "" else ", \"start_cursor\": \"$startCursor\""}
+//                }
+//            """.trimIndent()
+//        return postSearch(requestBody)
+//    }
 }

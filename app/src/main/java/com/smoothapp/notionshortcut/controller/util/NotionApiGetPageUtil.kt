@@ -1,56 +1,134 @@
 package com.smoothapp.notionshortcut.controller.util
 
+import com.smoothapp.notionshortcut.controller.exception.IllegalApiStateException
 import com.smoothapp.notionshortcut.controller.provider.NotionApiProvider
-import com.smoothapp.notionshortcut.model.entity.NotionApiGetPageObj
-import kotlinx.serialization.json.Json
+import com.smoothapp.notionshortcut.model.entity.get.NotionDatabase
+import com.smoothapp.notionshortcut.model.entity.get.PageOrDatabase
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+
 object NotionApiGetPageUtil {
-    suspend fun getAllNotionPageAndDatabase(): NotionApiGetPageObj.Root{
+
+    interface GetDatabaseDetailListener {
+        fun doOnEnd(notionDatabase: NotionDatabase)
+    }
+
+    interface GetPageListener {
+        fun doOnUpdate(total: Int){}
+        fun doOnEndGetApi(total: Int){}
+        fun doOnEndAll(pageOrDatabaseList: List<PageOrDatabase>)
+    }
+
+    suspend fun getDatabaseDetail(dbId: String, listener: GetDatabaseDetailListener) = withContext(Dispatchers.IO) {
         val provider = NotionApiProvider()
-        val json = Json{ignoreUnknownKeys = true}
-        return json.decodeFromString(provider.getAllObjects())
-    }
 
-    class PageOrDatabaseTree(val me: NotionApiGetPageObj.PageOrDatabase){
-        val children: MutableList<PageOrDatabaseTree> = mutableListOf()
-    }
+        launch {
+            val response = provider.retrieveDatabase(dbId)
+            val result = ApiCommonUtil.jsonStringToMap(response)
 
-    fun createPageOrDatabaseTree(list: List<NotionApiGetPageObj.PageOrDatabase>, parent: NotionApiGetPageObj.PageOrDatabase? = null): List<PageOrDatabaseTree>{
+            if("message" in result.keys) throw IllegalApiStateException("status: ${result["status"]}, code: ${result["code"]}, message: ${result["message"]}")
 
-        return when(parent){
-            null -> {
-                val root = NotionApiGetPageObj.PageOrDatabase("workspace", "", NotionApiGetPageObj.Parent(""))
-
-                listOf(PageOrDatabaseTree(root).apply {
-                    children.addAll(createPageOrDatabaseTree(list, root))
-                })
+            val id = result["id"] as String
+            val title = unveilTitle(result["title"] as List<Map<String, Any>>)
+            val parent = result["parent"] as Map<String, Any>
+            val parentType = parent["type"] as String
+            val parentId = when(parentType) {
+                "page_id" -> parent["page_id"] as String?
+                "database_id" -> parent["database_id"] as String?
+                else -> null
             }
-            else -> {
-                val mList = list.toMutableList()
-                val treeList = mutableListOf<PageOrDatabaseTree>()
-                val childList = when(parent.obj){
-                    "workspace" -> {
-                        mList.filter { it.parent.type == "workspace" }
-                    }
-                    "page" -> {
-                        mList.filter { it.parent.pageId == parent.id}
-                    }
-                    "database" -> {
-                        mList.filter { it.parent.databaseId == parent.id}
-                    }
-                    else -> {
-                        mutableListOf()
-                    }
-                }
-                mList.removeAll(childList)
-                for(child in childList){
-                    val tree = PageOrDatabaseTree(child).apply {
-                        children.addAll(createPageOrDatabaseTree(mList, child))
-                    }
-                    treeList.add(tree)
-//                    Log.d("", tree.me.toString())
-                }
-                treeList
+            val properties = result["properties"] as Map<String, Any>
+
+            val notionDatabase = NotionDatabase(
+                id = id,
+                title = title,
+                parentType = parentType,
+                parentId = parentId
+            )
+            notionDatabase.addProperties(properties)
+            withContext(Dispatchers.Main){
+                listener.doOnEnd(notionDatabase)
             }
         }
+    }
+
+    suspend fun getAllObjects(listener: GetPageListener) = withContext(Dispatchers.IO) {
+        val provider = NotionApiProvider()
+        var nextCursor: String? = null
+        val resultMapList: MutableList<Map<String, Any>> = mutableListOf()
+
+        launch {
+            do {
+                val response = provider.getAllObjects(startCursor = nextCursor)
+                val map = ApiCommonUtil.jsonStringToMap(response)
+                // keys error [object, status, code, message, request_id]
+                // keys correct [object, results, next_cursor, has_more, type, page_or_database, request_id]
+
+                if("message" in map.keys) throw IllegalApiStateException("status: ${map["status"]}, code: ${map["code"]}, message: ${map["message"]}")
+
+                nextCursor = map["next_cursor"] as String?
+                resultMapList.addAll(map["results"] as List<Map<String, Any>>)
+
+                withContext(Dispatchers.Main){
+                    listener.doOnUpdate(resultMapList.size)
+                }
+            }while (nextCursor != null)
+
+            listener.doOnEndGetApi(resultMapList.size)
+            val pageOrDatabaseList = mutableListOf<PageOrDatabase>()
+
+            for (result in resultMapList) {
+                val type = result["object"] as String
+                val id = result["id"] as String
+                val title = when(type) {
+                    "page" -> {
+                        val properties = result["properties"] as Map<String, Any>
+                        var title: String? = null
+                        for(value in properties.values) {
+                            value as Map<String, Any>
+                            if(value["id"] == "title") {
+                                title = unveilTitle(value["title"] as List<Map<String, Any>>)
+                            }
+                        }
+                        title
+                    }
+                    "database" -> {
+                        unveilTitle(result["title"] as List<Map<String, Any>>)
+                    }
+                    else -> null
+                }
+                val parent = result["parent"] as Map<String, Any>
+                val parentType = parent["type"] as String
+                val parentId = when(parentType) {
+                    "page_id" -> parent["page_id"] as String?
+                    "database_id" -> parent["database_id"] as String?
+                    else -> null
+                }
+
+                val pageOrDatabase = PageOrDatabase(
+                    type = type,
+                    id = id,
+                    title = title,
+                    parentType = parentType,
+                    parentId = parentId
+                )
+                pageOrDatabaseList.add(pageOrDatabase)
+            }
+            for (i in pageOrDatabaseList.indices) {
+                val pageOrDatabase = pageOrDatabaseList[i]
+                val parentTitle = pageOrDatabaseList.firstOrNull { it.id == pageOrDatabase.parentId }?.title
+                pageOrDatabaseList[i].parentTitle = parentTitle
+            }
+            withContext(Dispatchers.Main){
+                listener.doOnEndAll(pageOrDatabaseList)
+            }
+        }
+
+    }
+
+    private fun unveilTitle(title: List<Map<String, Any>>): String?{
+        if(title.isEmpty()) return null
+        return (title[0]["text"] as Map<String, String?>)["content"]
     }
 }

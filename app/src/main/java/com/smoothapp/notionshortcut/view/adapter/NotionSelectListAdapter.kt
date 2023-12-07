@@ -43,7 +43,7 @@ class NotionSelectListAdapter(val listener: Listener? = null) :
 
 }
 
-val SELECT_DIFF_UTIL_CALLBACK = object : DiffUtil.ItemCallback<NotionPostTemplate.Select>() {
+private val SELECT_DIFF_UTIL_CALLBACK = object : DiffUtil.ItemCallback<NotionPostTemplate.Select>() {
     override fun areContentsTheSame(
         oldItem: NotionPostTemplate.Select,
         newItem: NotionPostTemplate.Select
