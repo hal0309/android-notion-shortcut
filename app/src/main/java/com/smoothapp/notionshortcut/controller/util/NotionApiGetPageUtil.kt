@@ -2,6 +2,7 @@ package com.smoothapp.notionshortcut.controller.util
 
 import com.smoothapp.notionshortcut.controller.exception.IllegalApiStateException
 import com.smoothapp.notionshortcut.controller.provider.NotionApiProvider
+import com.smoothapp.notionshortcut.model.entity.get.NotionDatabase
 import com.smoothapp.notionshortcut.model.entity.get.PageOrDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -9,10 +10,47 @@ import kotlinx.coroutines.withContext
 
 object NotionApiGetPageUtil {
 
+    interface GetDatabaseDetailListener {
+        fun doOnEnd(notionDatabase: NotionDatabase)
+    }
+
     interface GetPageListener {
-        fun doOnUpdate(total: Int)
-        fun doOnEndGetApi(total: Int)
+        fun doOnUpdate(total: Int){}
+        fun doOnEndGetApi(total: Int){}
         fun doOnEndAll(pageOrDatabaseList: List<PageOrDatabase>)
+    }
+
+    suspend fun getDatabaseDetail(dbId: String, listener: GetDatabaseDetailListener) = withContext(Dispatchers.IO) {
+        val provider = NotionApiProvider()
+
+        launch {
+            val response = provider.retrieveDatabase(dbId)
+            val result = ApiCommonUtil.jsonStringToMap(response)
+
+            if("message" in result.keys) throw IllegalApiStateException("status: ${result["status"]}, code: ${result["code"]}, message: ${result["message"]}")
+
+            val id = result["id"] as String
+            val title = unveilTitle(result["title"] as List<Map<String, Any>>)
+            val parent = result["parent"] as Map<String, Any>
+            val parentType = parent["type"] as String
+            val parentId = when(parentType) {
+                "page_id" -> parent["page_id"] as String?
+                "database_id" -> parent["database_id"] as String?
+                else -> null
+            }
+            val properties = result["properties"] as Map<String, Any>
+
+            val notionDatabase = NotionDatabase(
+                id = id,
+                title = title,
+                parentType = parentType,
+                parentId = parentId
+            )
+            notionDatabase.addProperties(properties)
+            withContext(Dispatchers.Main){
+                listener.doOnEnd(notionDatabase)
+            }
+        }
     }
 
     suspend fun getAllObjects(listener: GetPageListener) = withContext(Dispatchers.IO) {

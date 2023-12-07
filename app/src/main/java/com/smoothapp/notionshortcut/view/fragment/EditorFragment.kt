@@ -9,6 +9,7 @@ import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import com.smoothapp.notionshortcut.controller.util.NotionApiGetPageUtil
 import com.smoothapp.notionshortcut.databinding.FragmentEditorBinding
+import com.smoothapp.notionshortcut.model.entity.get.NotionDatabase
 import com.smoothapp.notionshortcut.model.entity.get.PageOrDatabase
 import com.smoothapp.notionshortcut.view.fragment.editor.NotionDatabaseSelectorFragment
 import kotlinx.coroutines.MainScope
@@ -53,7 +54,13 @@ class EditorFragment : Fragment() {
 
     fun confirmSelectedDatabase(notionDatabase: PageOrDatabase) {
         setBalloonText("Selected database: ${notionDatabase.title}")
-
+        MainScope().launch {
+            NotionApiGetPageUtil.getDatabaseDetail(notionDatabase.id, object : NotionApiGetPageUtil.GetDatabaseDetailListener {
+                override fun doOnEnd(notionDatabase: NotionDatabase) {
+                    setBalloonText("Selected database: $notionDatabase")
+                }
+            })
+        }
     }
 
     fun hideKeyboard(view: View) {
