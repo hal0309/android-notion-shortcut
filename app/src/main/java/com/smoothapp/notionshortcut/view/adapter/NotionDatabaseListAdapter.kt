@@ -17,6 +17,8 @@ class NotionDatabaseListAdapter(val listener: Listener? = null) :
             binding.apply {
                 title.text = notionDatabase.title?: "UNDEFINED"
                 parentTitle.text = notionDatabase.parentTitle?: "UNDEFINED"
+                circle.text = notionDatabase.title?.firstOrNull()?.toString() ?: "?"
+
                 root.setOnClickListener { listener?.onClickItem(notionDatabase) }
 //                card.setCardBackgroundColor(select.color.getColor(card.context))
             }
