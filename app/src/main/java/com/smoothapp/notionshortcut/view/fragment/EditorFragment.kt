@@ -14,6 +14,7 @@ import com.smoothapp.notionshortcut.model.entity.get.NotionDatabase
 import com.smoothapp.notionshortcut.model.entity.get.PageOrDatabase
 import com.smoothapp.notionshortcut.view.fragment.editor.CharacterFragment
 import com.smoothapp.notionshortcut.view.fragment.editor.NotionDatabaseSelectorFragment
+import com.smoothapp.notionshortcut.view.fragment.editor.PresetSelectorFragment
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 
@@ -30,7 +31,8 @@ class EditorFragment : Fragment() {
         binding.apply {
 
             startCharacterFragment()
-            startDownload()
+//            startDownload()
+            startPresetSelectorFragment()
         }
         return binding.root
     }
@@ -49,6 +51,13 @@ class EditorFragment : Fragment() {
     private fun startCharacterFragment() {
         childFragmentManager.beginTransaction()
             .replace(binding.characterContainer.id, characterFragment)
+            .addToBackStack(null)
+            .commit()
+    }
+
+    private fun startPresetSelectorFragment() {
+        childFragmentManager.beginTransaction()
+            .replace(binding.mainContainer.id, PresetSelectorFragment.newInstance())
             .addToBackStack(null)
             .commit()
     }

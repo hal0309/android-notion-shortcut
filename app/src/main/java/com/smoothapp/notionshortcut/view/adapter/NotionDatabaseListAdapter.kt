@@ -9,7 +9,7 @@ import com.smoothapp.notionshortcut.databinding.ItemNotionDatabaseBinding
 import com.smoothapp.notionshortcut.model.entity.get.PageOrDatabase
 
 class NotionDatabaseListAdapter(val listener: Listener? = null) :
-    ListAdapter<PageOrDatabase, NotionDatabaseListAdapter.Holder>(SELECT_DIFF_UTIL_CALLBACK) {
+    ListAdapter<PageOrDatabase, NotionDatabaseListAdapter.Holder>(DIFF_UTIL_CALLBACK) {
 
     class Holder(private val binding: ItemNotionDatabaseBinding, private val listener: Listener?) :
         RecyclerView.ViewHolder(binding.root) {
@@ -46,7 +46,7 @@ class NotionDatabaseListAdapter(val listener: Listener? = null) :
 
 }
 
-private val SELECT_DIFF_UTIL_CALLBACK = object : DiffUtil.ItemCallback<PageOrDatabase>() {
+private val DIFF_UTIL_CALLBACK = object : DiffUtil.ItemCallback<PageOrDatabase>() {
     override fun areContentsTheSame(
         oldItem: PageOrDatabase,
         newItem: PageOrDatabase
