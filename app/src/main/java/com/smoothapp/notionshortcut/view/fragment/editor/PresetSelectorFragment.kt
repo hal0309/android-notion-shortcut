@@ -41,8 +41,20 @@ class PresetSelectorFragment : Fragment() {
                 layoutManager = LinearLayoutManager(context)
             }
 
-
-
+            listAdapter?.submitList(
+                listOf(
+                    NotionPostTemplate(
+                        "test1",
+                        "test1",
+                        "test1",
+                        listOf()),
+                    NotionPostTemplate(
+                        "test2",
+                        "test2",
+                        "test2",
+                        listOf())
+                )
+            )
             return root
         }
     }
