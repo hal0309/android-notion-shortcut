@@ -7,18 +7,23 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.smoothapp.notionshortcut.databinding.ItemTemplateBinding
 import com.smoothapp.notionshortcut.model.entity.NotionPostTemplate
+import com.smoothapp.notionshortcut.view.component.template.TemplatePropertyView
 
 class TemplateListAdapter(val listener: Listener? = null) :
     ListAdapter<NotionPostTemplate, TemplateListAdapter.Holder>(DIFF_UTIL_CALLBACK) {
 
     class Holder(private val binding: ItemTemplateBinding, private val listener: Listener?) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(notionDatabase: NotionPostTemplate) {
+        fun bind(notionPostTemplate: NotionPostTemplate) {
             binding.apply {
-                title.text = notionDatabase.title
+                title.text = notionPostTemplate.title
 
+                for (property in notionPostTemplate.propertyList) {
+                    val view = TemplatePropertyView(root.context, type = property.getType(), name = property.getName())
+                    propertyContainer.addView(view)
+                }
 
-                root.setOnClickListener { listener?.onClickItem(notionDatabase) }
+                root.setOnClickListener { listener?.onClickItem(notionPostTemplate) }
 //                card.setCardBackgroundColor(select.color.getColor(card.context))
             }
         }

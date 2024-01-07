@@ -8,7 +8,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.smoothapp.notionshortcut.R
 import com.smoothapp.notionshortcut.databinding.FragmentPresetSelectorBinding
+import com.smoothapp.notionshortcut.model.constant.NotionApiPropertyEnum
 import com.smoothapp.notionshortcut.model.entity.NotionPostTemplate
+import com.smoothapp.notionshortcut.model.entity.notiondatabaseproperty.NotionDatabaseProperty
 import com.smoothapp.notionshortcut.view.adapter.NotionDatabaseListAdapter
 import com.smoothapp.notionshortcut.view.adapter.TemplateListAdapter
 import com.smoothapp.notionshortcut.view.fragment.EditorFragment
@@ -47,7 +49,53 @@ class PresetSelectorFragment : Fragment() {
                         "test1",
                         "test1",
                         "test1",
-                        listOf()),
+                        listOf(
+                            NotionDatabaseProperty(
+                                NotionApiPropertyEnum.TITLE,
+                                "title",
+                                listOf("title")
+                            ),
+                            NotionDatabaseProperty(
+                                NotionApiPropertyEnum.RICH_TEXT,
+                                "rich text",
+                                listOf("rich text")
+                            ),
+                            NotionDatabaseProperty(
+                                NotionApiPropertyEnum.NUMBER,
+                                "number",
+                                listOf("number")
+                            ),
+                            NotionDatabaseProperty(
+                                NotionApiPropertyEnum.CHECKBOX,
+                                "checkbox",
+                                listOf("checkbox")
+                            ),
+                            NotionDatabaseProperty(
+                                NotionApiPropertyEnum.SELECT,
+                                "select",
+                                listOf("select")
+                            ),
+                            NotionDatabaseProperty(
+                                NotionApiPropertyEnum.MULTI_SELECT,
+                                "multi select",
+                                listOf("multi select")
+                            ),
+                            NotionDatabaseProperty(
+                                NotionApiPropertyEnum.STATUS,
+                                "status",
+                                listOf("status")
+                            ),
+                            NotionDatabaseProperty(
+                                NotionApiPropertyEnum.RELATION,
+                                "relation",
+                                listOf("relation")
+                            ),
+                            NotionDatabaseProperty(
+                                NotionApiPropertyEnum.DATE,
+                                "date",
+                                listOf("date")
+                            )
+                        )),
                     NotionPostTemplate(
                         "test2",
                         "test2",

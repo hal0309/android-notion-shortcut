@@ -9,7 +9,7 @@ import com.smoothapp.notionshortcut.model.constant.NotionApiPropertyEnum
 import com.smoothapp.notionshortcut.model.constant.NotionApiPropertyEnum.*
 
 class TemplatePropertyView @JvmOverloads constructor(
-    context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0, private val type: NotionApiPropertyEnum? = null
+    context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0, private val type: NotionApiPropertyEnum? = null, private val name: String? = null
 ) : LinearLayout(context, attrs, defStyleAttr) {
 
     private lateinit var binding: ViewTemplatePropertyBinding
@@ -21,7 +21,7 @@ class TemplatePropertyView @JvmOverloads constructor(
         inflate(context, R.layout.view_template_property, this)
         binding = ViewTemplatePropertyBinding.bind(this)
         binding.apply {
-            name.text = "hogehoge"
+            name.text = this@TemplatePropertyView.name
 
 
             icon.setImageResource(when(type){
@@ -38,20 +38,20 @@ class TemplatePropertyView @JvmOverloads constructor(
             })
 
 
-            icon.setImageResource(when(count){
-                0 -> R.drawable.ic_notion_title
-                1 -> R.drawable.ic_notion_text
-                2 -> R.drawable.ic_notion_number
-                3 -> R.drawable.ic_notion_checkbox
-                4 -> R.drawable.ic_notion_select
-                5 -> R.drawable.ic_notion_multiselect
-                6 -> R.drawable.ic_notion_status
-                7 -> R.drawable.ic_notion_relation
-                8 -> R.drawable.ic_notion_date
-                else -> R.drawable.ic_link
-            })
-
-            count++
+//            icon.setImageResource(when(count){
+//                0 -> R.drawable.ic_notion_title
+//                1 -> R.drawable.ic_notion_text
+//                2 -> R.drawable.ic_notion_number
+//                3 -> R.drawable.ic_notion_checkbox
+//                4 -> R.drawable.ic_notion_select
+//                5 -> R.drawable.ic_notion_multiselect
+//                6 -> R.drawable.ic_notion_status
+//                7 -> R.drawable.ic_notion_relation
+//                8 -> R.drawable.ic_notion_date
+//                else -> R.drawable.ic_link
+//            })
+//
+//            count++
 
         }
     }
