@@ -116,9 +116,9 @@ class EditorFragment : Fragment() {
                     showLargeBalloon("Selected database: $notionDatabase", object : CharacterFragment.LargeBalloonListener {
                         override fun onCanceled() {
                             val template = NotionPostTemplate(
-                                "test1",
-                                "test1",
-                                "test1"
+                                notionDatabase.title.toString(),
+                                notionDatabase.id,
+                                notionDatabase.title.toString(),
 
                             ).apply {
                                 listOf(

@@ -6,12 +6,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.smoothapp.notionshortcut.controller.db.AppDatabase
 import com.smoothapp.notionshortcut.databinding.FragmentPresetSelectorBinding
 import com.smoothapp.notionshortcut.model.constant.NotionApiPropertyEnum
 import com.smoothapp.notionshortcut.model.entity.NotionPostTemplate
 import com.smoothapp.notionshortcut.model.entity.notiondatabaseproperty.NotionDatabaseProperty
 import com.smoothapp.notionshortcut.view.adapter.TemplateListAdapter
 import com.smoothapp.notionshortcut.view.fragment.EditorFragment
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 class TemplateSelectorFragment : Fragment() {
@@ -41,67 +46,15 @@ class TemplateSelectorFragment : Fragment() {
                 layoutManager = LinearLayoutManager(context)
             }
 
-            listAdapter?.submitList(
-                listOf(
-                    NotionPostTemplate(
-                        "test1",
-                        "test1",
-                        "test1"
-                        ).apply {
-                        listOf(
-                            NotionDatabaseProperty(
-                                NotionApiPropertyEnum.TITLE,
-                                "title",
-                                listOf("title")
-                            ),
-                            NotionDatabaseProperty(
-                                NotionApiPropertyEnum.RICH_TEXT,
-                                "rich text",
-                                listOf("rich text")
-                            ),
-                            NotionDatabaseProperty(
-                                NotionApiPropertyEnum.NUMBER,
-                                "number",
-                                listOf("number")
-                            ),
-                            NotionDatabaseProperty(
-                                NotionApiPropertyEnum.CHECKBOX,
-                                "checkbox",
-                                listOf("checkbox")
-                            ),
-                            NotionDatabaseProperty(
-                                NotionApiPropertyEnum.SELECT,
-                                "select",
-                                listOf("select")
-                            ),
-                            NotionDatabaseProperty(
-                                NotionApiPropertyEnum.MULTI_SELECT,
-                                "multi select",
-                                listOf("multi select")
-                            ),
-                            NotionDatabaseProperty(
-                                NotionApiPropertyEnum.STATUS,
-                                "status",
-                                listOf("status")
-                            ),
-                            NotionDatabaseProperty(
-                                NotionApiPropertyEnum.RELATION,
-                                "relation",
-                                listOf("relation")
-                            ),
-                            NotionDatabaseProperty(
-                                NotionApiPropertyEnum.DATE,
-                                "date",
-                                listOf("date")
-                            )
-                        )
-                    },
-                    NotionPostTemplate(
-                        "test2",
-                        "test2",
-                        "test2")
-                )
-            )
+            MainScope().launch {
+                withContext(Dispatchers.IO) {
+                    val db = AppDatabase.getInstance(requireContext())
+                    val templates = db.notionPostTemplateDao().getAll()
+                    withContext(Dispatchers.Main) {
+                        listAdapter?.submitList(templates)
+                    }
+                }
+            }
             return root
         }
     }

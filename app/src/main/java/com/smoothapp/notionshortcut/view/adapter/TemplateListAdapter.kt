@@ -17,6 +17,7 @@ class TemplateListAdapter(val listener: Listener? = null) :
         fun bind(notionPostTemplate: NotionPostTemplate) {
             binding.apply {
                 title.text = notionPostTemplate.title
+                dbTitle.text = notionPostTemplate.dbTitle
 
                 for (property in notionPostTemplate.propertyList()) {
                     val view = TemplatePropertyView(root.context, type = property.getType(), name = property.getName())
