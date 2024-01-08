@@ -6,17 +6,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.smoothapp.notionshortcut.R
 import com.smoothapp.notionshortcut.databinding.FragmentPresetSelectorBinding
 import com.smoothapp.notionshortcut.model.constant.NotionApiPropertyEnum
 import com.smoothapp.notionshortcut.model.entity.NotionPostTemplate
 import com.smoothapp.notionshortcut.model.entity.notiondatabaseproperty.NotionDatabaseProperty
-import com.smoothapp.notionshortcut.view.adapter.NotionDatabaseListAdapter
 import com.smoothapp.notionshortcut.view.adapter.TemplateListAdapter
 import com.smoothapp.notionshortcut.view.fragment.EditorFragment
 
 
-class PresetSelectorFragment : Fragment() {
+class TemplateSelectorFragment : Fragment() {
 
     private lateinit var binding: FragmentPresetSelectorBinding
     private lateinit var parent: EditorFragment
@@ -109,6 +107,6 @@ class PresetSelectorFragment : Fragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance() = PresetSelectorFragment()
+        fun newInstance() = TemplateSelectorFragment()
     }
 }

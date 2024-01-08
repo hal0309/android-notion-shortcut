@@ -14,7 +14,7 @@ import com.smoothapp.notionshortcut.model.entity.get.NotionDatabase
 import com.smoothapp.notionshortcut.model.entity.get.PageOrDatabase
 import com.smoothapp.notionshortcut.view.fragment.editor.CharacterFragment
 import com.smoothapp.notionshortcut.view.fragment.editor.NotionDatabaseSelectorFragment
-import com.smoothapp.notionshortcut.view.fragment.editor.PresetSelectorFragment
+import com.smoothapp.notionshortcut.view.fragment.editor.TemplateSelectorFragment
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 
@@ -31,8 +31,8 @@ class EditorFragment : Fragment() {
         binding.apply {
 
             startCharacterFragment()
-//            startDownload()
-            startPresetSelectorFragment()
+            startDownload()
+//            startPresetSelectorFragment()
         }
         return binding.root
     }
@@ -55,9 +55,9 @@ class EditorFragment : Fragment() {
             .commit()
     }
 
-    private fun startPresetSelectorFragment() {
+    private fun startTemplateSelectorFragment() {
         childFragmentManager.beginTransaction()
-            .replace(binding.mainContainer.id, PresetSelectorFragment.newInstance())
+            .replace(binding.mainContainer.id, TemplateSelectorFragment.newInstance())
             .addToBackStack(null)
             .commit()
     }
@@ -113,7 +113,8 @@ class EditorFragment : Fragment() {
 
                         override fun onConfirmed() {
                             val template = NotionPostTemplate.from(notionDatabase) //todo: テスト
-                            startTemplateSelectFragment(template)
+//                            startTemplateSelectFragment(template)
+                            startTemplateSelectorFragment()
                         }
                     })
                 }
@@ -121,21 +122,21 @@ class EditorFragment : Fragment() {
         }
     }
 
-    fun startTemplateSelectFragment(template: NotionPostTemplate?) {
-        when(template){
-            null -> {
-                setBalloonText("Failed to load template")
-            }
-            else -> {
-                println(template.title)
-                println(template.dbId)
-                println(template.dbTitle)
-                println(template.propertyList.map{it.getName()})
-                setBalloonText("template ${template.propertyList.map{it.getName()}}")
-            }
-        }
-
-    }
+//    fun startTemplateSelectFragment(template: NotionPostTemplate?) {
+//        when(template){
+//            null -> {
+//                setBalloonText("Failed to load template")
+//            }
+//            else -> {
+//                println(template.title)
+//                println(template.dbId)
+//                println(template.dbTitle)
+//                println(template.propertyList.map{it.getName()})
+//                setBalloonText("template ${template.propertyList.map{it.getName()}}")
+//            }
+//        }
+//
+//    }
 
     fun enableBlocker(enabled: Boolean){
         characterFragment.enableBlocker(enabled)
