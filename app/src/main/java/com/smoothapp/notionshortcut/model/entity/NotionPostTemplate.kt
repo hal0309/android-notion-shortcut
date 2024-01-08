@@ -4,13 +4,20 @@ import com.smoothapp.notionshortcut.model.constant.NotionApiPropertyEnum
 import com.smoothapp.notionshortcut.model.constant.NotionColorEnum
 import com.smoothapp.notionshortcut.model.entity.get.NotionDatabase
 import com.smoothapp.notionshortcut.model.entity.notiondatabaseproperty.NotionDatabaseProperty
+import java.util.UUID
 
 class NotionPostTemplate(
     val title: String,
     val dbId: String,
     val dbTitle: String,
-    val propertyList: List<NotionDatabaseProperty>
+    val propertyList: List<NotionDatabaseProperty>,
+    val uuid : String = UUID.randomUUID().toString()
 ){
+
+    // todo: 恐らく機能しない
+    override fun equals(other: Any?): Boolean {
+        return super.equals(other)
+    }
 
     data class Property(
         val type: NotionApiPropertyEnum,

@@ -73,7 +73,6 @@ class NotionDatabaseSelectorFragment(private var notionDatabaseList: List<PageOr
 
 
     interface Listener {
-
         fun onItemSelected(notionDatabase: PageOrDatabase)
         fun doOnEnd()
     }

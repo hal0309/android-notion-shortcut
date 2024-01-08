@@ -37,12 +37,12 @@ class CharacterFragment(private val initialText: String) : Fragment() {
             largeBalloonCancelBtn.setOnClickListener {
                 largeBalloonContainer.visibility = View.GONE
                 enableBlocker(false)
-                listener?.onCanceled()
+                listener.onCanceled()
             }
             largeBalloonAcceptBtn.setOnClickListener { //todo: confirmボタンの方がよい
                 largeBalloonContainer.visibility = View.GONE
                 enableBlocker(false)
-                listener?.onConfirmed()
+                listener.onConfirmed()
             }
         }
     }

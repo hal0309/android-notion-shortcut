@@ -9,7 +9,7 @@ import com.smoothapp.notionshortcut.databinding.ItemNotionDatabaseBinding
 import com.smoothapp.notionshortcut.model.entity.get.PageOrDatabase
 
 class NotionDatabaseListAdapter(val listener: Listener? = null) :
-    ListAdapter<PageOrDatabase, NotionDatabaseListAdapter.Holder>(SELECT_DIFF_UTIL_CALLBACK) {
+    ListAdapter<PageOrDatabase, NotionDatabaseListAdapter.Holder>(DIFF_UTIL_CALLBACK) {
 
     class Holder(private val binding: ItemNotionDatabaseBinding, private val listener: Listener?) :
         RecyclerView.ViewHolder(binding.root) {
@@ -17,6 +17,8 @@ class NotionDatabaseListAdapter(val listener: Listener? = null) :
             binding.apply {
                 title.text = notionDatabase.title?: "UNDEFINED"
                 parentTitle.text = notionDatabase.parentTitle?: "UNDEFINED"
+                circle.text = notionDatabase.title?.firstOrNull()?.toString() ?: "?"
+
                 root.setOnClickListener { listener?.onClickItem(notionDatabase) }
 //                card.setCardBackgroundColor(select.color.getColor(card.context))
             }
@@ -44,7 +46,7 @@ class NotionDatabaseListAdapter(val listener: Listener? = null) :
 
 }
 
-private val SELECT_DIFF_UTIL_CALLBACK = object : DiffUtil.ItemCallback<PageOrDatabase>() {
+private val DIFF_UTIL_CALLBACK = object : DiffUtil.ItemCallback<PageOrDatabase>() {
     override fun areContentsTheSame(
         oldItem: PageOrDatabase,
         newItem: PageOrDatabase
