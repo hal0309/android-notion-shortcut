@@ -12,8 +12,8 @@ enum class NotionApiPropertyEnum(val key: String) {
     DATE("date");
 
     companion object {
-        fun from(key: String): NotionApiPropertyEnum? {
-            return values().firstOrNull { it.key == key }
+        fun from(key: String): NotionApiPropertyEnum {
+            return entries.firstOrNull { it.key == key }?: throw IllegalArgumentException("key: $key")
         }
     }
 }

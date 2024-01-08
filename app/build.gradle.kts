@@ -1,6 +1,7 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("kotlin-kapt")
     kotlin("plugin.serialization") version "1.9.10"
 }
 
@@ -55,6 +56,7 @@ dependencies {
     val roomVersion = "2.5.0"
     implementation("androidx.room:room-runtime:$roomVersion")
     annotationProcessor("androidx.room:room-compiler:$roomVersion")
+    kapt("androidx.room:room-compiler:$roomVersion")
 
     /* okhttp */
     implementation("com.squareup.okhttp3:okhttp:4.11.0")

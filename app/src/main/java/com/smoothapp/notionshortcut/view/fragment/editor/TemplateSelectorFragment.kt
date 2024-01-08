@@ -46,7 +46,8 @@ class TemplateSelectorFragment : Fragment() {
                     NotionPostTemplate(
                         "test1",
                         "test1",
-                        "test1",
+                        "test1"
+                        ).apply {
                         listOf(
                             NotionDatabaseProperty(
                                 NotionApiPropertyEnum.TITLE,
@@ -93,12 +94,12 @@ class TemplateSelectorFragment : Fragment() {
                                 "date",
                                 listOf("date")
                             )
-                        )),
+                        )
+                    },
                     NotionPostTemplate(
                         "test2",
                         "test2",
-                        "test2",
-                        listOf())
+                        "test2")
                 )
             )
             return root

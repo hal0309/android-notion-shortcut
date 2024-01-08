@@ -5,8 +5,9 @@ import com.smoothapp.notionshortcut.model.constant.NotionApiPropertyEnum
 
 class NotionDatabasePropertyRichText(
     name: String,
-    private var richText: String?
-) : NotionDatabaseProperty(NotionApiPropertyEnum.RICH_TEXT, name, listOf()) {
+    private var richText: String?,
+    id: String? = null
+) : NotionDatabaseProperty(NotionApiPropertyEnum.RICH_TEXT, name, listOf(), id) {
 
     init {
         updateParentContents()

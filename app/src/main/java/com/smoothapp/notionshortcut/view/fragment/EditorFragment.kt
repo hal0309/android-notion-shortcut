@@ -7,16 +7,21 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
+import com.smoothapp.notionshortcut.controller.db.AppDatabase
 import com.smoothapp.notionshortcut.controller.util.NotionApiGetPageUtil
 import com.smoothapp.notionshortcut.databinding.FragmentEditorBinding
+import com.smoothapp.notionshortcut.model.constant.NotionApiPropertyEnum
 import com.smoothapp.notionshortcut.model.entity.NotionPostTemplate
 import com.smoothapp.notionshortcut.model.entity.get.NotionDatabase
 import com.smoothapp.notionshortcut.model.entity.get.PageOrDatabase
+import com.smoothapp.notionshortcut.model.entity.notiondatabaseproperty.NotionDatabaseProperty
 import com.smoothapp.notionshortcut.view.fragment.editor.CharacterFragment
 import com.smoothapp.notionshortcut.view.fragment.editor.NotionDatabaseSelectorFragment
 import com.smoothapp.notionshortcut.view.fragment.editor.TemplateSelectorFragment
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 class EditorFragment : Fragment() {
@@ -109,7 +114,69 @@ class EditorFragment : Fragment() {
             NotionApiGetPageUtil.getDatabaseDetail(notionDatabase.id, object : NotionApiGetPageUtil.GetDatabaseDetailListener {
                 override fun doOnEnd(notionDatabase: NotionDatabase) {
                     showLargeBalloon("Selected database: $notionDatabase", object : CharacterFragment.LargeBalloonListener {
-                        override fun onCanceled() {}
+                        override fun onCanceled() {
+                            val template = NotionPostTemplate(
+                                "test1",
+                                "test1",
+                                "test1"
+
+                            ).apply {
+                                listOf(
+                                    NotionDatabaseProperty(
+                                        NotionApiPropertyEnum.TITLE,
+                                        "title",
+                                        listOf("title")
+                                    ),
+                                    NotionDatabaseProperty(
+                                        NotionApiPropertyEnum.RICH_TEXT,
+                                        "rich text",
+                                        listOf("rich text")
+                                    ),
+                                    NotionDatabaseProperty(
+                                        NotionApiPropertyEnum.NUMBER,
+                                        "number",
+                                        listOf("number")
+                                    ),
+                                    NotionDatabaseProperty(
+                                        NotionApiPropertyEnum.CHECKBOX,
+                                        "checkbox",
+                                        listOf("checkbox")
+                                    ),
+                                    NotionDatabaseProperty(
+                                        NotionApiPropertyEnum.SELECT,
+                                        "select",
+                                        listOf("select")
+                                    ),
+                                    NotionDatabaseProperty(
+                                        NotionApiPropertyEnum.MULTI_SELECT,
+                                        "multi select",
+                                        listOf("multi select")
+                                    ),
+                                    NotionDatabaseProperty(
+                                        NotionApiPropertyEnum.STATUS,
+                                        "status",
+                                        listOf("status")
+                                    ),
+                                    NotionDatabaseProperty(
+                                        NotionApiPropertyEnum.RELATION,
+                                        "relation",
+                                        listOf("relation")
+                                    ),
+                                    NotionDatabaseProperty(
+                                        NotionApiPropertyEnum.DATE,
+                                        "date",
+                                        listOf("date")
+                                    )
+                                )
+                            }
+                            MainScope().launch {
+                                withContext(Dispatchers.IO){
+                                    val db = AppDatabase.getInstance(requireContext())
+                                    db.notionPostTemplateDao().insert(template)
+                                }
+                            }
+
+                        }
 
                         override fun onConfirmed() {
                             val template = NotionPostTemplate.from(notionDatabase) //todo: テスト
