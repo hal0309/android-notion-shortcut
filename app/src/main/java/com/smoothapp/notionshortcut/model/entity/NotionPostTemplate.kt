@@ -1,17 +1,20 @@
 package com.smoothapp.notionshortcut.model.entity
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.smoothapp.notionshortcut.model.constant.NotionApiPropertyEnum
 import com.smoothapp.notionshortcut.model.constant.NotionColorEnum
 import com.smoothapp.notionshortcut.model.entity.get.NotionDatabase
 import com.smoothapp.notionshortcut.model.entity.notiondatabaseproperty.NotionDatabaseProperty
 import java.util.UUID
 
+@Entity(tableName = "notion_post_template", primaryKeys = ["uuid"])
 class NotionPostTemplate(
     val title: String,
     val dbId: String,
     val dbTitle: String,
     val propertyList: List<NotionDatabaseProperty>,
-    val uuid : String = UUID.randomUUID().toString()
+    @PrimaryKey val uuid : String = UUID.randomUUID().toString()
 ){
 
     // todo: 恐らく機能しない
