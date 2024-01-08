@@ -19,26 +19,12 @@ open class NotionDatabaseProperty(
         this.contents = contents
     }
 
-    fun toStringListForDb(): List<String?> {
-        return mutableListOf<String?>().apply {
-            add(type.toString())
-            add(name)
-            add(id)
-            addAll(contents)
-        }
-    }
-
     fun getType() = type
     fun getName() = name
 
     fun getPropertyContents() = contents
 
     companion object {
-        const val TYPE_INDEX = 0
-        const val NAME_INDEX = 1
-        const val ID_INDEX = 2
-        const val CONTENTS_INDEX = 3
-
         fun from(key: String, value: Map<String, Any>): NotionDatabaseProperty? {
             println("name: $key value: $value")
 
@@ -55,15 +41,6 @@ open class NotionDatabaseProperty(
                 NotionApiPropertyEnum.DATE -> NotionDatabasePropertyDate(key, null, null)
                 else -> null
             }
-        }
-
-        fun fromStringListForDb(list: List<String?>): NotionDatabaseProperty {
-            val type = NotionApiPropertyEnum.from(list[TYPE_INDEX]!!)
-            val name = list[NAME_INDEX]!!
-            val id = list[ID_INDEX]
-            val contents = list.subList(CONTENTS_INDEX, list.size)
-
-            return NotionDatabaseProperty(type, name, contents, id)
         }
     }
 }
