@@ -125,47 +125,65 @@ class EditorFragment : Fragment() {
                                     NotionDatabaseProperty(
                                         NotionApiPropertyEnum.TITLE,
                                         "title",
-                                        listOf("title")
+                                        "testID",
+                                        listOf("title"),
+                                        getUUID()
                                     ),
                                     NotionDatabaseProperty(
                                         NotionApiPropertyEnum.RICH_TEXT,
                                         "rich text",
-                                        listOf("rich text")
+                                        "testID",
+                                        listOf("rich text"),
+                                        getUUID()
                                     ),
                                     NotionDatabaseProperty(
                                         NotionApiPropertyEnum.NUMBER,
                                         "number",
-                                        listOf("number")
+                                        "testID",
+                                        listOf("number"),
+                                        getUUID()
                                     ),
                                     NotionDatabaseProperty(
                                         NotionApiPropertyEnum.CHECKBOX,
                                         "checkbox",
-                                        listOf("checkbox")
+                                        "testID",
+                                        listOf("checkbox"),
+                                        getUUID()
                                     ),
                                     NotionDatabaseProperty(
                                         NotionApiPropertyEnum.SELECT,
                                         "select",
-                                        listOf("select")
+                                        "testID",
+                                        listOf("select"),
+                                        getUUID()
                                     ),
                                     NotionDatabaseProperty(
                                         NotionApiPropertyEnum.MULTI_SELECT,
                                         "multi select",
-                                        listOf("multi select")
+                                        "testID",
+                                        listOf("multi select"),
+                                        getUUID()
                                     ),
                                     NotionDatabaseProperty(
                                         NotionApiPropertyEnum.STATUS,
                                         "status",
-                                        listOf("status")
+                                        "testID",
+                                        listOf("status"),
+                                        getUUID()
                                     ),
                                     NotionDatabaseProperty(
                                         NotionApiPropertyEnum.RELATION,
                                         "relation",
-                                        listOf("relation")
+                                        "testID",
+                                        listOf("relation"),
+                                        getUUID()
                                     ),
                                     NotionDatabaseProperty(
                                         NotionApiPropertyEnum.DATE,
                                         "date",
-                                        listOf("date")
+                                        "testID",
+                                        listOf("date"),
+                                        getUUID()
                                     )
                                 )
                             }

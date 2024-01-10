@@ -92,15 +92,15 @@ class ShortcutActivity : AppCompatActivity() {
                     ).apply {
                         propertyList(
                             listOf(
-                                NotionDatabasePropertyTitle("名前", "タイトルプリセット"),
-                                NotionDatabasePropertyRichText("テキスト 1", "リッチテキストプリセット"),
-                                NotionDatabasePropertyNumber("数値bar", "2.3"),
-                                NotionDatabasePropertyCheckbox("チェックボックス", true),
-                                NotionDatabasePropertySelect("セレクト", "orange", NotionColorEnum.ORANGE),
-                                NotionDatabasePropertyMultiSelect("タグ", listOf("orange", "blue"), listOf(NotionColorEnum.ORANGE, NotionColorEnum.BLUE)),
-                                NotionDatabasePropertyRelation("hoge", listOf("c12b6304652a443292ea47b73bee7b84"), listOf("リレーション確認1")),
-                                NotionDatabasePropertyStatus("ステータス", "come soon", NotionColorEnum.DEFAULT),
-                                NotionDatabasePropertyDate("日付", fromNotionDateTIme, toNotionDateTIme)
+                                NotionDatabasePropertyTitle("名前","testid", "タイトルプリセット", getUUID()),
+                                NotionDatabasePropertyRichText("テキスト 1","testid", "リッチテキストプリセット", getUUID()),
+                                NotionDatabasePropertyNumber("数値bar","testid", "2.3", getUUID()),
+                                NotionDatabasePropertyCheckbox("チェックボックス","testid", true, getUUID()),
+                                NotionDatabasePropertySelect("セレクト","testid", "orange", NotionColorEnum.ORANGE, getUUID()),
+                                NotionDatabasePropertyMultiSelect("タグ","testid", listOf("orange", "blue"), listOf(NotionColorEnum.ORANGE, NotionColorEnum.BLUE), getUUID()),
+                                NotionDatabasePropertyRelation("hoge","testid", listOf("c12b6304652a443292ea47b73bee7b84"), listOf("リレーション確認1"), getUUID()),
+                                NotionDatabasePropertyStatus("ステータス","testid", "come soon", NotionColorEnum.DEFAULT, getUUID()),
+                                NotionDatabasePropertyDate("日付","testid", fromNotionDateTIme, toNotionDateTIme, false, false, getUUID())
 
                             )
                         )

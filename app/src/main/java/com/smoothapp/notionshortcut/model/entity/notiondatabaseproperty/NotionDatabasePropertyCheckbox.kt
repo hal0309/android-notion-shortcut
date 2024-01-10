@@ -1,12 +1,14 @@
 package com.smoothapp.notionshortcut.model.entity.notiondatabaseproperty
 
 import com.smoothapp.notionshortcut.model.constant.NotionApiPropertyEnum
+import java.util.UUID
 
 class NotionDatabasePropertyCheckbox(
     name: String,
+    id: String,
     private var checkbox: Boolean,
-    id: String? = null
-) : NotionDatabaseProperty(NotionApiPropertyEnum.CHECKBOX, name, listOf(), id) {
+    parentUUID: String
+) : NotionDatabaseProperty(NotionApiPropertyEnum.CHECKBOX, name, id, listOf(), parentUUID) {
 
     init {
         updateParentContents()

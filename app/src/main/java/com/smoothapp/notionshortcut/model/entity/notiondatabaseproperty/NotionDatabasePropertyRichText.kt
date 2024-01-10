@@ -1,13 +1,15 @@
 package com.smoothapp.notionshortcut.model.entity.notiondatabaseproperty
 
 import com.smoothapp.notionshortcut.model.constant.NotionApiPropertyEnum
+import java.util.UUID
 
 
 class NotionDatabasePropertyRichText(
     name: String,
+    id: String,
     private var richText: String?,
-    id: String? = null
-) : NotionDatabaseProperty(NotionApiPropertyEnum.RICH_TEXT, name, listOf(), id) {
+    parentUUID: String
+) : NotionDatabaseProperty(NotionApiPropertyEnum.RICH_TEXT, name, id, listOf(), parentUUID) {
 
     init {
         updateParentContents()

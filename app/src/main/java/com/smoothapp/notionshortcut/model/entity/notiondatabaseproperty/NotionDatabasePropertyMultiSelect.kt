@@ -6,9 +6,11 @@ import com.smoothapp.notionshortcut.model.constant.NotionColorEnum
 
 class NotionDatabasePropertyMultiSelect(
     name: String,
+    id: String,
     private var multiSelectName: List<String>,
-    private var multiSelectColor: List<NotionColorEnum?>
-) : NotionDatabaseProperty(NotionApiPropertyEnum.MULTI_SELECT, name, listOf()) {
+    private var multiSelectColor: List<NotionColorEnum?>,
+    parentUUID: String
+) : NotionDatabaseProperty(NotionApiPropertyEnum.MULTI_SELECT, name, id, listOf(), parentUUID) {
 
     init {
         updateParentContents()

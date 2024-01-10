@@ -6,11 +6,13 @@ import com.smoothapp.notionshortcut.model.entity.NotionDateTime
 
 class NotionDatabasePropertyDate(
     name: String,
+    id: String,
     private var dateFrom: NotionDateTime?,
     private var dateTo: NotionDateTime?,
     private var optionalIsTimeEnabled: Boolean = false,
-    private var optionalIsToDateEnabled: Boolean = false
-) : NotionDatabaseProperty(NotionApiPropertyEnum.DATE, name, listOf()) {
+    private var optionalIsToDateEnabled: Boolean = false,
+    parentUUID: String
+) : NotionDatabaseProperty(NotionApiPropertyEnum.DATE, name, id, listOf(), parentUUID) {
 
     init {
         updateParentContents()

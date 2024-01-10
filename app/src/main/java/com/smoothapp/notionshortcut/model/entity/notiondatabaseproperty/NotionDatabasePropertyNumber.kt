@@ -5,9 +5,11 @@ import com.smoothapp.notionshortcut.model.constant.NotionApiPropertyEnum
 
 class NotionDatabasePropertyNumber(
     name: String,
+    id: String,
     private var number: String?,
-    id: String? = null
-) : NotionDatabaseProperty(NotionApiPropertyEnum.NUMBER, name, listOf(), id) {
+    parentUUID: String
+
+) : NotionDatabaseProperty(NotionApiPropertyEnum.NUMBER, name, id, listOf(), parentUUID) {
 
     init {
         updateParentContents()
