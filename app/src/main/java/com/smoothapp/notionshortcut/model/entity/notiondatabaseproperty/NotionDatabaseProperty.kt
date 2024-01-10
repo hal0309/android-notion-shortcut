@@ -1,5 +1,6 @@
 package com.smoothapp.notionshortcut.model.entity.notiondatabaseproperty
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import com.smoothapp.notionshortcut.model.constant.NotionApiPropertyEnum
 
@@ -9,23 +10,39 @@ import com.smoothapp.notionshortcut.model.constant.NotionApiPropertyEnum
  * @param name プロパティ名
  * @param contents プロパティの内容
  */
-@Entity(tableName = "notion_database_property", primaryKeys = ["name"])
+@Entity(
+    tableName = "notion_database_property",
+    primaryKeys = ["uuid"],
+    foreignKeys = [androidx.room.ForeignKey(entity = com.smoothapp.notionshortcut.model.entity.NotionPostTemplate::class,
+        parentColumns = ["uuid"],
+        childColumns = ["parentUUID"],
+        onDelete = androidx.room.ForeignKey.CASCADE) // CASCADE: 親が削除されたら子も削除 & 子が存在しても削除可能
+    ]
+)
 open class NotionDatabaseProperty(
     private val type: NotionApiPropertyEnum,
     private val name: String,
     private var id: String,
     private var contents: List<String?>,
-    private var parentUUID: String,
-    private var uuid: String = java.util.UUID.randomUUID().toString()
+    @ColumnInfo(index = true) private var parentUUID: String,
+    private val uuid: String = java.util.UUID.randomUUID().toString()
 ){
     protected fun setPropertyContents(contents: List<String?>){
         this.contents = contents
     }
 
+
+
     fun getType() = type
     fun getName() = name
 
-    fun getPropertyContents() = contents
+    fun getId() = id
+
+    fun getContents() = contents
+
+    fun getParentUUID() = parentUUID
+
+    fun getUuid() = uuid
 
     companion object {
         fun from(key: String, value: Map<String, Any>, parentUUID: String): NotionDatabaseProperty? {

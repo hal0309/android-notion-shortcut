@@ -114,7 +114,7 @@ class ShortcutActivity : AppCompatActivity() {
                             val contents = b.getContents()
                             Log.d(
                                 "",
-                                "${contents.getType()} ${contents.getName()} ${contents.getPropertyContents()}"
+                                "${contents.getType()} ${contents.getName()} ${contents.getContents()}"
                             )
                         }
                         MainScope().launch {

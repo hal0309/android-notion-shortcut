@@ -7,9 +7,10 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.smoothapp.notionshortcut.model.dao.NotionPostTemplateDao
 import com.smoothapp.notionshortcut.model.entity.NotionPostTemplate
+import com.smoothapp.notionshortcut.model.entity.notiondatabaseproperty.NotionDatabaseProperty
 
-@Database(entities = [NotionPostTemplate::class], version = 1, exportSchema = false)
-//@TypeConverters(Converters::class)
+@Database(entities = [NotionPostTemplate::class, NotionDatabaseProperty::class], version = 1, exportSchema = false)
+@TypeConverters(Converters::class)
 abstract class AppDatabase: RoomDatabase() {
     abstract fun notionPostTemplateDao(): NotionPostTemplateDao
 

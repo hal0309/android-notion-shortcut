@@ -71,6 +71,9 @@ dependencies {
     implementation("com.fasterxml.jackson.core:jackson-core:2.16.0")
     implementation("com.fasterxml.jackson.core:jackson-databind:2.16.0")
 
+    /* gson */
+    implementation("com.google.code.gson:gson:2.9.0")
+
     /* lottie */
     implementation("com.airbnb.android:lottie:5.2.0")
 }
