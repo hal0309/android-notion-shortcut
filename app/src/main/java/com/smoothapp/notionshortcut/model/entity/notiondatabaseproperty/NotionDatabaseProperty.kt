@@ -1,8 +1,10 @@
 package com.smoothapp.notionshortcut.model.entity.notiondatabaseproperty
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.Index
+import androidx.room.ForeignKey
 import com.smoothapp.notionshortcut.model.constant.NotionApiPropertyEnum
+import com.smoothapp.notionshortcut.model.entity.NotionPostTemplate
 
 /**
  * Notionデータベースのプロパティを表すクラス。
@@ -13,10 +15,11 @@ import com.smoothapp.notionshortcut.model.constant.NotionApiPropertyEnum
 @Entity(
     tableName = "notion_database_property",
     primaryKeys = ["uuid"],
-    foreignKeys = [androidx.room.ForeignKey(entity = com.smoothapp.notionshortcut.model.entity.NotionPostTemplate::class,
+    indices = [Index(value = ["parentUUID"])],
+    foreignKeys = [ForeignKey(entity = NotionPostTemplate::class,
         parentColumns = ["uuid"],
         childColumns = ["parentUUID"],
-        onDelete = androidx.room.ForeignKey.CASCADE) // CASCADE: 親が削除されたら子も削除 & 子が存在しても削除可能
+        onDelete = ForeignKey.CASCADE) // CASCADE: 親が削除されたら子も削除 & 子が存在しても削除可能
     ]
 )
 open class NotionDatabaseProperty(
@@ -24,12 +27,13 @@ open class NotionDatabaseProperty(
     private val name: String,
     private var id: String,
     private var contents: List<String?>,
-    @ColumnInfo(index = true) private var parentUUID: String,
+    private var parentUUID: String,
     private val uuid: String = java.util.UUID.randomUUID().toString()
 ){
     protected fun setPropertyContents(contents: List<String?>){
         this.contents = contents
     }
+
 
 
 
