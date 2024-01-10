@@ -80,18 +80,7 @@ class ShortcutActivity : AppCompatActivity() {
                         "",
                         "", //todo: 用途調査
                         "",
-                        listOf(
-                            NotionDatabasePropertyTitle("名前", "タイトルプリセット"),
-                            NotionDatabasePropertyRichText("テキスト 1", "リッチテキストプリセット"),
-                            NotionDatabasePropertyNumber("数値bar", "2.3"),
-                            NotionDatabasePropertyCheckbox("チェックボックス", true),
-                            NotionDatabasePropertySelect("セレクト", "orange", NotionColorEnum.ORANGE),
-                            NotionDatabasePropertyMultiSelect("タグ", listOf("orange", "blue"), listOf(NotionColorEnum.ORANGE, NotionColorEnum.BLUE)),
-                            NotionDatabasePropertyRelation("hoge", listOf("c12b6304652a443292ea47b73bee7b84"), listOf("リレーション確認1")),
-                            NotionDatabasePropertyStatus("ステータス", "come soon", NotionColorEnum.DEFAULT),
-                            NotionDatabasePropertyDate("日付", fromNotionDateTIme, toNotionDateTIme)
 
-                        )
 //                        listOf(
 //                            NotionDatabasePropertyTitle("",null),
 //                            NotionDatabasePropertyMultiSelect("重要度", listOf("リモート", "副業"), listOf(NotionColorEnum.BLUE, NotionColorEnum.PURPLE)),
@@ -100,7 +89,22 @@ class ShortcutActivity : AppCompatActivity() {
 //                            NotionDatabasePropertyRichText("備考", null)
 //
 //                        )
-                    )
+                    ).apply {
+                        propertyList(
+                            listOf(
+                                NotionDatabasePropertyTitle("名前", "タイトルプリセット"),
+                                NotionDatabasePropertyRichText("テキスト 1", "リッチテキストプリセット"),
+                                NotionDatabasePropertyNumber("数値bar", "2.3"),
+                                NotionDatabasePropertyCheckbox("チェックボックス", true),
+                                NotionDatabasePropertySelect("セレクト", "orange", NotionColorEnum.ORANGE),
+                                NotionDatabasePropertyMultiSelect("タグ", listOf("orange", "blue"), listOf(NotionColorEnum.ORANGE, NotionColorEnum.BLUE)),
+                                NotionDatabasePropertyRelation("hoge", listOf("c12b6304652a443292ea47b73bee7b84"), listOf("リレーション確認1")),
+                                NotionDatabasePropertyStatus("ステータス", "come soon", NotionColorEnum.DEFAULT),
+                                NotionDatabasePropertyDate("日付", fromNotionDateTIme, toNotionDateTIme)
+
+                            )
+                        )
+                    }
                 )
                 setListener(object : ShortcutRootView.Listener{
                     override fun onSendBtnClicked() {
@@ -129,7 +133,7 @@ class ShortcutActivity : AppCompatActivity() {
     }
 
     private fun ShortcutRootView.setTemplate(template: NotionPostTemplate) {
-        for (property in template.propertyList) {
+        for (property in template.propertyList()) {
             when (property.getType()) {
                 NotionApiPropertyEnum.TITLE -> addTitleBlock(property as NotionDatabasePropertyTitle)
                 NotionApiPropertyEnum.RICH_TEXT -> addRichTextBlock(property as NotionDatabasePropertyRichText)

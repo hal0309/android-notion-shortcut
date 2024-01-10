@@ -1,29 +1,34 @@
 package com.smoothapp.notionshortcut.model.entity
 
-import com.smoothapp.notionshortcut.model.constant.NotionApiPropertyEnum
+import androidx.room.Entity
+import androidx.room.Ignore
 import com.smoothapp.notionshortcut.model.constant.NotionColorEnum
 import com.smoothapp.notionshortcut.model.entity.get.NotionDatabase
 import com.smoothapp.notionshortcut.model.entity.notiondatabaseproperty.NotionDatabaseProperty
 import java.util.UUID
 
+@Entity(tableName = "notion_post_template", primaryKeys = ["uuid"])
 class NotionPostTemplate(
     val title: String,
     val dbId: String,
     val dbTitle: String,
-    val propertyList: List<NotionDatabaseProperty>,
     val uuid : String = UUID.randomUUID().toString()
 ){
+
+    @Ignore var propertyList: List<NotionDatabaseProperty> = listOf()
 
     // todo: 恐らく機能しない
     override fun equals(other: Any?): Boolean {
         return super.equals(other)
     }
 
-    data class Property(
-        val type: NotionApiPropertyEnum,
-        val name: String,
-        val preset: Preset? = null
-    )
+    // get/setPropertyList という名前はJVM signatureが衝突するため使用不可
+    fun propertyList(propertyList: List<NotionDatabaseProperty>) {
+        this.propertyList = propertyList
+    }
+
+    fun propertyList() = propertyList
+
 
     data class Select(
         val name: String,
@@ -46,9 +51,10 @@ class NotionPostTemplate(
             return NotionPostTemplate(
                 "new template",
                 notionDatabase.id,
-                notionDatabase.title.orEmpty(),
-                propertyList
-            )
+                notionDatabase.title.orEmpty()
+            ).apply {
+                propertyList(propertyList)
+            }
 
         }
     }

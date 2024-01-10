@@ -1,5 +1,6 @@
 package com.smoothapp.notionshortcut.model.entity.notiondatabaseproperty
 
+import androidx.room.Entity
 import com.smoothapp.notionshortcut.model.constant.NotionApiPropertyEnum
 
 /**
