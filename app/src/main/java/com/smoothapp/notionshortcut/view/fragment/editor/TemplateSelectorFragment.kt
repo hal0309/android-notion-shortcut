@@ -1,6 +1,7 @@
 package com.smoothapp.notionshortcut.view.fragment.editor
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -50,6 +51,13 @@ class TemplateSelectorFragment : Fragment() {
                 withContext(Dispatchers.IO) {
                     val db = AppDatabase.getInstance(requireContext())
                     val templates = db.notionPostTemplateDao().getAll()
+                    Log.d("hoge", "template$templates")
+                    templates.map { template ->
+                        template.apply {
+                            propertyList(db.notionPostTemplateDao().getAllProperty(uuid))
+                            Log.d("hoge", "hoge" +  db.notionPostTemplateDao().getAllProperty(uuid))
+                        }
+                    }
                     withContext(Dispatchers.Main) {
                         listAdapter?.submitList(templates)
                     }

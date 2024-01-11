@@ -190,7 +190,10 @@ class EditorFragment : Fragment() {
                             MainScope().launch {
                                 withContext(Dispatchers.IO){
                                     val db = AppDatabase.getInstance(requireContext())
-                                    db.notionPostTemplateDao().insert(template)
+                                    db.notionPostTemplateDao().apply {
+                                        insert(template)
+                                        insertAllProperty(template.propertyList())
+                                    }
                                 }
                             }
 

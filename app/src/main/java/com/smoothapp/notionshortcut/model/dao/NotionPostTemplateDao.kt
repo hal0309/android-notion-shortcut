@@ -12,6 +12,9 @@ interface NotionPostTemplateDao {
     @Query("SELECT * FROM notion_post_template")
     fun getAll(): List<NotionPostTemplate>
 
+    @Query("SELECT * FROM notion_database_property WHERE parentUUID = :uuid")
+    fun getAllProperty(uuid: String): List<NotionDatabaseProperty>
+
     @Insert
     fun insert(notionPostTemplate: NotionPostTemplate)
 
