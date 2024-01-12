@@ -15,7 +15,7 @@ class NotionPostTemplate(
     val uuid : String = UUID.randomUUID().toString()
 ){
 
-    @Ignore var propertyList: List<NotionDatabaseProperty> = listOf()
+    @Ignore private var propertyList: List<NotionDatabaseProperty> = listOf()
 
     // todo: 恐らく機能しない
     override fun equals(other: Any?): Boolean {
@@ -28,6 +28,8 @@ class NotionPostTemplate(
     }
 
     fun propertyList() = propertyList
+
+    fun getUUID() = uuid
 
 
     data class Select(
@@ -43,15 +45,17 @@ class NotionPostTemplate(
 
     companion object {
         fun from(notionDatabase: NotionDatabase): NotionPostTemplate {
+            val uuid = UUID.randomUUID().toString()
             val propertyList = mutableListOf<NotionDatabaseProperty>()
             notionDatabase.properties.forEach { (key, value) ->
-                val property = NotionDatabaseProperty.from(key, value as Map<String, Any>)
+                val property = NotionDatabaseProperty.from(key, value as Map<String, Any>, uuid)
                 if (property != null) propertyList.add(property)
             }
             return NotionPostTemplate(
                 "new template",
                 notionDatabase.id,
-                notionDatabase.title.orEmpty()
+                notionDatabase.title.orEmpty(),
+                uuid
             ).apply {
                 propertyList(propertyList)
             }

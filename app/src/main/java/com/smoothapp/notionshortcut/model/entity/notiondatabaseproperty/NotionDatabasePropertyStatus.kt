@@ -5,9 +5,11 @@ import com.smoothapp.notionshortcut.model.constant.NotionColorEnum
 
 class NotionDatabasePropertyStatus(
     name: String,
+    id: String,
     private var statusName: String?,
-    private var statusColor: NotionColorEnum?
-) : NotionDatabaseProperty(NotionApiPropertyEnum.STATUS, name, listOf()) {
+    private var statusColor: NotionColorEnum?,
+    parentUUID: String
+) : NotionDatabaseProperty(NotionApiPropertyEnum.STATUS, name, id, listOf(), parentUUID) {
 
     init {
         updateParentContents()

@@ -2,6 +2,7 @@ package com.smoothapp.notionshortcut.view.fragment
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -121,58 +122,79 @@ class EditorFragment : Fragment() {
                                 notionDatabase.title.toString(),
 
                             ).apply {
-                                listOf(
+                                propertyList(listOf(
                                     NotionDatabaseProperty(
                                         NotionApiPropertyEnum.TITLE,
                                         "title",
-                                        listOf("title")
+                                        "testID",
+                                        listOf("title"),
+                                        getUUID()
                                     ),
                                     NotionDatabaseProperty(
                                         NotionApiPropertyEnum.RICH_TEXT,
                                         "rich text",
-                                        listOf("rich text")
+                                        "testID",
+                                        listOf("rich text"),
+                                        getUUID()
                                     ),
                                     NotionDatabaseProperty(
                                         NotionApiPropertyEnum.NUMBER,
                                         "number",
-                                        listOf("number")
+                                        "testID",
+                                        listOf("number"),
+                                        getUUID()
                                     ),
                                     NotionDatabaseProperty(
                                         NotionApiPropertyEnum.CHECKBOX,
                                         "checkbox",
-                                        listOf("checkbox")
+                                        "testID",
+                                        listOf("checkbox"),
+                                        getUUID()
                                     ),
                                     NotionDatabaseProperty(
                                         NotionApiPropertyEnum.SELECT,
                                         "select",
-                                        listOf("select")
+                                        "testID",
+                                        listOf("select"),
+                                        getUUID()
                                     ),
                                     NotionDatabaseProperty(
                                         NotionApiPropertyEnum.MULTI_SELECT,
                                         "multi select",
-                                        listOf("multi select")
+                                        "testID",
+                                        listOf("multi select"),
+                                        getUUID()
                                     ),
                                     NotionDatabaseProperty(
                                         NotionApiPropertyEnum.STATUS,
                                         "status",
-                                        listOf("status")
+                                        "testID",
+                                        listOf("status"),
+                                        getUUID()
                                     ),
                                     NotionDatabaseProperty(
                                         NotionApiPropertyEnum.RELATION,
                                         "relation",
-                                        listOf("relation")
+                                        "testID",
+                                        listOf("relation"),
+                                        getUUID()
                                     ),
                                     NotionDatabaseProperty(
                                         NotionApiPropertyEnum.DATE,
                                         "date",
-                                        listOf("date")
+                                        "testID",
+                                        listOf("date"),
+                                        getUUID()
                                     )
-                                )
+                                ))
                             }
                             MainScope().launch {
                                 withContext(Dispatchers.IO){
                                     val db = AppDatabase.getInstance(requireContext())
-                                    db.notionPostTemplateDao().insert(template)
+                                    db.notionPostTemplateDao().apply {
+                                        insert(template)
+                                        insertAllProperty(template.propertyList())
+                                    }
                                 }
                             }
 
