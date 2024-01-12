@@ -13,6 +13,7 @@ import com.smoothapp.notionshortcut.databinding.FragmentPresetSelectorBinding
 import com.smoothapp.notionshortcut.model.constant.NotionApiPropertyEnum
 import com.smoothapp.notionshortcut.model.entity.NotionPostTemplate
 import com.smoothapp.notionshortcut.model.entity.notiondatabaseproperty.NotionDatabaseProperty
+import com.smoothapp.notionshortcut.view.activity.MainActivity
 import com.smoothapp.notionshortcut.view.adapter.TemplateListAdapter
 import com.smoothapp.notionshortcut.view.fragment.EditorFragment
 import kotlinx.coroutines.Dispatchers
@@ -26,6 +27,9 @@ class TemplateSelectorFragment : Fragment() {
     private lateinit var binding: FragmentPresetSelectorBinding
     private lateinit var parent: EditorFragment
     private var listAdapter: TemplateListAdapter? = null
+
+    private val mainActivity by lazy { activity as MainActivity }
+    private val appViewModel by lazy { mainActivity.getMyViewModel() }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -48,14 +52,14 @@ class TemplateSelectorFragment : Fragment() {
                 layoutManager = LinearLayoutManager(context)
             }
 
-            MainScope().launch {
-                withContext(Dispatchers.IO) {
-                    val repository = AppRepository(requireContext())  //todo: 上層で生成しろ
-                    val templates = repository.getAll()
-                    withContext(Dispatchers.Main) {
-                        listAdapter?.submitList(templates)
+
+            appViewModel.allTemplateWithProperty.observe(viewLifecycleOwner) {
+                val templates = it.map { templateWithProperty ->
+                    templateWithProperty.template.apply {
+                        propertyList(templateWithProperty.propertyList)
                     }
                 }
+                listAdapter?.submitList(templates)
             }
             return root
         }

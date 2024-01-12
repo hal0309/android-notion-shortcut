@@ -6,14 +6,15 @@ import androidx.room.Query
 import androidx.room.Transaction
 import com.smoothapp.notionshortcut.model.entity.NotionPostTemplate
 import com.smoothapp.notionshortcut.model.entity.notiondatabaseproperty.NotionDatabaseProperty
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface NotionPostTemplateDao {
 //    @Query("SELECT * FROM notion_post_template")
 //    fun getAll(): List<NotionPostTemplate>
 
-    @Query("SELECT * FROM notion_database_property WHERE parentUUID = :uuid")
-    fun getAllProperty(uuid: String): List<NotionDatabaseProperty>
+//    @Query("SELECT * FROM notion_database_property WHERE parentUUID = :uuid")
+//    fun getAllProperty(uuid: String): List<NotionDatabaseProperty>
 
     @Insert
     fun insert(notionPostTemplate: NotionPostTemplate)
@@ -29,7 +30,7 @@ interface NotionPostTemplateDao {
 
     @Transaction
     @Query("SELECT * FROM notion_post_template")
-    fun getAllWithProperty(): List<TemplateAndProperty>
+    fun getAllWithProperty(): Flow<List<TemplateAndProperty>>
 
 
 

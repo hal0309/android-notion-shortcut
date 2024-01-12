@@ -2,14 +2,11 @@ package com.smoothapp.notionshortcut.view.fragment
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
-import com.smoothapp.notionshortcut.controller.db.AppDatabase
-import com.smoothapp.notionshortcut.controller.repository.AppRepository
 import com.smoothapp.notionshortcut.controller.util.NotionApiGetPageUtil
 import com.smoothapp.notionshortcut.databinding.FragmentEditorBinding
 import com.smoothapp.notionshortcut.model.constant.NotionApiPropertyEnum
@@ -17,6 +14,7 @@ import com.smoothapp.notionshortcut.model.entity.NotionPostTemplate
 import com.smoothapp.notionshortcut.model.entity.get.NotionDatabase
 import com.smoothapp.notionshortcut.model.entity.get.PageOrDatabase
 import com.smoothapp.notionshortcut.model.entity.notiondatabaseproperty.NotionDatabaseProperty
+import com.smoothapp.notionshortcut.view.activity.MainActivity
 import com.smoothapp.notionshortcut.view.fragment.editor.CharacterFragment
 import com.smoothapp.notionshortcut.view.fragment.editor.NotionDatabaseSelectorFragment
 import com.smoothapp.notionshortcut.view.fragment.editor.TemplateSelectorFragment
@@ -30,6 +28,9 @@ class EditorFragment : Fragment() {
 
     private lateinit var binding: FragmentEditorBinding
     private val characterFragment = CharacterFragment.newInstance("Connecting to Notion...")
+    private val mainActivity by lazy { activity as MainActivity }
+    private val appViewModel by lazy { mainActivity.getMyViewModel() }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -191,7 +192,8 @@ class EditorFragment : Fragment() {
                             }
                             MainScope().launch {
                                 withContext(Dispatchers.IO){
-                                    AppRepository(requireContext()).insert(template) //todo: 上層で生成しろ
+//                                    AppRepository(requireContext()).insert(template) //todo: 上層で生成しろ
+                                    appViewModel.insert(template)
                                 }
                             }
 
