@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import com.smoothapp.notionshortcut.controller.db.AppDatabase
+import com.smoothapp.notionshortcut.controller.repository.AppRepository
 import com.smoothapp.notionshortcut.controller.util.NotionApiGetPageUtil
 import com.smoothapp.notionshortcut.databinding.FragmentEditorBinding
 import com.smoothapp.notionshortcut.model.constant.NotionApiPropertyEnum
@@ -190,11 +191,7 @@ class EditorFragment : Fragment() {
                             }
                             MainScope().launch {
                                 withContext(Dispatchers.IO){
-                                    val db = AppDatabase.getInstance(requireContext())
-                                    db.notionPostTemplateDao().apply {
-                                        insert(template)
-                                        insertAllProperty(template.propertyList())
-                                    }
+                                    AppRepository(requireContext()).insert(template) //todo: 上層で生成しろ
                                 }
                             }
 

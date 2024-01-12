@@ -9,8 +9,8 @@ import com.smoothapp.notionshortcut.model.entity.notiondatabaseproperty.NotionDa
 
 @Dao
 interface NotionPostTemplateDao {
-    @Query("SELECT * FROM notion_post_template")
-    fun getAll(): List<NotionPostTemplate>
+//    @Query("SELECT * FROM notion_post_template")
+//    fun getAll(): List<NotionPostTemplate>
 
     @Query("SELECT * FROM notion_database_property WHERE parentUUID = :uuid")
     fun getAllProperty(uuid: String): List<NotionDatabaseProperty>
@@ -18,11 +18,11 @@ interface NotionPostTemplateDao {
     @Insert
     fun insert(notionPostTemplate: NotionPostTemplate)
 
-    @Insert
-    fun insertAll(notionPostTemplateList: List<NotionPostTemplate>)
+//    @Insert
+//    fun insertAll(notionPostTemplateList: List<NotionPostTemplate>)
 
-    @Insert
-    fun insertProperty(notionDatabaseProperty: NotionDatabaseProperty)
+//    @Insert
+//    fun insertProperty(notionDatabaseProperty: NotionDatabaseProperty)
 
     @Insert
     fun insertAllProperty(notionDatabasePropertyList: List<NotionDatabaseProperty>)

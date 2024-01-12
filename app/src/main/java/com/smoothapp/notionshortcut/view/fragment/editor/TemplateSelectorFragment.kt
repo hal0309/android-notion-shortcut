@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.smoothapp.notionshortcut.controller.db.AppDatabase
+import com.smoothapp.notionshortcut.controller.repository.AppRepository
 import com.smoothapp.notionshortcut.databinding.FragmentPresetSelectorBinding
 import com.smoothapp.notionshortcut.model.constant.NotionApiPropertyEnum
 import com.smoothapp.notionshortcut.model.entity.NotionPostTemplate
@@ -49,13 +50,8 @@ class TemplateSelectorFragment : Fragment() {
 
             MainScope().launch {
                 withContext(Dispatchers.IO) {
-                    val db = AppDatabase.getInstance(requireContext())
-                    val templateAndProperty = db.notionPostTemplateDao().getAllWithProperty()
-                    val templates = templateAndProperty.map { it ->
-                        it.template.apply {
-                            propertyList(it.propertyList)
-                        }
-                    }
+                    val repository = AppRepository(requireContext())  //todo: 上層で生成しろ
+                    val templates = repository.getAll()
                     withContext(Dispatchers.Main) {
                         listAdapter?.submitList(templates)
                     }
