@@ -50,12 +50,10 @@ class TemplateSelectorFragment : Fragment() {
             MainScope().launch {
                 withContext(Dispatchers.IO) {
                     val db = AppDatabase.getInstance(requireContext())
-                    val templates = db.notionPostTemplateDao().getAll()
-                    Log.d("hoge", "template$templates")
-                    templates.map { template ->
-                        template.apply {
-                            propertyList(db.notionPostTemplateDao().getAllProperty(uuid))
-                            Log.d("hoge", "hoge" +  db.notionPostTemplateDao().getAllProperty(uuid))
+                    val templateAndProperty = db.notionPostTemplateDao().getAllWithProperty()
+                    val templates = templateAndProperty.map { it ->
+                        it.template.apply {
+                            propertyList(it.propertyList)
                         }
                     }
                     withContext(Dispatchers.Main) {

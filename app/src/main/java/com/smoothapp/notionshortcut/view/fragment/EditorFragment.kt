@@ -2,6 +2,7 @@ package com.smoothapp.notionshortcut.view.fragment
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -121,7 +122,7 @@ class EditorFragment : Fragment() {
                                 notionDatabase.title.toString(),
 
                             ).apply {
-                                listOf(
+                                propertyList(listOf(
                                     NotionDatabaseProperty(
                                         NotionApiPropertyEnum.TITLE,
                                         "title",
@@ -185,7 +186,7 @@ class EditorFragment : Fragment() {
                                         listOf("date"),
                                         getUUID()
                                     )
-                                )
+                                ))
                             }
                             MainScope().launch {
                                 withContext(Dispatchers.IO){
