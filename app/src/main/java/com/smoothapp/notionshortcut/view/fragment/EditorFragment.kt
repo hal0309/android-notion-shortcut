@@ -116,7 +116,7 @@ class EditorFragment : Fragment() {
         MainScope().launch {
             NotionApiGetPageUtil.getDatabaseDetail(notionDatabase.id, object : NotionApiGetPageUtil.GetDatabaseDetailListener {
                 override fun doOnEnd(notionDatabase: NotionDatabase) {
-                    showLargeBalloon("Selected database: $notionDatabase", object : CharacterFragment.LargeBalloonListener {
+                    showLargeBalloon("database detail: $notionDatabase", object : CharacterFragment.LargeBalloonListener {
                         override fun onCanceled() {
                             val template = NotionPostTemplate(
                                 notionDatabase.title.toString(),
@@ -124,71 +124,92 @@ class EditorFragment : Fragment() {
                                 notionDatabase.title.toString(),
 
                             ).apply {
-                                propertyList(listOf(
-                                    NotionDatabaseProperty(
-                                        NotionApiPropertyEnum.TITLE,
-                                        "title",
-                                        "testID",
-                                        listOf("title"),
-                                        getUUID()
-                                    ),
-                                    NotionDatabaseProperty(
-                                        NotionApiPropertyEnum.RICH_TEXT,
-                                        "rich text",
-                                        "testID",
-                                        listOf("rich text"),
-                                        getUUID()
-                                    ),
-                                    NotionDatabaseProperty(
-                                        NotionApiPropertyEnum.NUMBER,
-                                        "number",
-                                        "testID",
-                                        listOf("number"),
-                                        getUUID()
-                                    ),
-                                    NotionDatabaseProperty(
-                                        NotionApiPropertyEnum.CHECKBOX,
-                                        "checkbox",
-                                        "testID",
-                                        listOf("checkbox"),
-                                        getUUID()
-                                    ),
-                                    NotionDatabaseProperty(
-                                        NotionApiPropertyEnum.SELECT,
-                                        "select",
-                                        "testID",
-                                        listOf("select"),
-                                        getUUID()
-                                    ),
-                                    NotionDatabaseProperty(
-                                        NotionApiPropertyEnum.MULTI_SELECT,
-                                        "multi select",
-                                        "testID",
-                                        listOf("multi select"),
-                                        getUUID()
-                                    ),
-                                    NotionDatabaseProperty(
-                                        NotionApiPropertyEnum.STATUS,
-                                        "status",
-                                        "testID",
-                                        listOf("status"),
-                                        getUUID()
-                                    ),
-                                    NotionDatabaseProperty(
-                                        NotionApiPropertyEnum.RELATION,
-                                        "relation",
-                                        "testID",
-                                        listOf("relation"),
-                                        getUUID()
-                                    ),
-                                    NotionDatabaseProperty(
-                                        NotionApiPropertyEnum.DATE,
-                                        "date",
-                                        "testID",
-                                        listOf("date"),
-                                        getUUID()
-                                    )
-                                ))
+                                val p: MutableList<NotionDatabaseProperty> = mutableListOf()
+                                for (key in notionDatabase.properties.keys) {
+                                    try {
+                                        val property = NotionDatabaseProperty.from(
+                                            key,
+                                            notionDatabase.properties[key] as Map<String, Any>,
+                                            getUUID()
+                                        )
+                                        p.add(
+                                            property
+                                        )
+                                    } catch (e: Exception) {
+                                        e.printStackTrace()
+                                    }
+                                }
+                                propertyList(p)
+
+
+
+//                                propertyList(
+//                                    listOf(
+//                                        NotionDatabaseProperty(
+//                                            NotionApiPropertyEnum.TITLE,
+//                                            "title",
+//                                            "testID",
+//                                            listOf("title"),
+//                                            getUUID()
+//                                        ),
+//                                        NotionDatabaseProperty(
+//                                            NotionApiPropertyEnum.RICH_TEXT,
+//                                            "rich text",
+//                                            "testID",
+//                                            listOf("rich text"),
+//                                            getUUID()
+//                                        ),
+//                                        NotionDatabaseProperty(
+//                                            NotionApiPropertyEnum.NUMBER,
+//                                            "number",
+//                                            "testID",
+//                                            listOf("number"),
+//                                            getUUID()
+//                                        ),
+//                                        NotionDatabaseProperty(
+//                                            NotionApiPropertyEnum.CHECKBOX,
+//                                            "checkbox",
+//                                            "testID",
+//                                            listOf("checkbox"),
+//                                            getUUID()
+//                                        ),
+//                                        NotionDatabaseProperty(
+//                                            NotionApiPropertyEnum.SELECT,
+//                                            "select",
+//                                            "testID",
+//                                            listOf("select"),
+//                                            getUUID()
+//                                        ),
+//                                        NotionDatabaseProperty(
+//                                            NotionApiPropertyEnum.MULTI_SELECT,
+//                                            "multi select",
+//                                            "testID",
+//                                            listOf("multi select"),
+//                                            getUUID()
+//                                        ),
+//                                        NotionDatabaseProperty(
+//                                            NotionApiPropertyEnum.STATUS,
+//                                            "status",
+//                                            "testID",
+//                                            listOf("status"),
+//                                            getUUID()
+//                                        ),
+//                                        NotionDatabaseProperty(
+//                                            NotionApiPropertyEnum.RELATION,
+//                                            "relation",
+//                                            "testID",
+//                                            listOf("relation"),
+//                                            getUUID()
+//                                        ),
+//                                        NotionDatabaseProperty(
+//                                            NotionApiPropertyEnum.DATE,
+//                                            "date",
+//                                            "testID",
+//                                            listOf("date"),
+//                                            getUUID()
+//                                        )
+//                                    )
+//                                )
                             }
                             MainScope().launch {
                                 withContext(Dispatchers.IO){
@@ -200,7 +221,7 @@ class EditorFragment : Fragment() {
                         }
 
                         override fun onConfirmed() {
-                            val template = NotionPostTemplate.from(notionDatabase) //todo: テスト
+//                            val template = NotionPostTemplate.from(notionDatabase) //todo: テスト
 //                            startTemplateSelectFragment(template)
                             startTemplateSelectorFragment()
                         }

@@ -49,7 +49,7 @@ open class NotionDatabaseProperty(
     fun getUuid() = uuid
 
     companion object {
-        fun from(key: String, value: Map<String, Any>, parentUUID: String): NotionDatabaseProperty? {
+        fun from(key: String, value: Map<String, Any>, parentUUID: String): NotionDatabaseProperty {
             println("name: $key value: $value")
 
             val type = value["type"] as String
@@ -64,6 +64,7 @@ open class NotionDatabaseProperty(
                 NotionApiPropertyEnum.STATUS -> NotionDatabasePropertyStatus(key, id, null, null, parentUUID)
                 NotionApiPropertyEnum.RELATION -> NotionDatabasePropertyRelation(key, id, listOf(), listOf(), parentUUID)
                 NotionApiPropertyEnum.DATE -> NotionDatabasePropertyDate(key, id, null, null, false, false, parentUUID)
+                else -> throw IllegalArgumentException("type: $type")
             }
         }
     }

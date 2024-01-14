@@ -32,7 +32,7 @@ class MainActivity : AppCompatActivity() {
         window.statusBarColor = this.getColor(R.color.transparent)
 
         //todo: 削除 テスト用
-        deleteDatabase("app_database")
+//        deleteDatabase("app_database")
 
 
 
@@ -69,10 +69,6 @@ class MainActivity : AppCompatActivity() {
 //                    .setIntent(intent)
 //                    .build()
 //                ShortcutManagerCompat.pushDynamicShortcut(this@MainActivity, shortcut)
-
-                MainScope().launch {
-
-                }
             }
 
         }
