@@ -38,10 +38,24 @@ class EditorFragment : Fragment() {
         binding.apply {
 
             startCharacterFragment()
-            startDownload()
-//            startTemplateSelectorFragment()
+//            startDownload()
+            startTemplateSelectorFragment()
+
+            fabCard.setOnClickListener {
+                startDownload()
+            }
         }
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        binding.apply {
+            viewModel.fabEnabled.observe(viewLifecycleOwner) {
+                fabContainer.visibility = if (it) View.VISIBLE else View.GONE
+            }
+        }
     }
 
 

@@ -60,9 +60,11 @@ class CharacterFragment(private val initialText: String) : Fragment() {
     }
 
     private fun setBalloonText(text: String) {
-        binding.balloonText.run{
-            visibility = View.VISIBLE
-            this.text = text
+        binding.apply{
+            balloonText.run{
+                balloonContainer.visibility = View.VISIBLE
+                this.text = text
+            }
         }
     }
 

@@ -18,6 +18,8 @@ class AppViewModel(private val repository: AppRepository): ViewModel() {
     val allTemplateWithProperty: LiveData<List<TemplateAndProperty>> = repository.allTemplateWithProperty.asLiveData()
     val balloonText: LiveData<String> = MutableLiveData<String>().apply { value = "Hello, World!" }
 
+    val fabEnabled: LiveData<Boolean> = MutableLiveData<Boolean>().apply { value = false }
+
 
     fun insert(template: NotionPostTemplate) = viewModelScope.launch {  //todo: scopeやdispatcherの指定が甘い
         withContext(Dispatchers.IO) {
@@ -27,6 +29,10 @@ class AppViewModel(private val repository: AppRepository): ViewModel() {
 
     fun setBalloonText(text: String) {
         (balloonText as MutableLiveData<String>).postValue(text)
+    }
+
+    fun setFabEnabled(enabled: Boolean) {
+        (fabEnabled as MutableLiveData<Boolean>).postValue(enabled)
     }
 }
 

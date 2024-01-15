@@ -9,13 +9,6 @@
     android:focusableInTouchMode="true"
     tools:context=".view.fragment.EditorFragment">
 
-<!--    <TextView-->
-<!--        android:id="@+id/textView"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:text=""-->
-<!--        app:layout_constraintStart_toStartOf="@id/mainContainer"-->
-<!--        app:layout_constraintBottom_toTopOf="@id/mainContainer"/>-->
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/mainContainer"
         android:layout_width="0dp"
@@ -29,8 +22,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent">
-
-
     </androidx.appcompat.widget.LinearLayoutCompat>
 
     <FrameLayout
@@ -43,9 +34,38 @@
         app:layout_constraintBottom_toBottomOf="parent">
     </FrameLayout>
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/fabContainer"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="50dp"
+        android:src="@android:drawable/ic_input_add"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" >
 
+        <androidx.cardview.widget.CardView
+            android:id="@+id/fabCard"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:backgroundTint="@color/notion_light_blue"
+            app:cardCornerRadius="100dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_margin="10dp"
+            android:src="@drawable/ic_add"
+            android:elevation="10dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
-
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
