@@ -51,28 +51,35 @@
             app:layout_constraintStart_toEndOf="@id/circle"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <View
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="20dp"
-            android:layout_marginEnd="4dp"
-            android:background="@drawable/ic_notion_page"
-            app:layout_constraintBottom_toBottomOf="@id/parentTitle"
-            app:layout_constraintDimensionRatio="1:1"
-            app:layout_constraintEnd_toStartOf="@id/parentTitle"
-            app:layout_constraintTop_toTopOf="@id/parentTitle" />
-
-        <TextView
-            android:id="@+id/parentTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="30dp"
+            android:layout_marginStart="20dp"
             android:layout_marginEnd="10dp"
             android:elevation="10dp"
-            android:gravity="center"
+            android:gravity="end|center_vertical"
             android:text="parent"
             android:textColor="@color/black"
             android:textSize="16sp"
+            android:orientation="horizontal"
+            app:layout_constraintStart_toEndOf="@id/circle"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent" >
+            <View
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginEnd="4dp"
+                android:background="@drawable/ic_notion_page"/>
+            <TextView
+                android:id="@+id/parentTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:elevation="10dp"
+                android:gravity="center"
+                android:text="parent"
+                android:textColor="@color/black"
+                android:textSize="16sp"/>
+        </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
