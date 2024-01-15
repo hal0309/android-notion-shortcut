@@ -7,10 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import com.smoothapp.notionshortcut.R
 import com.smoothapp.notionshortcut.databinding.FragmentCharacterBinding
+import com.smoothapp.notionshortcut.view.activity.MainActivity
 
 class CharacterFragment(private val initialText: String) : Fragment() {
 
     private lateinit var binding: FragmentCharacterBinding
+    private val mainActivity by lazy { activity as MainActivity }
+    private val appViewModel by lazy { mainActivity.getMyViewModel() }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -24,12 +27,21 @@ class CharacterFragment(private val initialText: String) : Fragment() {
         }
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        appViewModel.balloonText.observe(viewLifecycleOwner) {
+            setBalloonText(it)
+        }
+    }
+
     fun enableBlocker(enabled: Boolean){
         binding.blocker.visibility = if(enabled) View.VISIBLE else View.GONE
     }
 
     fun showLargeBalloon(text: String, listener: LargeBalloonListener) {
         binding.apply {
+            balloonContainer.visibility = View.INVISIBLE
             largeBalloonText.text = text
             largeBalloonContainer.visibility = View.VISIBLE
             enableBlocker(true)
@@ -47,9 +59,12 @@ class CharacterFragment(private val initialText: String) : Fragment() {
         }
     }
 
-    fun setBalloonText(text: String) {
-        binding.balloonText.run{
-            this.text = text
+    private fun setBalloonText(text: String) {
+        binding.apply{
+            balloonText.run{
+                balloonContainer.visibility = View.VISIBLE
+                this.text = text
+            }
         }
     }
 

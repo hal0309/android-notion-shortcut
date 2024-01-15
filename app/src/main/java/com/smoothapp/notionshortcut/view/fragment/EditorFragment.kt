@@ -9,7 +9,6 @@ import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import com.smoothapp.notionshortcut.controller.util.NotionApiGetPageUtil
 import com.smoothapp.notionshortcut.databinding.FragmentEditorBinding
-import com.smoothapp.notionshortcut.model.constant.NotionApiPropertyEnum
 import com.smoothapp.notionshortcut.model.entity.NotionPostTemplate
 import com.smoothapp.notionshortcut.model.entity.get.NotionDatabase
 import com.smoothapp.notionshortcut.model.entity.get.PageOrDatabase
@@ -29,7 +28,7 @@ class EditorFragment : Fragment() {
     private lateinit var binding: FragmentEditorBinding
     private val characterFragment = CharacterFragment.newInstance("Connecting to Notion...")
     private val mainActivity by lazy { activity as MainActivity }
-    private val appViewModel by lazy { mainActivity.getMyViewModel() }
+    private val viewModel by lazy { mainActivity.getMyViewModel() }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,10 +38,24 @@ class EditorFragment : Fragment() {
         binding.apply {
 
             startCharacterFragment()
-            startDownload()
-//            startPresetSelectorFragment()
+//            startDownload()
+            startTemplateSelectorFragment()
+
+            fabCard.setOnClickListener {
+                startDownload()
+            }
         }
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        binding.apply {
+            viewModel.fabEnabled.observe(viewLifecycleOwner) {
+                fabContainer.visibility = if (it) View.VISIBLE else View.GONE
+            }
+        }
     }
 
 
@@ -64,6 +77,7 @@ class EditorFragment : Fragment() {
     }
 
     private fun startTemplateSelectorFragment() {
+        viewModel.setBalloonText("your templates!")
         childFragmentManager.beginTransaction()
             .replace(binding.mainContainer.id, TemplateSelectorFragment.newInstance())
             .addToBackStack(null)
@@ -75,17 +89,17 @@ class EditorFragment : Fragment() {
             try {
                 NotionApiGetPageUtil.getAllObjects(object : NotionApiGetPageUtil.GetPageListener {
                     override fun doOnUpdate(total: Int) {
-                        setBalloonText("Connecting to Notion... ($total/???)")
+                        viewModel.setBalloonText("Connecting to Notion... ($total/???)")
                     }
 
                     override fun doOnEndGetApi(total: Int) {
-                        setBalloonText("Connecting to Notion... ($total/$total)")
+                        viewModel.setBalloonText("Connecting to Notion... ($total/$total)")
                     }
 
                     override fun doOnEndAll(pageOrDatabaseList: List<PageOrDatabase>) {
-                        for (pageOrDatabase in pageOrDatabaseList) {
-                            println(pageOrDatabase)
-                        }
+//                        for (pageOrDatabase in pageOrDatabaseList) {
+//                            println(pageOrDatabase)
+//                        }
                         startDatabaseSelectFragment(pageOrDatabaseList.filter { it.isDatabase})
                     }
                 })
@@ -111,13 +125,14 @@ class EditorFragment : Fragment() {
     }
 
     fun confirmSelectedDatabase(notionDatabase: PageOrDatabase) {
-        setBalloonText("Loading ${notionDatabase.title}")
+        viewModel.setBalloonText("Loading ${notionDatabase.title}")
         enableBlocker(true)
         MainScope().launch {
             NotionApiGetPageUtil.getDatabaseDetail(notionDatabase.id, object : NotionApiGetPageUtil.GetDatabaseDetailListener {
                 override fun doOnEnd(notionDatabase: NotionDatabase) {
                     showLargeBalloon("database detail: $notionDatabase", object : CharacterFragment.LargeBalloonListener {
                         override fun onCanceled() {
+                            viewModel.setBalloonText("Select database ...")
                             val template = NotionPostTemplate(
                                 notionDatabase.title.toString(),
                                 notionDatabase.id,
@@ -210,7 +225,7 @@ class EditorFragment : Fragment() {
                             }
                             MainScope().launch {
                                 withContext(Dispatchers.IO){
-                                    appViewModel.insert(template)
+                                    viewModel.insert(template)
                                 }
                             }
 
@@ -230,11 +245,7 @@ class EditorFragment : Fragment() {
         characterFragment.enableBlocker(enabled)
     }
 
-    fun setBalloonText(text: String) { //todo: characterFragmentのbindingが初期化されてから呼ばれる設計 or viewModelを使う
-        characterFragment.setBalloonText(text)
-    }
-
-    fun showLargeBalloon(text: String, listener: CharacterFragment.LargeBalloonListener) {
+    fun showLargeBalloon(text: String, listener: CharacterFragment.LargeBalloonListener) {  // todo: viewmodel に移行
         characterFragment.showLargeBalloon(text, listener)
     }
 
