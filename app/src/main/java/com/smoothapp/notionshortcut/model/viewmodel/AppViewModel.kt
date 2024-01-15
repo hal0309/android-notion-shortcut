@@ -1,6 +1,7 @@
 package com.smoothapp.notionshortcut.model.viewmodel
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.asLiveData
@@ -13,12 +14,19 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class AppViewModel(private val repository: AppRepository): ViewModel() {
+
     val allTemplateWithProperty: LiveData<List<TemplateAndProperty>> = repository.allTemplateWithProperty.asLiveData()
+    val balloonText: LiveData<String> = MutableLiveData<String>().apply { value = "Hello, World!" }
+
 
     fun insert(template: NotionPostTemplate) = viewModelScope.launch {  //todo: scopeやdispatcherの指定が甘い
         withContext(Dispatchers.IO) {
             repository.insert(template)
         }
+    }
+
+    fun setBalloonText(text: String) {
+        (balloonText as MutableLiveData<String>).value = text
     }
 }
 

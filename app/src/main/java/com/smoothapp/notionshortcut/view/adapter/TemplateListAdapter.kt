@@ -18,7 +18,7 @@ class TemplateListAdapter(val listener: Listener? = null) :
             binding.apply {
                 title.text = notionPostTemplate.title
                 dbTitle.text = notionPostTemplate.dbTitle
-
+                propertyContainer.removeAllViews()
                 for (property in notionPostTemplate.propertyList()) {
                     val view = TemplatePropertyView(root.context, type = property.getType(), name = property.getName())
                     propertyContainer.addView(view)

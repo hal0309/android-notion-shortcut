@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.smoothapp.notionshortcut.databinding.FragmentNotionDatabaseSelectorBinding
 import com.smoothapp.notionshortcut.model.entity.get.PageOrDatabase
+import com.smoothapp.notionshortcut.view.activity.MainActivity
 import com.smoothapp.notionshortcut.view.adapter.NotionDatabaseListAdapter
 import com.smoothapp.notionshortcut.view.fragment.EditorFragment
 
@@ -19,6 +20,10 @@ class NotionDatabaseSelectorFragment(private var notionDatabaseList: List<PageOr
     private lateinit var binding: FragmentNotionDatabaseSelectorBinding
     private lateinit var parent: EditorFragment
     private var listAdapter: NotionDatabaseListAdapter? = null
+
+    private val mainActivity by lazy { activity as MainActivity }
+    private val viewModel by lazy { mainActivity.getMyViewModel() }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -27,7 +32,8 @@ class NotionDatabaseSelectorFragment(private var notionDatabaseList: List<PageOr
         binding.apply {
             parent = parentFragment as EditorFragment
 
-            parent.setBalloonText("Select database :)")
+            viewModel.setBalloonText("Select database :)")
+
 
             listAdapter = NotionDatabaseListAdapter(object : NotionDatabaseListAdapter.Listener{
                 override fun onClickItem(notionDatabase: PageOrDatabase) {
