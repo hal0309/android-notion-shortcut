@@ -44,22 +44,22 @@ class NotionPostTemplate(
 
 
     companion object {
-        fun from(notionDatabase: NotionDatabase): NotionPostTemplate {
-            val uuid = UUID.randomUUID().toString()
-            val propertyList = mutableListOf<NotionDatabaseProperty>()
-            notionDatabase.properties.forEach { (key, value) ->
-                val property = NotionDatabaseProperty.from(key, value as Map<String, Any>, uuid)
-                if (property != null) propertyList.add(property)
-            }
-            return NotionPostTemplate(
-                "new template",
-                notionDatabase.id,
-                notionDatabase.title.orEmpty(),
-                uuid
-            ).apply {
-                propertyList(propertyList)
-            }
-
-        }
+//        fun from(notionDatabase: NotionDatabase): NotionPostTemplate {
+//            val uuid = UUID.randomUUID().toString()
+//            val propertyList = mutableListOf<NotionDatabaseProperty>()
+//            notionDatabase.properties.forEach { (key, value) ->
+//                val property = NotionDatabaseProperty.from(key, value as Map<String, Any>, uuid)
+//                if (property != null) propertyList.add(property)
+//            }
+//            return NotionPostTemplate(
+//                "new template",
+//                notionDatabase.id,
+//                notionDatabase.title.orEmpty(),
+//                uuid
+//            ).apply {
+//                propertyList(propertyList)
+//            }
+//
+//        }
     }
 }

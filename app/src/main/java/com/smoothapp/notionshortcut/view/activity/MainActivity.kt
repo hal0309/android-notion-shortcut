@@ -5,12 +5,14 @@ import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.activity.viewModels
 import com.smoothapp.notionshortcut.R
-import com.smoothapp.notionshortcut.controller.provider.NotionApiProvider
 import com.smoothapp.notionshortcut.controller.provider.NotionOauthProvider
 import com.smoothapp.notionshortcut.controller.util.ApiCommonUtil
-import com.smoothapp.notionshortcut.controller.util.NotionApiGetPageUtil
 import com.smoothapp.notionshortcut.databinding.ActivityMainBinding
+import com.smoothapp.notionshortcut.model.viewmodel.AppViewModel
+import com.smoothapp.notionshortcut.model.viewmodel.AppViewModelFactory
+import com.smoothapp.notionshortcut.view.MyApplication
 import com.smoothapp.notionshortcut.view.fragment.EditorFragment
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
@@ -19,7 +21,9 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
-
+    private val appViewModel: AppViewModel by viewModels {
+        AppViewModelFactory((application as MyApplication).repository)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,7 +32,7 @@ class MainActivity : AppCompatActivity() {
         window.statusBarColor = this.getColor(R.color.transparent)
 
         //todo: 削除 テスト用
-        deleteDatabase("app_database")
+//        deleteDatabase("app_database")
 
 
 
@@ -65,14 +69,12 @@ class MainActivity : AppCompatActivity() {
 //                    .setIntent(intent)
 //                    .build()
 //                ShortcutManagerCompat.pushDynamicShortcut(this@MainActivity, shortcut)
-
-                MainScope().launch {
-
-                }
             }
 
         }
     }
+
+    fun getMyViewModel(): AppViewModel = appViewModel
 
     private fun startEditorFragment() {
         supportFragmentManager.beginTransaction()

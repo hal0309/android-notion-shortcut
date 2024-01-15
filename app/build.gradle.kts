@@ -55,8 +55,15 @@ dependencies {
     /* room */
     val roomVersion = "2.5.0"
     implementation("androidx.room:room-runtime:$roomVersion")
+    implementation("androidx.room:room-ktx:$roomVersion")
     annotationProcessor("androidx.room:room-compiler:$roomVersion")
     kapt("androidx.room:room-compiler:$roomVersion")
+
+    /* lifecycle */
+    val lifecycle_version = "2.6.0"
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version")
+    implementation("androidx.fragment:fragment-ktx:1.6.2")
 
     /* okhttp */
     implementation("com.squareup.okhttp3:okhttp:4.11.0")
