@@ -26,7 +26,7 @@ class AppViewModel(private val repository: AppRepository): ViewModel() {
     }
 
     fun setBalloonText(text: String) {
-        (balloonText as MutableLiveData<String>).value = text
+        (balloonText as MutableLiveData<String>).postValue(text)
     }
 }
 

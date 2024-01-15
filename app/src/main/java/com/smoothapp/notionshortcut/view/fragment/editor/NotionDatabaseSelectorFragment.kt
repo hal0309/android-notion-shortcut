@@ -32,9 +32,7 @@ class NotionDatabaseSelectorFragment(private var notionDatabaseList: List<PageOr
         binding.apply {
             parent = parentFragment as EditorFragment
 
-            viewModel.setBalloonText("Select database :)")
-
-
+            viewModel.setBalloonText("Select database ...")
             listAdapter = NotionDatabaseListAdapter(object : NotionDatabaseListAdapter.Listener{
                 override fun onClickItem(notionDatabase: PageOrDatabase) {
                     parent.apply{

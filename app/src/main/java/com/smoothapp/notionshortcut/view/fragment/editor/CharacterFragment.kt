@@ -41,6 +41,7 @@ class CharacterFragment(private val initialText: String) : Fragment() {
 
     fun showLargeBalloon(text: String, listener: LargeBalloonListener) {
         binding.apply {
+            balloonContainer.visibility = View.INVISIBLE
             largeBalloonText.text = text
             largeBalloonContainer.visibility = View.VISIBLE
             enableBlocker(true)
@@ -60,6 +61,7 @@ class CharacterFragment(private val initialText: String) : Fragment() {
 
     private fun setBalloonText(text: String) {
         binding.balloonText.run{
+            visibility = View.VISIBLE
             this.text = text
         }
     }

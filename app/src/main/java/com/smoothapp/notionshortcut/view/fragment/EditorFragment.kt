@@ -38,8 +38,8 @@ class EditorFragment : Fragment() {
         binding.apply {
 
             startCharacterFragment()
-//            startDownload()
-            startTemplateSelectorFragment()
+            startDownload()
+//            startTemplateSelectorFragment()
         }
         return binding.root
     }
@@ -83,9 +83,9 @@ class EditorFragment : Fragment() {
                     }
 
                     override fun doOnEndAll(pageOrDatabaseList: List<PageOrDatabase>) {
-                        for (pageOrDatabase in pageOrDatabaseList) {
-                            println(pageOrDatabase)
-                        }
+//                        for (pageOrDatabase in pageOrDatabaseList) {
+//                            println(pageOrDatabase)
+//                        }
                         startDatabaseSelectFragment(pageOrDatabaseList.filter { it.isDatabase})
                     }
                 })
@@ -118,6 +118,7 @@ class EditorFragment : Fragment() {
                 override fun doOnEnd(notionDatabase: NotionDatabase) {
                     showLargeBalloon("database detail: $notionDatabase", object : CharacterFragment.LargeBalloonListener {
                         override fun onCanceled() {
+                            viewModel.setBalloonText("Select database ...")
                             val template = NotionPostTemplate(
                                 notionDatabase.title.toString(),
                                 notionDatabase.id,
