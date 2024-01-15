@@ -140,9 +140,6 @@ class EditorFragment : Fragment() {
                                     }
                                 }
                                 propertyList(p)
-
-
-
 //                                propertyList(
 //                                    listOf(
 //                                        NotionDatabaseProperty(
@@ -213,7 +210,6 @@ class EditorFragment : Fragment() {
                             }
                             MainScope().launch {
                                 withContext(Dispatchers.IO){
-//                                    AppRepository(requireContext()).insert(template) //todo: 上層で生成しろ
                                     appViewModel.insert(template)
                                 }
                             }
@@ -221,8 +217,6 @@ class EditorFragment : Fragment() {
                         }
 
                         override fun onConfirmed() {
-//                            val template = NotionPostTemplate.from(notionDatabase) //todo: テスト
-//                            startTemplateSelectFragment(template)
                             startTemplateSelectorFragment()
                         }
                     })
@@ -231,21 +225,6 @@ class EditorFragment : Fragment() {
         }
     }
 
-//    fun startTemplateSelectFragment(template: NotionPostTemplate?) {
-//        when(template){
-//            null -> {
-//                setBalloonText("Failed to load template")
-//            }
-//            else -> {
-//                println(template.title)
-//                println(template.dbId)
-//                println(template.dbTitle)
-//                println(template.propertyList.map{it.getName()})
-//                setBalloonText("template ${template.propertyList.map{it.getName()}}")
-//            }
-//        }
-//
-//    }
 
     fun enableBlocker(enabled: Boolean){
         characterFragment.enableBlocker(enabled)
