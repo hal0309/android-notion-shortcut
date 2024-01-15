@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.smoothapp.notionshortcut.databinding.FragmentPresetSelectorBinding
+import com.smoothapp.notionshortcut.databinding.FragmentTemplateSelectorBinding
 import com.smoothapp.notionshortcut.model.entity.NotionPostTemplate
 import com.smoothapp.notionshortcut.view.activity.MainActivity
 import com.smoothapp.notionshortcut.view.adapter.TemplateListAdapter
@@ -15,7 +15,7 @@ import com.smoothapp.notionshortcut.view.fragment.EditorFragment
 
 class TemplateSelectorFragment : Fragment() {
 
-    private lateinit var binding: FragmentPresetSelectorBinding
+    private lateinit var binding: FragmentTemplateSelectorBinding
     private lateinit var parent: EditorFragment
     private var listAdapter: TemplateListAdapter? = null
 
@@ -27,7 +27,7 @@ class TemplateSelectorFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         parent = parentFragment as EditorFragment
-        binding = FragmentPresetSelectorBinding.inflate(inflater, container, false)
+        binding = FragmentTemplateSelectorBinding.inflate(inflater, container, false)
 
         viewModel.setFabEnabled(true)
 
