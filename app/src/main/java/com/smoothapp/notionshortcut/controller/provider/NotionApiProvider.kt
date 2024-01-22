@@ -5,14 +5,38 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 
-class NotionApiProvider(val apiKey: String) {
+class NotionApiProvider {
+
+    companion object {
+        private var apiKey: String? = null
+
+        fun setApiKey(apiKey: String) {
+            this.apiKey = apiKey
+        }
+
+        fun getApiKey(): String? {
+            return apiKey
+        }
+
+    }
+
+    suspend fun retrievePage(pageId: String): String {
+        val request = Request.Builder()
+            .url("https://api.notion.com/v1/pages/$pageId")
+            .addHeader("Notion-Version", "2022-06-28")
+            .addHeader("accept", "application/json")
+            .addHeader("Authorization", "Bearer ${getApiKey()}")
+            .build()
+
+        return getResponseBody(request)
+    }
 
     suspend fun retrieveDatabase(dbId: String): String {
         val request = Request.Builder()
             .url("https://api.notion.com/v1/databases/$dbId")
             .addHeader("Notion-Version", "2022-06-28")
             .addHeader("accept", "application/json")
-            .addHeader("Authorization", "Bearer $apiKey")
+            .addHeader("Authorization", "Bearer ${getApiKey()}")
             .build()
 
         return getResponseBody(request)
@@ -24,7 +48,7 @@ class NotionApiProvider(val apiKey: String) {
             .url("https://api.notion.com/v1/pages")
             .addHeader("Notion-Version", "2022-06-28")
             .addHeader("accept", "application/json")
-            .addHeader("Authorization", "Bearer $apiKey")
+            .addHeader("Authorization", "Bearer ${getApiKey()}")
             .addHeader("Content-Type", "application/json") //todo: 削除可能? 未検証
             .post(requestBody)
             .build()
@@ -38,7 +62,7 @@ class NotionApiProvider(val apiKey: String) {
             .url("https://api.notion.com/v1/search")
             .addHeader("Notion-Version", "2022-06-28")
             .addHeader("accept", "application/json")
-            .addHeader("Authorization", "Bearer $apiKey")
+            .addHeader("Authorization", "Bearer ${getApiKey()}")
             .addHeader("Content-Type", "application/json")
             .post(requestBody)
             .build()

@@ -40,7 +40,7 @@ import java.util.Locale
 class ShortcutActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityShortcutBinding
-    private val notionPostUtil = NotionApiPostUtil(SecretTestUtil.API_KEY)
+    private val notionPostUtil = NotionApiPostUtil()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

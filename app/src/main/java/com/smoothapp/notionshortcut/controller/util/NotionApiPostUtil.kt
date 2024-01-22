@@ -15,12 +15,13 @@ import com.smoothapp.notionshortcut.model.entity.notiondatabaseproperty.NotionDa
 import com.smoothapp.notionshortcut.model.entity.notiondatabaseproperty.NotionDatabasePropertyStatus
 import com.smoothapp.notionshortcut.model.entity.notiondatabaseproperty.NotionDatabasePropertyTitle
 
-class NotionApiPostUtil(private val apiKey: String) {
+class NotionApiPostUtil {
+
     suspend fun postPageToDatabase(
         dbId: String,
         propertyList: List<NotionDatabaseProperty>
     ): String {
-        val provider = NotionApiProvider(apiKey)
+        val provider = NotionApiProvider()
 
         val requestBodyString = """
         {

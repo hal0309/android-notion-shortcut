@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.smoothapp.notionshortcut.controller.util.NotionApiGetUtil
 import com.smoothapp.notionshortcut.controller.util.SecretTestUtil
@@ -20,6 +21,8 @@ import com.smoothapp.notionshortcut.view.fragment.editor.NotionDatabaseSelectorF
 import com.smoothapp.notionshortcut.view.fragment.editor.TemplateSelectorFragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -31,7 +34,7 @@ class EditorFragment : Fragment() {
     private val mainActivity by lazy { activity as MainActivity }
     private val viewModel by lazy { mainActivity.getMyViewModel() }
 
-    private val notionGetUtil = NotionApiGetUtil(SecretTestUtil.API_KEY)
+    private val notionGetUtil = NotionApiGetUtil()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,6 +42,11 @@ class EditorFragment : Fragment() {
     ): View {
         binding = FragmentEditorBinding.inflate(inflater, container, false)
         binding.apply {
+
+            MainScope().launch {
+
+            }
+
 
             startCharacterFragment()
 //            startDownload()
