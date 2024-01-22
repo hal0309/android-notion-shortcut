@@ -15,7 +15,8 @@ import com.smoothapp.notionshortcut.model.entity.notiondatabaseproperty.NotionDa
 import com.smoothapp.notionshortcut.model.entity.notiondatabaseproperty.NotionDatabasePropertyStatus
 import com.smoothapp.notionshortcut.model.entity.notiondatabaseproperty.NotionDatabasePropertyTitle
 
-object NotionApiPostPageUtil {
+class NotionApiPostUtil {
+
     suspend fun postPageToDatabase(
         dbId: String,
         propertyList: List<NotionDatabaseProperty>
@@ -32,7 +33,7 @@ object NotionApiPostPageUtil {
         return provider.postPage(requestBodyString).toString()
     }
 
-    fun createPostPageProperties(propertyList: List<NotionDatabaseProperty>): String {
+    private fun createPostPageProperties(propertyList: List<NotionDatabaseProperty>): String {
         var propertyString = """"properties": {"""
 
         for (prop in propertyList) {

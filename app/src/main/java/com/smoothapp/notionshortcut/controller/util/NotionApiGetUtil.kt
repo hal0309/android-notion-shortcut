@@ -8,7 +8,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-object NotionApiGetPageUtil {
+class NotionApiGetUtil {
 
     interface GetDatabaseDetailListener {
         fun doOnEnd(notionDatabase: NotionDatabase)

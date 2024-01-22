@@ -4,7 +4,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import com.smoothapp.notionshortcut.R
-import com.smoothapp.notionshortcut.controller.util.NotionApiPostPageUtil
+import com.smoothapp.notionshortcut.controller.util.NotionApiPostUtil
+import com.smoothapp.notionshortcut.controller.util.SecretTestUtil
 import com.smoothapp.notionshortcut.databinding.ActivityShortcutBinding
 import com.smoothapp.notionshortcut.model.constant.NotionApiPropertyEnum
 import com.smoothapp.notionshortcut.model.constant.NotionApiPropertyStatusEnum
@@ -39,6 +40,7 @@ import java.util.Locale
 class ShortcutActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityShortcutBinding
+    private val notionPostUtil = NotionApiPostUtil()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -119,7 +121,7 @@ class ShortcutActivity : AppCompatActivity() {
                         }
                         MainScope().launch {
                             Log.d(
-                                "", NotionApiPostPageUtil.postPageToDatabase(
+                                "", notionPostUtil.postPageToDatabase(
                                     "94f6ca48-d506-439f-9d2e-0fa7a2bcd5d4",
                                     blockList.map{it.getContents()}
                                 )

@@ -6,8 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.fragment.app.Fragment
-import com.smoothapp.notionshortcut.controller.util.NotionApiGetPageUtil
+import com.smoothapp.notionshortcut.controller.util.NotionApiGetUtil
+import com.smoothapp.notionshortcut.controller.util.SecretTestUtil
 import com.smoothapp.notionshortcut.databinding.FragmentEditorBinding
 import com.smoothapp.notionshortcut.model.entity.NotionPostTemplate
 import com.smoothapp.notionshortcut.model.entity.get.NotionDatabase
@@ -19,6 +21,8 @@ import com.smoothapp.notionshortcut.view.fragment.editor.NotionDatabaseSelectorF
 import com.smoothapp.notionshortcut.view.fragment.editor.TemplateSelectorFragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -30,12 +34,19 @@ class EditorFragment : Fragment() {
     private val mainActivity by lazy { activity as MainActivity }
     private val viewModel by lazy { mainActivity.getMyViewModel() }
 
+    private val notionGetUtil = NotionApiGetUtil()
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentEditorBinding.inflate(inflater, container, false)
         binding.apply {
+
+            MainScope().launch {
+
+            }
+
 
             startCharacterFragment()
 //            startDownload()
@@ -87,7 +98,7 @@ class EditorFragment : Fragment() {
     private fun startDownload() {
         MainScope().launch {
             try {
-                NotionApiGetPageUtil.getAllObjects(object : NotionApiGetPageUtil.GetPageListener {
+                notionGetUtil.getAllObjects(object : NotionApiGetUtil.GetPageListener {
                     override fun doOnUpdate(total: Int) {
                         viewModel.setBalloonText("Connecting to Notion... ($total/???)")
                     }
@@ -128,7 +139,7 @@ class EditorFragment : Fragment() {
         viewModel.setBalloonText("Loading ${notionDatabase.title}")
         enableBlocker(true)
         MainScope().launch {
-            NotionApiGetPageUtil.getDatabaseDetail(notionDatabase.id, object : NotionApiGetPageUtil.GetDatabaseDetailListener {
+            notionGetUtil.getDatabaseDetail(notionDatabase.id, object : NotionApiGetUtil.GetDatabaseDetailListener {
                 override fun doOnEnd(notionDatabase: NotionDatabase) {
                     showLargeBalloon("database detail: $notionDatabase", object : CharacterFragment.LargeBalloonListener {
                         override fun onCanceled() {
