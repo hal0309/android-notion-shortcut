@@ -8,7 +8,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-object NotionApiGetPageUtil {
+class NotionApiGetUtil(private val apiKey: String) {
 
     interface GetDatabaseDetailListener {
         fun doOnEnd(notionDatabase: NotionDatabase)
@@ -21,7 +21,7 @@ object NotionApiGetPageUtil {
     }
 
     suspend fun getDatabaseDetail(dbId: String, listener: GetDatabaseDetailListener) = withContext(Dispatchers.IO) {
-        val provider = NotionApiProvider()
+        val provider = NotionApiProvider(apiKey)
 
         launch {
             val response = provider.retrieveDatabase(dbId)
@@ -54,7 +54,7 @@ object NotionApiGetPageUtil {
     }
 
     suspend fun getAllObjects(listener: GetPageListener) = withContext(Dispatchers.IO) {
-        val provider = NotionApiProvider()
+        val provider = NotionApiProvider(apiKey)
         var nextCursor: String? = null
         val resultMapList: MutableList<Map<String, Any>> = mutableListOf()
 
