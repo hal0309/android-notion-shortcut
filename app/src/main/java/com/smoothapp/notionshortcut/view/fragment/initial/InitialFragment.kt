@@ -5,7 +5,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CheckBox
+import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.core.view.get
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.fragment.app.Fragment
 import com.smoothapp.notionshortcut.controller.provider.NotionApiProvider
@@ -45,9 +48,10 @@ class InitialFragment : Fragment() {
     }
 
     private fun initialize() {
+        initializeCheck()
         /* apikey 取得 */
         MainScope().launch {
-            delay(0)
+            delay(1000)
             mainActivity.dataStore.data.map { preferences ->
                 preferences[PreferenceKeys.NOTION_API_KEY] ?: ""
             }.collect{
@@ -59,12 +63,18 @@ class InitialFragment : Fragment() {
         }
         MainScope().launch {
             delay(0)
-            updateInitializedStatus(1, INITIAL_SUCCESS)
+            val status = if (mainActivity.hasNotifyPermission()) INITIAL_SUCCESS else  INITIAL_FAILED
+            updateInitializedStatus(INITIALIZED_NOTIFY_PERMISSION, status)
         }
     }
 
     private fun updateInitializedStatus(pos: Int, status: Int) {
         initializedStatus[pos] = status
+        binding.apply {
+            val item = initialProgressContainer[pos] as LinearLayout
+            (item[0] as CheckBox).isChecked = status == INITIAL_SUCCESS
+
+        }
         initializeCheck()
     }
 
@@ -72,12 +82,10 @@ class InitialFragment : Fragment() {
         initializedStatus.let {
             if(it.any { status -> status == INITIAL_IN_PROGRESS }) {
                 Toast.makeText(mainActivity, "初期化中 $it", Toast.LENGTH_SHORT).show()
-            }
-            if(it.any { status -> status == INITIAL_FAILED }) {
+            }else if(it.any { status -> status == INITIAL_FAILED }) {
                 Toast.makeText(mainActivity, "初期化失敗 $it", Toast.LENGTH_SHORT).show()
                 doOnInitializeFailed(it)
-            }
-            if(it.all { status -> status == INITIAL_SUCCESS }) {
+            }else/*(it.all { status -> status == INITIAL_SUCCESS })*/ {
                 Toast.makeText(mainActivity, "初期化成功 $it", Toast.LENGTH_SHORT).show()
                 doOnInitializeSucceed()
             }
@@ -99,7 +107,8 @@ class InitialFragment : Fragment() {
 
         const val INITIAL_STATUS_SIZE = 2
 
-        const val INITIALIZED_API_KEY = INITIAL_IN_PROGRESS
+        const val INITIALIZED_API_KEY = 0
+        const val INITIALIZED_NOTIFY_PERMISSION = 1
 
 
         @JvmStatic

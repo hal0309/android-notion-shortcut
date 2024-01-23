@@ -1,8 +1,11 @@
 package com.smoothapp.notionshortcut.view.activity
 
+import android.Manifest
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.viewModels
@@ -68,9 +71,6 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.apply {
-//            startEditorFragment()
-
-
 
             root.setOnClickListener {
 //                val intent = Intent(Intent.ACTION_EDIT, Uri.EMPTY, this@MainActivity, ShortcutActivity::class.java)
@@ -100,54 +100,13 @@ class MainActivity : AppCompatActivity() {
             .commit()
     }
 
-//    private fun initialize() {
-//        /* apikey 取得 */
-//        MainScope().launch {
-//            delay(0)
-//            dataStore.data.map { preferences ->
-//                preferences[PreferenceKeys.NOTION_API_KEY] ?: ""
-//            }.collect{
-//                Toast.makeText(this@MainActivity, it, Toast.LENGTH_SHORT).show()
-//                NotionApiProvider.setApiKey(it)
-//                val status = if (it.isEmpty()) INITIAL_FAILED else INITIAL_SUCCESS
-//                updateInitializedStatus(INITIALIZED_API_KEY, status)
-//            }
-//        }
-//        MainScope().launch {
-//            delay(0)
-//            updateInitializedStatus(1, INITIAL_SUCCESS)
-//        }
-//    }
-//
-//    private fun updateInitializedStatus(pos: Int, status: Int) {
-//        initializedStatus[pos] = status
-//        initializeCheck()
-//    }
-//
-//    private fun initializeCheck(){
-//        initializedStatus.let {
-//            if(it.any { status -> status == INITIAL_IN_PROGRESS }) {
-//                Toast.makeText(this@MainActivity, "初期化中 $it", Toast.LENGTH_SHORT).show()
-//            }
-//            if(it.any { status -> status == INITIAL_FAILED }) {
-//                Toast.makeText(this@MainActivity, "初期化失敗 $it", Toast.LENGTH_SHORT).show()
-//                doOnInitializeFailed(it)
-//            }
-//            if(it.all { status -> status == INITIAL_SUCCESS }) {
-//                Toast.makeText(this@MainActivity, "初期化成功 $it", Toast.LENGTH_SHORT).show()
-//                doOnInitializeSucceed()
-//            }
-//        }
-//    }
-
-//    private fun doOnInitializeSucceed() {
-//        startEditorFragment()
-//    }
-//
-//    private fun doOnInitializeFailed(statusList: List<Int>) {
-//
-//    }
-
+    fun hasNotifyPermission(): Boolean {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED
+        } else { // todo: 本当に32以下の指定で良いの？
+            true
+        }
+    }
 
 
 
