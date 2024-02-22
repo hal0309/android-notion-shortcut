@@ -1,7 +1,10 @@
 package com.smoothapp.notionshortcut.view.fragment.initial
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,20 +18,30 @@ import com.smoothapp.notionshortcut.controller.provider.NotionApiProvider
 import com.smoothapp.notionshortcut.databinding.FragmentInitialBinding
 import com.smoothapp.notionshortcut.model.constant.PreferenceKeys
 import com.smoothapp.notionshortcut.view.activity.MainActivity
+import com.smoothapp.notionshortcut.view.dataStore
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
 
 class InitialFragment : Fragment() {
 
-    val Context.dataStore by preferencesDataStore(name = "dataStore")
     private val initializedStatus = MutableList(INITIAL_STATUS_SIZE) { INITIAL_IN_PROGRESS }
     
     private lateinit var binding: FragmentInitialBinding
-    
-    private val mainActivity by lazy {
-        activity as MainActivity
+
+    private val mainActivity : MainActivity
+        get() = activity as MainActivity
+
+    override fun onStart() {
+        Log.w("InitialFragment", "initialfragment onStart")
+        super.onStart()
+    }
+
+    override fun onDestroy() {
+        Log.w("InitialFragment", "initialfragment onDestroy")
+        super.onDestroy()
     }
 
     override fun onCreateView(
@@ -40,9 +53,6 @@ class InitialFragment : Fragment() {
         initialize()
 
         binding.apply {
-
-
-
             return root
         }
     }
@@ -51,10 +61,10 @@ class InitialFragment : Fragment() {
         initializeCheck()
         /* apikey 取得 */
         MainScope().launch {
-            delay(1000)
+            delay(0)
             mainActivity.dataStore.data.map { preferences ->
                 preferences[PreferenceKeys.NOTION_API_KEY] ?: ""
-            }.collect{
+            }.take(1).collect{
                 Toast.makeText(mainActivity, it, Toast.LENGTH_SHORT).show()
                 NotionApiProvider.setApiKey(it)
                 val status = if (it.isEmpty()) INITIAL_FAILED else INITIAL_SUCCESS
@@ -76,6 +86,7 @@ class InitialFragment : Fragment() {
             (item[0] as CheckBox).isChecked = status == INITIAL_SUCCESS
 
         }
+        Log.e("updateInitializedStatus", "initializa check pos: $pos, status: $status")
         initializeCheck()
     }
 
@@ -98,7 +109,25 @@ class InitialFragment : Fragment() {
     }
 
     private fun doOnInitializeFailed(statusList: List<Int>) {
+        val failedList = statusList.mapIndexedNotNull { index, status -> if(status == INITIAL_FAILED) index else null }
+        failedList.forEach {
+            when(it) {
+                INITIALIZED_API_KEY -> {
+                    Toast.makeText(mainActivity, "api keyが初期化されていないよ", Toast.LENGTH_SHORT).show()
+                    binding.apply {
+                        notionOauthContainer.visibility = View.VISIBLE
+                        notionOauthButton.setOnClickListener {
+                            val uri = Uri.parse("https://api.notion.com/v1/oauth/authorize?client_id=98d956a9-8b6d-4163-a81d-968296c15e0e&response_type=code&owner=user&redirect_uri=https%3A%2F%2Fnotion-shortcut-f5272.web.app")
+                            val intent = Intent(Intent.ACTION_VIEW, uri)
+                            startActivity(intent)
+                        }
+                    }
+                }
+                INITIALIZED_NOTIFY_PERMISSION -> {
 
+                }
+            }
+        }
     }
 
     companion object {
