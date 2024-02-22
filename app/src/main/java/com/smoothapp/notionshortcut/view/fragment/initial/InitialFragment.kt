@@ -61,6 +61,7 @@ class InitialFragment : Fragment() {
                 updateInitializedStatus(INITIALIZED_API_KEY, status)
             }
         }
+        /* 通知の許可 */
         MainScope().launch {
             delay(0)
             val status = if (mainActivity.hasNotifyPermission()) INITIAL_SUCCESS else  INITIAL_FAILED
