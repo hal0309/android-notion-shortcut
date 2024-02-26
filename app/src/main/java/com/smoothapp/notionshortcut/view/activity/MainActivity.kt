@@ -10,14 +10,17 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.preferencesDataStore
 import com.smoothapp.notionshortcut.R
 import com.smoothapp.notionshortcut.controller.provider.NotionOauthProvider
 import com.smoothapp.notionshortcut.controller.util.ApiCommonUtil
 import com.smoothapp.notionshortcut.databinding.ActivityMainBinding
+import com.smoothapp.notionshortcut.model.constant.PreferenceKeys
 import com.smoothapp.notionshortcut.model.viewmodel.AppViewModel
 import com.smoothapp.notionshortcut.model.viewmodel.AppViewModelFactory
 import com.smoothapp.notionshortcut.view.MyApplication
+import com.smoothapp.notionshortcut.view.dataStore
 import com.smoothapp.notionshortcut.view.fragment.EditorFragment
 import com.smoothapp.notionshortcut.view.fragment.initial.InitialFragment
 import kotlinx.coroutines.MainScope
@@ -25,7 +28,7 @@ import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
-    val Context.dataStore by preferencesDataStore(name = "dataStore")
+
 
 //    private val initializedStatus = MutableList(INITIAL_STATUS_SIZE) { INITIAL_IN_PROGRESS }
 
@@ -35,7 +38,13 @@ class MainActivity : AppCompatActivity() {
         AppViewModelFactory((application as MyApplication).repository)
     }
 
+    override fun onDestroy() {
+        Log.w("MainActivity", "onDestroy")
+        super.onDestroy()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        Log.w("MainActivity", "onCreate")
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -48,8 +57,6 @@ class MainActivity : AppCompatActivity() {
 
         
 //        initialize()
-        startInitialFragment()
-
 
         when(intent?.action) {
             Intent.ACTION_VIEW -> {
@@ -64,11 +71,26 @@ class MainActivity : AppCompatActivity() {
                         println("response: $response")
                         println("access_token: ${map["access_token"]}")
                         println("owner: ${map["owner"]}")
+                        dataStore.edit { preferences ->
+                            preferences[PreferenceKeys.NOTION_API_KEY] = map["access_token"].toString()
+                        }
+                        startInitialFragment()
                     }
 
                 }
             }
+            else -> {
+                MainScope().launch {
+//                    dataStore.edit { preferences ->
+//                        preferences[PreferenceKeys.NOTION_API_KEY] = ""
+//                    }
+                    startInitialFragment()
+                }
+
+            }
         }
+
+
 
         binding.apply {
 

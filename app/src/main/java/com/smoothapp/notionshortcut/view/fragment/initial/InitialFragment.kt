@@ -1,7 +1,10 @@
 package com.smoothapp.notionshortcut.view.fragment.initial
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,20 +18,30 @@ import com.smoothapp.notionshortcut.controller.provider.NotionApiProvider
 import com.smoothapp.notionshortcut.databinding.FragmentInitialBinding
 import com.smoothapp.notionshortcut.model.constant.PreferenceKeys
 import com.smoothapp.notionshortcut.view.activity.MainActivity
+import com.smoothapp.notionshortcut.view.dataStore
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
 
 class InitialFragment : Fragment() {
 
-    val Context.dataStore by preferencesDataStore(name = "dataStore")
-    private val initializedStatus = MutableList(INITIAL_STATUS_SIZE) { INITIAL_IN_PROGRESS }
+    private var initializeStep = 0
     
     private lateinit var binding: FragmentInitialBinding
-    
-    private val mainActivity by lazy {
-        activity as MainActivity
+
+    private val mainActivity : MainActivity
+        get() = activity as MainActivity
+
+    override fun onStart() {
+        Log.w("InitialFragment", "initialfragment onStart")
+        super.onStart()
+    }
+
+    override fun onDestroy() {
+        Log.w("InitialFragment", "initialfragment onDestroy")
+        super.onDestroy()
     }
 
     override fun onCreateView(
@@ -40,55 +53,58 @@ class InitialFragment : Fragment() {
         initialize()
 
         binding.apply {
-
-
-
             return root
         }
     }
 
     private fun initialize() {
-        initializeCheck()
-        /* apikey 取得 */
+        if(initializeStep > 0) {
+            val container = binding.initialProgressContainer.getChildAt(initializeStep - 1) as LinearLayout
+            val checkBox = container.getChildAt(0) as CheckBox
+            checkBox.isChecked = true
+        }
+        when(initializeStep) {
+            0 -> checkApiKey()
+            1 -> checkNotifyPermission()
+
+            else -> doOnInitializeSucceed()
+        }
+        initializeStep++
+    }
+
+    private fun checkApiKey() {
         MainScope().launch {
             delay(1000)
             mainActivity.dataStore.data.map { preferences ->
                 preferences[PreferenceKeys.NOTION_API_KEY] ?: ""
-            }.collect{
+            }.take(1).collect{
                 Toast.makeText(mainActivity, it, Toast.LENGTH_SHORT).show()
                 NotionApiProvider.setApiKey(it)
-                val status = if (it.isEmpty()) INITIAL_FAILED else INITIAL_SUCCESS
-                updateInitializedStatus(INITIALIZED_API_KEY, status)
+                val success = it.isNotEmpty()
+                if(success){
+                    initialize()
+                } else {
+                    binding.apply {
+                        notionOauthContainer.visibility = View.VISIBLE
+                        notionOauthButton.setOnClickListener {
+                            val uri = Uri.parse("https://api.notion.com/v1/oauth/authorize?client_id=98d956a9-8b6d-4163-a81d-968296c15e0e&response_type=code&owner=user&redirect_uri=https%3A%2F%2Fnotion-shortcut-f5272.web.app")
+                            val intent = Intent(Intent.ACTION_VIEW, uri)
+                            startActivity(intent)
+                        }
+                    }
+                }
             }
         }
-        /* 通知の許可 */
+    }
+
+    private fun checkNotifyPermission() {
         MainScope().launch {
-            delay(0)
-            val status = if (mainActivity.hasNotifyPermission()) INITIAL_SUCCESS else  INITIAL_FAILED
-            updateInitializedStatus(INITIALIZED_NOTIFY_PERMISSION, status)
-        }
-    }
-
-    private fun updateInitializedStatus(pos: Int, status: Int) {
-        initializedStatus[pos] = status
-        binding.apply {
-            val item = initialProgressContainer[pos] as LinearLayout
-            (item[0] as CheckBox).isChecked = status == INITIAL_SUCCESS
-
-        }
-        initializeCheck()
-    }
-
-    private fun initializeCheck(){
-        initializedStatus.let {
-            if(it.any { status -> status == INITIAL_IN_PROGRESS }) {
-                Toast.makeText(mainActivity, "初期化中 $it", Toast.LENGTH_SHORT).show()
-            }else if(it.any { status -> status == INITIAL_FAILED }) {
-                Toast.makeText(mainActivity, "初期化失敗 $it", Toast.LENGTH_SHORT).show()
-                doOnInitializeFailed(it)
-            }else/*(it.all { status -> status == INITIAL_SUCCESS })*/ {
-                Toast.makeText(mainActivity, "初期化成功 $it", Toast.LENGTH_SHORT).show()
-                doOnInitializeSucceed()
+            delay(1000)
+            val success = mainActivity.hasNotifyPermission()
+            if(success) {
+                initialize()
+            } else {
+                /* todo: permissionの取得 */
             }
         }
     }
@@ -97,21 +113,7 @@ class InitialFragment : Fragment() {
         mainActivity.startEditorFragment()
     }
 
-    private fun doOnInitializeFailed(statusList: List<Int>) {
-
-    }
-
     companion object {
-        const val INITIAL_FAILED = -1
-        const val INITIAL_SUCCESS = 1
-        const val INITIAL_IN_PROGRESS = 0
-
-        const val INITIAL_STATUS_SIZE = 2
-
-        const val INITIALIZED_API_KEY = 0
-        const val INITIALIZED_NOTIFY_PERMISSION = 1
-
-
         @JvmStatic
         fun newInstance() = InitialFragment()
 
