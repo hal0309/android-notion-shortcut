@@ -27,7 +27,7 @@ import kotlinx.coroutines.launch
 
 class InitialFragment : Fragment() {
 
-    private val initializedStatus = MutableList(INITIAL_STATUS_SIZE) { INITIAL_IN_PROGRESS }
+    private var initializeStep = 0
     
     private lateinit var binding: FragmentInitialBinding
 
@@ -58,62 +58,32 @@ class InitialFragment : Fragment() {
     }
 
     private fun initialize() {
-        initializeCheck()
-        /* apikey 取得 */
+        if(initializeStep > 0) {
+            val container = binding.initialProgressContainer.getChildAt(initializeStep - 1) as LinearLayout
+            val checkBox = container.getChildAt(0) as CheckBox
+            checkBox.isChecked = true
+        }
+        when(initializeStep) {
+            0 -> checkApiKey()
+            1 -> checkNotifyPermission()
+
+            else -> doOnInitializeSucceed()
+        }
+        initializeStep++
+    }
+
+    private fun checkApiKey() {
         MainScope().launch {
-            delay(0)
+            delay(1000)
             mainActivity.dataStore.data.map { preferences ->
                 preferences[PreferenceKeys.NOTION_API_KEY] ?: ""
             }.take(1).collect{
                 Toast.makeText(mainActivity, it, Toast.LENGTH_SHORT).show()
                 NotionApiProvider.setApiKey(it)
-                val status = if (it.isEmpty()) INITIAL_FAILED else INITIAL_SUCCESS
-                updateInitializedStatus(INITIALIZED_API_KEY, status)
-            }
-        }
-        /* 通知の許可 */
-        MainScope().launch {
-            delay(0)
-            val status = if (mainActivity.hasNotifyPermission()) INITIAL_SUCCESS else  INITIAL_FAILED
-            updateInitializedStatus(INITIALIZED_NOTIFY_PERMISSION, status)
-        }
-    }
-
-    private fun updateInitializedStatus(pos: Int, status: Int) {
-        initializedStatus[pos] = status
-        binding.apply {
-            val item = initialProgressContainer[pos] as LinearLayout
-            (item[0] as CheckBox).isChecked = status == INITIAL_SUCCESS
-
-        }
-        Log.e("updateInitializedStatus", "initializa check pos: $pos, status: $status")
-        initializeCheck()
-    }
-
-    private fun initializeCheck(){
-        initializedStatus.let {
-            if(it.any { status -> status == INITIAL_IN_PROGRESS }) {
-                Toast.makeText(mainActivity, "初期化中 $it", Toast.LENGTH_SHORT).show()
-            }else if(it.any { status -> status == INITIAL_FAILED }) {
-                Toast.makeText(mainActivity, "初期化失敗 $it", Toast.LENGTH_SHORT).show()
-                doOnInitializeFailed(it)
-            }else/*(it.all { status -> status == INITIAL_SUCCESS })*/ {
-                Toast.makeText(mainActivity, "初期化成功 $it", Toast.LENGTH_SHORT).show()
-                doOnInitializeSucceed()
-            }
-        }
-    }
-
-    private fun doOnInitializeSucceed() {
-        mainActivity.startEditorFragment()
-    }
-
-    private fun doOnInitializeFailed(statusList: List<Int>) {
-        val failedList = statusList.mapIndexedNotNull { index, status -> if(status == INITIAL_FAILED) index else null }
-        failedList.forEach {
-            when(it) {
-                INITIALIZED_API_KEY -> {
-                    Toast.makeText(mainActivity, "api keyが初期化されていないよ", Toast.LENGTH_SHORT).show()
+                val success = it.isNotEmpty()
+                if(success){
+                    initialize()
+                } else {
                     binding.apply {
                         notionOauthContainer.visibility = View.VISIBLE
                         notionOauthButton.setOnClickListener {
@@ -123,24 +93,27 @@ class InitialFragment : Fragment() {
                         }
                     }
                 }
-                INITIALIZED_NOTIFY_PERMISSION -> {
-
-                }
             }
         }
     }
 
+    private fun checkNotifyPermission() {
+        MainScope().launch {
+            delay(1000)
+            val success = mainActivity.hasNotifyPermission()
+            if(success) {
+                initialize()
+            } else {
+                /* todo: permissionの取得 */
+            }
+        }
+    }
+
+    private fun doOnInitializeSucceed() {
+        mainActivity.startEditorFragment()
+    }
+
     companion object {
-        const val INITIAL_FAILED = -1
-        const val INITIAL_SUCCESS = 1
-        const val INITIAL_IN_PROGRESS = 0
-
-        const val INITIAL_STATUS_SIZE = 2
-
-        const val INITIALIZED_API_KEY = 0
-        const val INITIALIZED_NOTIFY_PERMISSION = 1
-
-
         @JvmStatic
         fun newInstance() = InitialFragment()
 

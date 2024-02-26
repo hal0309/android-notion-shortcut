@@ -81,9 +81,9 @@ class MainActivity : AppCompatActivity() {
             }
             else -> {
                 MainScope().launch {
-                    dataStore.edit { preferences ->
-                        preferences[PreferenceKeys.NOTION_API_KEY] = ""
-                    }
+//                    dataStore.edit { preferences ->
+//                        preferences[PreferenceKeys.NOTION_API_KEY] = ""
+//                    }
                     startInitialFragment()
                 }
 
