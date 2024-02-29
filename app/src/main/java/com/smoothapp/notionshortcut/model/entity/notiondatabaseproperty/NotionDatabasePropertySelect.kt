@@ -45,6 +45,17 @@ class NotionDatabasePropertySelect(
         private const val ID_INDEX = 2
 
         private const val SET_SIZE = 3
+
+        fun fromParent(property: NotionDatabaseProperty): NotionDatabasePropertySelect {
+            val contents = property.getContents()
+            return NotionDatabasePropertySelect(
+                property.getName(),
+                property.getId(),
+                contents[NAME_INDEX],
+                contents[COLOR_INDEX]?.let { NotionColorEnum.fromString(it) },
+                property.getParentUUID()
+            )
+        }
     }
 }
 

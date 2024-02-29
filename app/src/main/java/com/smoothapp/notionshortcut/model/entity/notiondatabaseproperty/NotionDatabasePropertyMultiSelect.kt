@@ -47,6 +47,24 @@ class NotionDatabasePropertyMultiSelect(
         private const val ID_INDEX = 2
 
         private const val SET_SIZE = 3
+
+        fun fromParent(property: NotionDatabaseProperty): NotionDatabasePropertyMultiSelect {
+            val contents = property.getContents()
+            val size = contents.size / SET_SIZE
+            val multiSelectName: MutableList<String> = mutableListOf()
+            val multiSelectColor: MutableList<NotionColorEnum?> = mutableListOf()
+            for(i in 0 until size){
+                multiSelectName.add(contents[i* SET_SIZE + NAME_INDEX]!!)
+                multiSelectColor.add(NotionColorEnum.fromString(contents[i* SET_SIZE + COLOR_INDEX]!!))
+            }
+            return NotionDatabasePropertyMultiSelect(
+                property.getName(),
+                property.getId(),
+                multiSelectName,
+                multiSelectColor,
+                property.getParentUUID()
+            )
+        }
     }
 }
 

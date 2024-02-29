@@ -81,6 +81,27 @@ class NotionDatabasePropertyDate(
         private const val OPTIONAL_IS_TO_DATE_ENABLED_INDEX = 3
 
         private const val SET_SIZE = 4
+
+
+        fun fromParent(property: NotionDatabaseProperty): NotionDatabasePropertyDate {
+            val contents = property.getContents()
+            // todo: constructorによる変換でいいのか
+//            val dateFrom = NotionDateTimeUtil.convertFromString(contents[FROM_INDEX]!!)
+//            val dateTo = NotionDateTimeUtil.convertFromString(contents[TO_INDEX]!!)
+            val dateFrom = contents[FROM_INDEX]?.let { NotionDateTime(it) }
+            val dateTo = contents[TO_INDEX]?.let { NotionDateTime(it) }
+            val optionalIsTimeEnabled = contents[OPTIONAL_IS_TIME_ENABLED_INDEX]!!.toBoolean()
+            val optionalIsToDateEnabled = contents[OPTIONAL_IS_TO_DATE_ENABLED_INDEX]!!.toBoolean()
+            return NotionDatabasePropertyDate(
+                property.getName(),
+                property.getId(),
+                dateFrom,
+                dateTo,
+                optionalIsTimeEnabled,
+                optionalIsToDateEnabled,
+                property.getParentUUID()
+            )
+        }
     }
 }
 

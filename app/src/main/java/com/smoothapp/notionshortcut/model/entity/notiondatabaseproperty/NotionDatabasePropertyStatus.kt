@@ -71,6 +71,17 @@ class NotionDatabasePropertyStatus(
         private const val GROUP_ID_INDEX = 5
 
         private const val SET_SIZE = 6
+
+        fun fromParent(property: NotionDatabaseProperty): NotionDatabasePropertyStatus {
+            val contents = property.getContents()
+            return NotionDatabasePropertyStatus(
+                property.getName(),
+                property.getId(),
+                contents[NAME_INDEX],
+                contents[COLOR_INDEX]?.let { NotionColorEnum.fromString(it) },
+                property.getParentUUID()
+            )
+        }
     }
 }
 

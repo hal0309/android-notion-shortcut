@@ -25,6 +25,16 @@ class NotionDatabasePropertyCheckbox(
 
     fun getCheckbox(): Boolean = checkbox
 
+    companion object {
+        fun fromParent(property: NotionDatabaseProperty): NotionDatabasePropertyCheckbox {
+            return NotionDatabasePropertyCheckbox(
+                property.getName(),
+                property.getId(),
+                property.getContents()[0]?.toBoolean() ?: false,
+                property.getParentUUID()
+            )
+        }
+    }
 }
 
 

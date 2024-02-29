@@ -22,6 +22,18 @@ class NotionDatabasePropertyTitle(
     }
 
     fun getTitle(): String? = title
+
+    companion object {
+        fun fromParent(property: NotionDatabaseProperty): NotionDatabasePropertyTitle {
+            return NotionDatabasePropertyTitle(
+                property.getName(),
+                property.getId(),
+                property.getContents()[0],
+                property.getParentUUID()
+            )
+        }
+    }
+
 }
 
 
