@@ -12,7 +12,8 @@ class NotionPostTemplate(
     val title: String,
     val dbId: String,
     val dbTitle: String,
-    val uuid : String = UUID.randomUUID().toString()
+    val uuid : String = UUID.randomUUID().toString(),
+    val roles: List<String> = listOf()
 ){
 
     @Ignore private var propertyList: List<NotionDatabaseProperty> = listOf()
