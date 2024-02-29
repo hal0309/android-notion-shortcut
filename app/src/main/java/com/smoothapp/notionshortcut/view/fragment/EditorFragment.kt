@@ -6,10 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.smoothapp.notionshortcut.controller.util.NotionApiGetUtil
-import com.smoothapp.notionshortcut.controller.util.SecretTestUtil
 import com.smoothapp.notionshortcut.databinding.FragmentEditorBinding
 import com.smoothapp.notionshortcut.model.entity.NotionPostTemplate
 import com.smoothapp.notionshortcut.model.entity.get.NotionDatabase
@@ -21,8 +19,6 @@ import com.smoothapp.notionshortcut.view.fragment.editor.NotionDatabaseSelectorF
 import com.smoothapp.notionshortcut.view.fragment.editor.TemplateSelectorFragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -166,73 +162,7 @@ class EditorFragment : Fragment() {
                                     }
                                 }
                                 propertyList(p)
-//                                propertyList(
-//                                    listOf(
-//                                        NotionDatabaseProperty(
-//                                            NotionApiPropertyEnum.TITLE,
-//                                            "title",
-//                                            "testID",
-//                                            listOf("title"),
-//                                            getUUID()
-//                                        ),
-//                                        NotionDatabaseProperty(
-//                                            NotionApiPropertyEnum.RICH_TEXT,
-//                                            "rich text",
-//                                            "testID",
-//                                            listOf("rich text"),
-//                                            getUUID()
-//                                        ),
-//                                        NotionDatabaseProperty(
-//                                            NotionApiPropertyEnum.NUMBER,
-//                                            "number",
-//                                            "testID",
-//                                            listOf("number"),
-//                                            getUUID()
-//                                        ),
-//                                        NotionDatabaseProperty(
-//                                            NotionApiPropertyEnum.CHECKBOX,
-//                                            "checkbox",
-//                                            "testID",
-//                                            listOf("checkbox"),
-//                                            getUUID()
-//                                        ),
-//                                        NotionDatabaseProperty(
-//                                            NotionApiPropertyEnum.SELECT,
-//                                            "select",
-//                                            "testID",
-//                                            listOf("select"),
-//                                            getUUID()
-//                                        ),
-//                                        NotionDatabaseProperty(
-//                                            NotionApiPropertyEnum.MULTI_SELECT,
-//                                            "multi select",
-//                                            "testID",
-//                                            listOf("multi select"),
-//                                            getUUID()
-//                                        ),
-//                                        NotionDatabaseProperty(
-//                                            NotionApiPropertyEnum.STATUS,
-//                                            "status",
-//                                            "testID",
-//                                            listOf("status"),
-//                                            getUUID()
-//                                        ),
-//                                        NotionDatabaseProperty(
-//                                            NotionApiPropertyEnum.RELATION,
-//                                            "relation",
-//                                            "testID",
-//                                            listOf("relation"),
-//                                            getUUID()
-//                                        ),
-//                                        NotionDatabaseProperty(
-//                                            NotionApiPropertyEnum.DATE,
-//                                            "date",
-//                                            "testID",
-//                                            listOf("date"),
-//                                            getUUID()
-//                                        )
-//                                    )
-//                                )
+                                setRole("SHORTCUT_1")
                             }
                             MainScope().launch {
                                 withContext(Dispatchers.IO){

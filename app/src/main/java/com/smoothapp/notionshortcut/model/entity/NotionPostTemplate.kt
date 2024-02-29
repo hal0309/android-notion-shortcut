@@ -3,7 +3,6 @@ package com.smoothapp.notionshortcut.model.entity
 import androidx.room.Entity
 import androidx.room.Ignore
 import com.smoothapp.notionshortcut.model.constant.NotionColorEnum
-import com.smoothapp.notionshortcut.model.entity.get.NotionDatabase
 import com.smoothapp.notionshortcut.model.entity.notiondatabaseproperty.NotionDatabaseProperty
 import java.util.UUID
 
@@ -13,7 +12,7 @@ class NotionPostTemplate(
     val dbId: String,
     val dbTitle: String,
     val uuid : String = UUID.randomUUID().toString(),
-    val roles: List<String> = listOf()
+    var roles: List<String> = listOf()
 ){
 
     @Ignore private var propertyList: List<NotionDatabaseProperty> = listOf()
@@ -21,6 +20,10 @@ class NotionPostTemplate(
     // todo: 恐らく機能しない
     override fun equals(other: Any?): Boolean {
         return super.equals(other)
+    }
+
+    fun setRole(role: String) {
+        roles = roles + role
     }
 
     // get/setPropertyList という名前はJVM signatureが衝突するため使用不可

@@ -14,32 +14,18 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:padding="5dp"
-        android:background="@drawable/shape_corner_5"
+        android:background="@color/white"
+        android:elevation="4dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
-
-        <TextView
-            android:id="@+id/circle"
-            android:layout_width="0dp"
-            android:layout_height="45dp"
-            android:layout_marginStart="10dp"
-            android:background="@drawable/shape_circle_red"
-            android:gravity="center"
-            android:text="H"
-            android:textColor="@color/gray"
-            android:textSize="20dp"
-            android:textStyle="bold"
-            app:layout_constraintDimensionRatio="1:1"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="60dp"
-            app:layout_constraintStart_toEndOf="@id/circle"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:orientation="vertical">
@@ -125,22 +111,22 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="60dp"
-        android:layout_height="0dp"
-        android:background="@drawable/shape_corner_right_5"
-        app:layout_constraintTop_toTopOf="@id/container"
-        app:layout_constraintBottom_toBottomOf="@id/container"
-        app:layout_constraintEnd_toEndOf="parent">
+<!--    <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--        android:layout_width="60dp"-->
+<!--        android:layout_height="0dp"-->
+<!--        android:background="@drawable/shape_corner_right_5"-->
+<!--        app:layout_constraintTop_toTopOf="@id/container"-->
+<!--        app:layout_constraintBottom_toBottomOf="@id/container"-->
+<!--        app:layout_constraintEnd_toEndOf="parent">-->
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="編集"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+<!--        <TextView-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="編集"-->
+<!--            app:layout_constraintTop_toTopOf="parent"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"/>-->
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+<!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
 </androidx.constraintlayout.widget.ConstraintLayout>
