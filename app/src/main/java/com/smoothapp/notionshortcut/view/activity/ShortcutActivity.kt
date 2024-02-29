@@ -1,15 +1,21 @@
 package com.smoothapp.notionshortcut.view.activity
 
+import android.content.Intent
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.widget.Toast
 import com.smoothapp.notionshortcut.R
+import com.smoothapp.notionshortcut.controller.provider.NotionApiProvider
 import com.smoothapp.notionshortcut.controller.util.NotionApiPostUtil
 import com.smoothapp.notionshortcut.controller.util.SecretTestUtil
 import com.smoothapp.notionshortcut.databinding.ActivityShortcutBinding
 import com.smoothapp.notionshortcut.model.constant.NotionApiPropertyEnum
 import com.smoothapp.notionshortcut.model.constant.NotionApiPropertyStatusEnum
 import com.smoothapp.notionshortcut.model.constant.NotionColorEnum
+import com.smoothapp.notionshortcut.model.constant.PreferenceKeys
 import com.smoothapp.notionshortcut.model.entity.NotionDateTime
 import com.smoothapp.notionshortcut.model.entity.NotionPostTemplate
 import com.smoothapp.notionshortcut.model.entity.notiondatabaseproperty.NotionDatabaseProperty
@@ -26,11 +32,14 @@ import com.smoothapp.notionshortcut.view.component.notionshortcut.ShortcutRootVi
 import com.smoothapp.notionshortcut.view.component.notionshortcut.mainelement.ShortcutDateView
 import com.smoothapp.notionshortcut.view.component.notionshortcut.mainelement.ShortcutStatusView
 import com.smoothapp.notionshortcut.view.component.notionshortcut.mainelement.select.BaseShortcutSelectView
+import com.smoothapp.notionshortcut.view.dataStore
 import com.smoothapp.notionshortcut.view.fragment.shortcut.NotionDateFragment
 import com.smoothapp.notionshortcut.view.fragment.shortcut.NotionSelectFragment
 import com.smoothapp.notionshortcut.view.fragment.shortcut.NotionStatusFragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
@@ -47,6 +56,19 @@ class ShortcutActivity : AppCompatActivity() {
         binding = ActivityShortcutBinding.inflate(layoutInflater)
         setContentView(binding.root)
         window.statusBarColor = this.getColor(R.color.transparent)
+
+
+        /* preferenceとの通信 */
+        MainScope().launch {
+            dataStore.data.map { preferences ->
+                preferences[PreferenceKeys.NOTION_API_KEY] ?: ""
+            }.take(1).collect{
+                NotionApiProvider.setApiKey(it)
+                val success = it.isNotEmpty()
+                /* todo: apikeyの取得失敗時の処理、取得待機処理 */
+                if(success){ } else { }
+            }
+        }
 
         binding.apply {
             root.setOnClickListener {

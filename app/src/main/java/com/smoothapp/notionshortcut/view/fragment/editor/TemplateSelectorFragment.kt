@@ -10,6 +10,7 @@ import com.smoothapp.notionshortcut.databinding.FragmentTemplateSelectorBinding
 import com.smoothapp.notionshortcut.model.entity.NotionPostTemplate
 import com.smoothapp.notionshortcut.view.activity.MainActivity
 import com.smoothapp.notionshortcut.view.adapter.TemplateListAdapter
+import com.smoothapp.notionshortcut.view.component.template.TemplatePropertyView
 import com.smoothapp.notionshortcut.view.fragment.EditorFragment
 
 
@@ -40,20 +41,39 @@ class TemplateSelectorFragment : Fragment() {
                 }
             })
 
-            recyclerView.apply {
-                adapter = listAdapter
-                layoutManager = LinearLayoutManager(context)
-            }
-
-
             viewModel.allTemplateWithProperty.observe(viewLifecycleOwner) {
                 val templates = it.map { templateWithProperty ->
                     templateWithProperty.template.apply {
                         propertyList(templateWithProperty.propertyList)
                     }
                 }
-                listAdapter?.submitList(templates)
+
+                val tmp = templates.first { it.roles.contains("SHORTCUT_1") }
+
+                title.text = tmp.title
+                propertyContainer.removeAllViews()
+                for (property in tmp.propertyList()) {
+                    val view = TemplatePropertyView(root.context, type = property.getType(), name = property.getName())
+                    propertyContainer.addView(view)
+                }
             }
+
+
+
+            recyclerView.apply {
+                adapter = listAdapter
+                layoutManager = LinearLayoutManager(context)
+            }
+
+
+//            viewModel.allTemplateWithProperty.observe(viewLifecycleOwner) {
+//                val templates = it.map { templateWithProperty ->
+//                    templateWithProperty.template.apply {
+//                        propertyList(templateWithProperty.propertyList)
+//                    }
+//                }
+//                listAdapter?.submitList(templates)
+//            }
             return root
         }
     }
