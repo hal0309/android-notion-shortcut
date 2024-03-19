@@ -21,7 +21,7 @@ class ShortcutNumberView @JvmOverloads constructor(
         inflate(context, R.layout.view_shortcut_number, this)
         binding = ViewShortcutNumberBinding.bind(this)
         binding.apply {
-            name.text = property.getName()
+            textField.hint = property.getName()
             content.setText(property.getNumber())
             content.doOnTextChanged { text, _, _, _ ->
                 property.updateContents(text?.toString())

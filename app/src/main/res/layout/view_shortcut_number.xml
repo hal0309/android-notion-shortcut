@@ -1,25 +1,33 @@
-<merge
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:orientation="horizontal">
-        <TextView
-            android:id="@+id/name"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="9"
-            android:gravity="center"
-            android:text="number"/>
-        <androidx.appcompat.widget.AppCompatEditText
-            android:id="@+id/content"
-            android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textField"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="3"
-            android:background="@color/transparent"
-            android:ems="10"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:inputType="numberSigned|numberDecimal"/>
+            android:layout_marginTop="16dp"
+            android:hint="number"
+            app:endIconMode="clear_text">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/transparent"
+                android:ems="10"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:inputType="numberSigned|numberDecimal"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.divider.MaterialDivider
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:dividerInsetStart="16dp"/>
+
     </androidx.appcompat.widget.LinearLayoutCompat>
 </merge>

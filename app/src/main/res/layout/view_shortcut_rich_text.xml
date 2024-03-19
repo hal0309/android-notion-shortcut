@@ -3,12 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
-        android:layout_height="70dp"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/textField"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:hint="rich_text"
             app:endIconMode="clear_text">
 
@@ -24,6 +24,10 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
+        <com.google.android.material.divider.MaterialDivider
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:dividerInsetStart="16dp"/>
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 </merge>
