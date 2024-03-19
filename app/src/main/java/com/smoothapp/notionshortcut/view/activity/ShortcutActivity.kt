@@ -1,9 +1,13 @@
 package com.smoothapp.notionshortcut.view.activity
 
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.activity.viewModels
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.smoothapp.notionshortcut.R
 import com.smoothapp.notionshortcut.controller.provider.NotionApiProvider
 import com.smoothapp.notionshortcut.controller.util.NotionApiPostUtil
@@ -56,6 +60,13 @@ class ShortcutActivity : AppCompatActivity() {
         setContentView(binding.root)
         window.statusBarColor = this.getColor(R.color.transparent)
 
+//        /* bottom sheetのテスト */
+//        val modalBottomSheet = ModalBottomSheet()
+//        val modalBottomSheetBehavior = (modalBottomSheet.dialog as BottomSheetDialog).behavior
+//        modalBottomSheetBehavior.isDraggable = false
+//        modalBottomSheet.show(supportFragmentManager, ModalBottomSheet.TAG)
+
+
 
         /* preferenceとの通信 */
         MainScope().launch {
@@ -72,6 +83,24 @@ class ShortcutActivity : AppCompatActivity() {
         }
 
         binding.apply {
+
+            val sheetColor = resources.getColor(R.color.gray, theme)
+            val sheetColorList = listOf(
+                Color.red(sheetColor),
+                Color.green(sheetColor),
+                Color.blue(sheetColor)
+            )
+            /*bottomsheet に callbackを追加*/
+            val bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
+            bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+                override fun onStateChanged(bottomSheet: View, newState: Int) {}
+
+                override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                    val alpha = slideOffset
+                    val color = Color.argb((alpha * 255).toInt(), sheetColorList[0], sheetColorList[1], sheetColorList[2])
+                    window.setBackgroundDrawable(ColorDrawable(color))
+                }
+            })
 
             viewModel.allTemplateWithProperty.observe(this@ShortcutActivity) {
                 val templates = it.map { templateWithProperty ->
@@ -171,7 +200,7 @@ class ShortcutActivity : AppCompatActivity() {
     }
 
     private fun ShortcutRootView.setTemplate(template: NotionPostTemplate) {
-        for (property in template.propertyList()) {
+        for (property in template.propertyList().reversed()) {
             when (property.getType()) {
                 NotionApiPropertyEnum.TITLE -> addTitleBlock(NotionDatabasePropertyTitle.fromParent(property))
                 NotionApiPropertyEnum.RICH_TEXT -> addRichTextBlock(NotionDatabasePropertyRichText.fromParent(property))
