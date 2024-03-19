@@ -27,4 +27,22 @@ enum class NotionColorEnum(
         context.theme.resolveAttribute(attrId, typedValue, true)
         return typedValue.data
     }
+
+    companion object {
+        fun fromString(name: String): NotionColorEnum {
+            return when(name){
+                "default" -> DEFAULT
+                "gray" -> GRAY
+                "brown" -> BROWN
+                "orange" -> ORANGE
+                "yellow" -> YELLOW
+                "green" -> GREEN
+                "blue" -> BLUE
+                "purple" -> PURPLE
+                "pink" -> PINK
+                "red" -> RED
+                else -> throw IllegalArgumentException("NotionColorEnum: $name is not found")
+            }
+        }
+    }
 }

@@ -24,6 +24,18 @@ class NotionDatabasePropertyNumber(
     }
 
     fun getNumber(): String? = number
+
+
+    companion object {
+        fun fromParent(property: NotionDatabaseProperty): NotionDatabasePropertyNumber {
+            return NotionDatabasePropertyNumber(
+                property.getName(),
+                property.getId(),
+                property.getContents()[0],
+                property.getParentUUID()
+            )
+        }
+    }
 }
 
 

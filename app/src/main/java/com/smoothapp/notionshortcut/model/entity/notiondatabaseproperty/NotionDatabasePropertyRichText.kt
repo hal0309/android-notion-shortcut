@@ -24,6 +24,17 @@ class NotionDatabasePropertyRichText(
     }
 
     fun getRichText(): String? = richText
+
+    companion object {
+        fun fromParent(property: NotionDatabaseProperty): NotionDatabasePropertyRichText {
+            return NotionDatabasePropertyRichText(
+                property.getName(),
+                property.getId(),
+                property.getContents()[0],
+                property.getParentUUID()
+            )
+        }
+    }
 }
 
 

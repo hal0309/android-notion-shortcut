@@ -43,6 +43,24 @@ class NotionDatabasePropertyRelation(
         private const val NAME_INDEX = 1
 
         private const val SET_SIZE = 2
+
+        fun fromParent(property: NotionDatabaseProperty): NotionDatabasePropertyRelation {
+            val contents = property.getContents()
+            val size = contents.size / SET_SIZE
+            val relationId: MutableList<String> = mutableListOf()
+            val relationName: MutableList<String?> = mutableListOf()
+            for(i in 0 until size){
+                relationId.add(contents[i* SET_SIZE + ID_INDEX]!!)
+                relationName.add(contents[i* SET_SIZE + NAME_INDEX])
+            }
+            return NotionDatabasePropertyRelation(
+                property.getName(),
+                property.getId(),
+                relationId,
+                relationName,
+                property.getParentUUID()
+            )
+        }
     }
 }
 

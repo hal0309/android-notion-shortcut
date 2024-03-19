@@ -47,14 +47,14 @@ class TemplateSelectorFragment : Fragment() {
                         propertyList(templateWithProperty.propertyList)
                     }
                 }
-
-                val tmp = templates.first { it.roles.contains("SHORTCUT_1") }
-
-                title.text = tmp.title
-                propertyContainer.removeAllViews()
-                for (property in tmp.propertyList()) {
-                    val view = TemplatePropertyView(root.context, type = property.getType(), name = property.getName())
-                    propertyContainer.addView(view)
+                val tmp = templates.firstOrNull { it.roles.contains("SHORTCUT_1") }
+                if(tmp != null) {
+                    title.text = tmp.title
+                    propertyContainer.removeAllViews()
+                    for (property in tmp.propertyList()) {
+                        val view = TemplatePropertyView(root.context, type = property.getType(), name = property.getName())
+                        propertyContainer.addView(view)
+                    }
                 }
             }
 
