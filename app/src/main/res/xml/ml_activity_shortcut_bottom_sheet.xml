@@ -4,9 +4,17 @@
     xmlns:motion="http://schemas.android.com/apk/res-auto">
 
     <Transition
-        motion:constraintSetEnd="@+id/end"
+        android:id="@+id/initToStart"
+        motion:constraintSetStart="@id/init"
+        motion:constraintSetEnd="@id/start"
+        motion:duration="400">
+    </Transition>
+
+    <Transition
+        android:id="@+id/startToEnd"
         motion:constraintSetStart="@id/start"
-        motion:duration="500">
+        motion:constraintSetEnd="@+id/end"
+        motion:duration="200">
        <KeyFrameSet>
             <KeyAttribute
                 motion:motionTarget="@id/overlayContainer"
@@ -36,12 +44,30 @@
        </KeyFrameSet>
     </Transition>
 
-    <ConstraintSet android:id="@+id/start">
+    <ConstraintSet android:id="@+id/init">
 
     </ConstraintSet>
 
-    <ConstraintSet android:id="@+id/end">
+    <ConstraintSet android:id="@+id/start">
+        <Constraint
+            motion:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            motion:layout_constraintTop_toTopOf="parent"
+            motion:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="0dp"
+            android:id="@+id/horizontalSep" />
+    </ConstraintSet>
 
+    <ConstraintSet android:id="@+id/end">
+        <Constraint
+            motion:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            motion:layout_constraintTop_toTopOf="parent"
+            motion:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="0dp"
+            android:id="@+id/horizontalSep" />
         <Constraint
             android:id="@+id/overlayContainer"
             android:layout_width="0dp"

@@ -42,6 +42,7 @@ import com.smoothapp.notionshortcut.view.fragment.shortcut.NotionStatusFragment
 import com.smoothapp.notionshortcut.view.fragment.shortcut.ShortcutBottomSheetFragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
@@ -78,23 +79,9 @@ class ShortcutActivity : AppCompatActivity() {
 
         binding.apply {
 
-            val sheetColor = resources.getColor(R.color.gray, theme)
-            val sheetColorList = listOf(
-                Color.red(sheetColor),
-                Color.green(sheetColor),
-                Color.blue(sheetColor)
-            )
-            /*bottomsheet に callbackを追加*/
-            val bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
-            bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
-                override fun onStateChanged(bottomSheet: View, newState: Int) {}
 
-                override fun onSlide(bottomSheet: View, slideOffset: Float) {
-                    val alpha = slideOffset
-                    val color = Color.argb((alpha * 255).toInt(), sheetColorList[0], sheetColorList[1], sheetColorList[2])
-                    window.setBackgroundDrawable(ColorDrawable(color))
-                }
-            })
+            val bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
+
 
             viewModel.allTemplateWithProperty.observe(this@ShortcutActivity) {
                 val templates = it.map { templateWithProperty ->
@@ -128,6 +115,19 @@ class ShortcutActivity : AppCompatActivity() {
                         }
                     })
                 }
+                MainScope().launch {
+                    delay(1000)
+                    bottomSheetML.apply {
+                        setTransition(R.id.initToStart)
+                        transitionToEnd{
+                            setTransition(R.id.startToEnd)
+                        }
+                    }
+                    bottomSheetBehavior.setPeekHeight(-1, true)
+                    delay(1000)
+                    startBottomSheetColorAnimate(bottomSheetBehavior)
+                }
+
             }
 
 //            shortcutRoot.apply{
@@ -191,6 +191,25 @@ class ShortcutActivity : AppCompatActivity() {
 //            }
 
         }
+    }
+
+    private fun startBottomSheetColorAnimate(behavior: BottomSheetBehavior<*>){
+        /* bottomSheetのスライド時背景色animation */
+        val sheetColor = resources.getColor(R.color.gray, theme)
+        val sheetColorList = listOf(
+            Color.red(sheetColor),
+            Color.green(sheetColor),
+            Color.blue(sheetColor)
+        )
+        behavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {}
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                val alpha = slideOffset
+                val color = Color.argb((alpha * 255).toInt(), sheetColorList[0], sheetColorList[1], sheetColorList[2])
+                window.setBackgroundDrawable(ColorDrawable(color))
+            }
+        })
     }
 
     private fun ShortcutRootView.setTemplate(template: NotionPostTemplate) {
