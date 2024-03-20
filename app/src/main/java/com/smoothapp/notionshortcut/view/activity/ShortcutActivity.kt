@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
+import androidx.fragment.app.Fragment
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.smoothapp.notionshortcut.R
 import com.smoothapp.notionshortcut.controller.provider.NotionApiProvider
@@ -38,6 +39,7 @@ import com.smoothapp.notionshortcut.view.dataStore
 import com.smoothapp.notionshortcut.view.fragment.shortcut.NotionDateFragment
 import com.smoothapp.notionshortcut.view.fragment.shortcut.NotionSelectFragment
 import com.smoothapp.notionshortcut.view.fragment.shortcut.NotionStatusFragment
+import com.smoothapp.notionshortcut.view.fragment.shortcut.ShortcutBottomSheetFragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.map
@@ -323,10 +325,7 @@ class ShortcutActivity : AppCompatActivity() {
                         setSelectList(unselectedList, selectedList)
                     }
                 }
-                supportFragmentManager.beginTransaction()
-                    .add(binding.overlayContainer.id, fragment)
-                    .addToBackStack(null)
-                    .commit()
+                startFragmentInOverlay(fragment)
             }
         }
 
@@ -356,10 +355,7 @@ class ShortcutActivity : AppCompatActivity() {
                         setSelectList(toDoList, inProgressList, completeList, selected)
                     }
                 }
-                supportFragmentManager.beginTransaction()
-                    .add(binding.overlayContainer.id, fragment)
-                    .addToBackStack(null)
-                    .commit()
+                startFragmentInOverlay(fragment)
             }
         }
 
@@ -375,11 +371,26 @@ class ShortcutActivity : AppCompatActivity() {
                         }
                     )
                 }
-                supportFragmentManager.beginTransaction()
-                    .add(binding.overlayContainer.id, fragment)
-                    .addToBackStack(null)
-                    .commit()
+                startFragmentInOverlay(fragment)
             }
 
         }
+
+    private fun startFragmentInOverlay(fragment: ShortcutBottomSheetFragment) {
+        binding.apply {
+            supportFragmentManager.beginTransaction()
+                .add(overlayContainer.id, fragment)
+                .addToBackStack(null)
+                .commit()
+
+            bottomSheetML.transitionToEnd()
+        }
+    }
+
+    fun onFragmentInOverlayEnd(){
+        binding.apply {
+            bottomSheetML.transitionToStart()
+        }
+    }
+
 }

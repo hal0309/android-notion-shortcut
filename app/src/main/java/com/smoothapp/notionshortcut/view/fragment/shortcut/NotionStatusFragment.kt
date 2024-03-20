@@ -11,7 +11,7 @@ import com.smoothapp.notionshortcut.databinding.FragmentNotionStatusBinding
 import com.smoothapp.notionshortcut.model.entity.NotionPostTemplate
 import com.smoothapp.notionshortcut.view.adapter.NotionSelectListAdapter
 
-class NotionStatusFragment(private val title: String) : Fragment() {
+class NotionStatusFragment(private val title: String) : ShortcutBottomSheetFragment() {
 
 
     private lateinit var binding: FragmentNotionStatusBinding
