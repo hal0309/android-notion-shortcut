@@ -1,9 +1,14 @@
 package com.smoothapp.notionshortcut.view.activity
 
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.activity.viewModels
+import androidx.fragment.app.Fragment
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.smoothapp.notionshortcut.R
 import com.smoothapp.notionshortcut.controller.provider.NotionApiProvider
 import com.smoothapp.notionshortcut.controller.util.NotionApiPostUtil
@@ -34,8 +39,10 @@ import com.smoothapp.notionshortcut.view.dataStore
 import com.smoothapp.notionshortcut.view.fragment.shortcut.NotionDateFragment
 import com.smoothapp.notionshortcut.view.fragment.shortcut.NotionSelectFragment
 import com.smoothapp.notionshortcut.view.fragment.shortcut.NotionStatusFragment
+import com.smoothapp.notionshortcut.view.fragment.shortcut.ShortcutBottomSheetFragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
@@ -56,7 +63,6 @@ class ShortcutActivity : AppCompatActivity() {
         setContentView(binding.root)
         window.statusBarColor = this.getColor(R.color.transparent)
 
-
         /* preferenceとの通信 */
         MainScope().launch {
             dataStore.data.map { preferences ->
@@ -72,6 +78,10 @@ class ShortcutActivity : AppCompatActivity() {
         }
 
         binding.apply {
+
+
+            val bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
+
 
             viewModel.allTemplateWithProperty.observe(this@ShortcutActivity) {
                 val templates = it.map { templateWithProperty ->
@@ -105,6 +115,19 @@ class ShortcutActivity : AppCompatActivity() {
                         }
                     })
                 }
+                MainScope().launch {
+                    delay(1000)
+                    bottomSheetML.apply {
+                        setTransition(R.id.initToStart)
+                        transitionToEnd{
+                            setTransition(R.id.startToEnd)
+                        }
+                    }
+                    bottomSheetBehavior.setPeekHeight(-1, true)
+                    delay(1000)
+                    startBottomSheetColorAnimate(bottomSheetBehavior)
+                }
+
             }
 
 //            shortcutRoot.apply{
@@ -170,8 +193,27 @@ class ShortcutActivity : AppCompatActivity() {
         }
     }
 
+    private fun startBottomSheetColorAnimate(behavior: BottomSheetBehavior<*>){
+        /* bottomSheetのスライド時背景色animation */
+        val sheetColor = resources.getColor(R.color.gray, theme)
+        val sheetColorList = listOf(
+            Color.red(sheetColor),
+            Color.green(sheetColor),
+            Color.blue(sheetColor)
+        )
+        behavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {}
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                val alpha = slideOffset
+                val color = Color.argb((alpha * 255).toInt(), sheetColorList[0], sheetColorList[1], sheetColorList[2])
+                window.setBackgroundDrawable(ColorDrawable(color))
+            }
+        })
+    }
+
     private fun ShortcutRootView.setTemplate(template: NotionPostTemplate) {
-        for (property in template.propertyList()) {
+        for (property in template.propertyList().reversed()) {
             when (property.getType()) {
                 NotionApiPropertyEnum.TITLE -> addTitleBlock(NotionDatabasePropertyTitle.fromParent(property))
                 NotionApiPropertyEnum.RICH_TEXT -> addRichTextBlock(NotionDatabasePropertyRichText.fromParent(property))
@@ -294,10 +336,7 @@ class ShortcutActivity : AppCompatActivity() {
                         setSelectList(unselectedList, selectedList)
                     }
                 }
-                supportFragmentManager.beginTransaction()
-                    .add(binding.overlayContainer.id, fragment)
-                    .addToBackStack(null)
-                    .commit()
+                startFragmentInOverlay(fragment)
             }
         }
 
@@ -327,10 +366,7 @@ class ShortcutActivity : AppCompatActivity() {
                         setSelectList(toDoList, inProgressList, completeList, selected)
                     }
                 }
-                supportFragmentManager.beginTransaction()
-                    .add(binding.overlayContainer.id, fragment)
-                    .addToBackStack(null)
-                    .commit()
+                startFragmentInOverlay(fragment)
             }
         }
 
@@ -346,11 +382,26 @@ class ShortcutActivity : AppCompatActivity() {
                         }
                     )
                 }
-                supportFragmentManager.beginTransaction()
-                    .add(binding.overlayContainer.id, fragment)
-                    .addToBackStack(null)
-                    .commit()
+                startFragmentInOverlay(fragment)
             }
 
         }
+
+    private fun startFragmentInOverlay(fragment: ShortcutBottomSheetFragment) {
+        binding.apply {
+            supportFragmentManager.beginTransaction()
+                .add(overlayContainer.id, fragment)
+                .addToBackStack(null)
+                .commit()
+
+            bottomSheetML.transitionToEnd()
+        }
+    }
+
+    fun onFragmentInOverlayEnd(){
+        binding.apply {
+            bottomSheetML.transitionToStart()
+        }
+    }
+
 }

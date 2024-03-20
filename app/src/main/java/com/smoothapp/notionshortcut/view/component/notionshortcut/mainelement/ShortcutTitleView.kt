@@ -21,7 +21,7 @@ class ShortcutTitleView @JvmOverloads constructor(
         inflate(context, R.layout.view_shortcut_title, this)
         binding = ViewShortcutTitleBinding.bind(this)
         binding.apply {
-            content.hint = property.getName()
+            textField.hint = property.getName()
             content.setText(property.getTitle())
             content.doOnTextChanged { text, _, _, _ ->
                 property.updateContents(text?.toString())

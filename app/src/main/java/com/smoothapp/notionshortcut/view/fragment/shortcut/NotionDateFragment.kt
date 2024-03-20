@@ -12,7 +12,7 @@ import com.smoothapp.notionshortcut.controller.util.NotionDateTimeUtil
 import com.smoothapp.notionshortcut.databinding.FragmentNotionDateBinding
 import com.smoothapp.notionshortcut.model.entity.notiondatabaseproperty.NotionDatabasePropertyDate
 
-class NotionDateFragment(private val property: NotionDatabasePropertyDate) : Fragment() {
+class NotionDateFragment(private val property: NotionDatabasePropertyDate) : ShortcutBottomSheetFragment() {
 
 
     private lateinit var binding: FragmentNotionDateBinding

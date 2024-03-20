@@ -12,7 +12,7 @@ import com.smoothapp.notionshortcut.databinding.FragmentNotionSelectBinding
 import com.smoothapp.notionshortcut.model.entity.NotionPostTemplate
 import com.smoothapp.notionshortcut.view.adapter.NotionSelectListAdapter
 
-class NotionSelectFragment(private val title: String) : Fragment() {
+class NotionSelectFragment(private val title: String) : ShortcutBottomSheetFragment() {
 
 
     private lateinit var binding: FragmentNotionSelectBinding
