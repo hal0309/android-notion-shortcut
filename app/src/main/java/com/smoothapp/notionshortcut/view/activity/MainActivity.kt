@@ -52,8 +52,9 @@ class MainActivity : AppCompatActivity() {
 
         //todo: 削除 テスト用
 //        deleteDatabase("app_database")
-
-        // todo: 正規処理の作成
+        val intent = Intent(this, ShortcutActivity::class.java)
+        startActivity(intent)
+        return
 
         
 //        initialize()

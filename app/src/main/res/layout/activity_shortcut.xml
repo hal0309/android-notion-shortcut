@@ -18,6 +18,11 @@
         android:elevation="1dp"
         >
 
+        <com.google.android.material.bottomsheet.BottomSheetDragHandleView
+            android:id="@+id/drag_handle"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"/>
+
         <androidx.constraintlayout.motion.widget.MotionLayout
             android:id="@+id/bottomSheetML"
             android:layout_width="match_parent"
@@ -26,40 +31,40 @@
 
             <com.smoothapp.notionshortcut.view.component.notionshortcut.ShortcutRootView
                 android:id="@+id/shortcutRoot"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                app:layout_constraintEnd_toEndOf="@id/sep"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <View
-                android:id="@+id/sep"
-                android:layout_width="1dp"
-                android:layout_height="1dp"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginTop="40dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="1"/>
+                app:layout_constraintTop_toTopOf="parent" />
+
+<!--            <View-->
+<!--                android:id="@+id/sep"-->
+<!--                android:layout_width="1dp"-->
+<!--                android:layout_height="1dp"-->
+<!--                app:layout_constraintTop_toTopOf="parent"-->
+<!--                app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                app:layout_constraintStart_toStartOf="parent"-->
+<!--                app:layout_constraintEnd_toEndOf="parent"-->
+<!--                app:layout_constraintHorizontal_bias="1"/>-->
 
             <!--   widthをmatch parentにしたいが上手くいかない(覆いかぶさってしまう)         -->
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/overlayContainer"
-                android:layout_width="500dp"
+                android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:background="@color/black"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="@id/sep"
-                app:layout_constraintTop_toTopOf="parent">
+                android:layout_marginTop="40dp"
+                android:alpha="0"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent">
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.constraintlayout.motion.widget.MotionLayout>
 
-        <com.google.android.material.bottomsheet.BottomSheetDragHandleView
-            android:id="@+id/drag_handle"
-            android:layout_width="match_parent"
-            android:layout_height="80dp"/>
+
 
 
 
