@@ -62,14 +62,6 @@ class ShortcutActivity : AppCompatActivity() {
         setContentView(binding.root)
         window.statusBarColor = this.getColor(R.color.transparent)
 
-//        /* bottom sheetのテスト */
-//        val modalBottomSheet = ModalBottomSheet()
-//        val modalBottomSheetBehavior = (modalBottomSheet.dialog as BottomSheetDialog).behavior
-//        modalBottomSheetBehavior.isDraggable = false
-//        modalBottomSheet.show(supportFragmentManager, ModalBottomSheet.TAG)
-
-
-
         /* preferenceとの通信 */
         MainScope().launch {
             dataStore.data.map { preferences ->
