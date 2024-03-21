@@ -2,13 +2,17 @@ package com.smoothapp.notionshortcut.view.fragment
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
+import com.smoothapp.notionshortcut.controller.db.AppDatabase
 import com.smoothapp.notionshortcut.controller.util.NotionApiGetUtil
 import com.smoothapp.notionshortcut.databinding.FragmentEditorBinding
+import com.smoothapp.notionshortcut.model.constant.NotionApiPropertyEnum
+import com.smoothapp.notionshortcut.model.entity.NotionOption
 import com.smoothapp.notionshortcut.model.entity.NotionPostTemplate
 import com.smoothapp.notionshortcut.model.entity.get.NotionDatabase
 import com.smoothapp.notionshortcut.model.entity.get.PageOrDatabase
@@ -140,18 +144,59 @@ class EditorFragment : Fragment() {
                     showLargeBalloon("database detail: $notionDatabase", object : CharacterFragment.LargeBalloonListener {
                         override fun onCanceled() {
                             viewModel.setBalloonText("Select database ...")
+                            val dbId = notionDatabase.id
+
                             val template = NotionPostTemplate(
                                 notionDatabase.title.toString(),
-                                notionDatabase.id,
+                                dbId,
                                 notionDatabase.title.toString(),
 
                             ).apply {
                                 val p: MutableList<NotionDatabaseProperty> = mutableListOf()
                                 for (key in notionDatabase.properties.keys) {
                                     try {
+                                        val value = notionDatabase.properties[key] as Map<String, Any>
+                                        val type = NotionApiPropertyEnum.from(value["type"] as String)
+                                        val options = mutableListOf<NotionOption>()
+                                        when(type){
+                                            NotionApiPropertyEnum.SELECT, NotionApiPropertyEnum.MULTI_SELECT, NotionApiPropertyEnum.STATUS -> {
+                                                val propertyId = value["id"] as String
+                                                val property = value[type.key] as Map<String, Any>
+                                                val optionsMap = property["options"] as List<Map<String, Any>>
+                                                for (o in optionsMap){
+                                                    val name = o["name"] as String
+                                                    val id = o["id"] as String
+                                                    val color = o["color"] as String
+                                                    val option = NotionOption(dbId, propertyId, id, name, color, null, null)
+                                                    println(option)
+                                                    options.add(option)
+                                                }
+
+                                                if(type == NotionApiPropertyEnum.STATUS){
+                                                    val groupsMap = property["groups"] as List<Map<String, Any>>
+                                                    for (g in groupsMap){
+                                                        val groupId = g["id"] as String
+                                                        val groupName = g["name"] as String
+                                                        val optionIds = g["option_ids"] as List<String>
+                                                        for (optionId in optionIds){
+                                                            val option = options.first { it.id == optionId }
+                                                            option.groupId = groupId
+                                                            option.groupName = groupName
+                                                        }
+                                                    }
+                                                }
+                                                MainScope().launch {
+                                                    withContext(Dispatchers.IO){
+                                                        AppDatabase.getInstance(requireContext()).notionOptionDao().insertAll(options)
+                                                    }
+                                                }
+                                            }
+                                            else -> {}
+                                        }
+
                                         val property = NotionDatabaseProperty.from(
                                             key,
-                                            notionDatabase.properties[key] as Map<String, Any>,
+                                            value,
                                             getUUID()
                                         )
                                         p.add(
