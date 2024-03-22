@@ -20,6 +20,14 @@ class NotionApiGetUtil {
         fun doOnEndAll(pageOrDatabaseList: List<PageOrDatabase>)
     }
 
+    interface QueryDatabaseListener {
+
+        fun doOnUpdate(total: Int){}
+
+        fun doOnEndGetApi(total: Int){}
+        fun doOnEnd(resultMapList: List<Map<String, Any>>)
+    }
+
     suspend fun getDatabaseDetail(dbId: String, listener: GetDatabaseDetailListener) = withContext(Dispatchers.IO) {
         val provider = NotionApiProvider()
 
@@ -127,8 +135,49 @@ class NotionApiGetUtil {
 
     }
 
-    private fun unveilTitle(title: List<Map<String, Any>>): String?{
+    fun unveilTitle(title: List<Map<String, Any>>): String?{
         if(title.isEmpty()) return null
         return (title[0]["text"] as Map<String, String?>)["content"]
+    }
+
+    fun searchTitleNameKey(properties: Map<String, Any>): String? {
+        for (value in properties.values) {
+            value as Map<String, Any>
+            if (value["type"] == "title") {
+                return properties.keys.first { properties[it] == value }
+            }
+        }
+        return null
+    }
+
+    suspend fun queryDatabase(dbId: String, listener: QueryDatabaseListener) = withContext(Dispatchers.IO) {
+        val provider = NotionApiProvider()
+        var nextCursor: String? = null
+        val resultMapList: MutableList<Map<String, Any>> = mutableListOf()
+
+        launch {
+            do {
+                val response = provider.queryDatabase(dbId, startCursor = nextCursor)
+                val map = ApiCommonUtil.jsonStringToMap(response)
+                // keys error [object, status, code, message, request_id]
+                // keys correct [object, results, next_cursor, has_more, type, page_or_database, request_id]
+
+                if("results" !in map.keys) throw IllegalApiStateException("query database no results")
+
+                nextCursor = map["next_cursor"] as String?
+                resultMapList.addAll(map["results"] as List<Map<String, Any>>)
+
+                withContext(Dispatchers.Main){
+                    listener.doOnUpdate(resultMapList.size)
+                }
+            }while (nextCursor != null)
+
+            listener.doOnEndGetApi(resultMapList.size)
+
+            withContext(Dispatchers.Main){
+                listener.doOnEnd(resultMapList)
+            }
+        }
+        return@withContext resultMapList
     }
 }

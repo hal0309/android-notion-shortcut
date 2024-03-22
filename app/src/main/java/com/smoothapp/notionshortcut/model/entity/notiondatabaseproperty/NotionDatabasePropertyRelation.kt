@@ -1,5 +1,6 @@
 package com.smoothapp.notionshortcut.model.entity.notiondatabaseproperty
 
+import android.util.Log
 import com.smoothapp.notionshortcut.controller.exception.DifferentListSizeException
 import com.smoothapp.notionshortcut.model.constant.NotionApiPropertyEnum
 
@@ -30,6 +31,8 @@ class NotionDatabasePropertyRelation(
     fun updateContents(relationId: List<String>, relationName: List<String?>){
         this.relationId = relationId
         this.relationName = relationName
+        Log.d("", "relation updated property")
+        Log.d("", "relationId: $relationId relationName: $relationName")
         updateParentContents()
     }
 

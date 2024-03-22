@@ -249,42 +249,37 @@ class ShortcutActivity : AppCompatActivity() {
     }
 
     private suspend fun getSelectList(dbId: String, property: NotionDatabaseProperty) =
+//        todo: 一度アイテムを選択した後に、閉じて再度開くとアイテムが増殖してしまう
         withContext(Dispatchers.IO) {
-//            delay(500)
             return@withContext when (property.getType()) {
                 NotionApiPropertyEnum.SELECT, NotionApiPropertyEnum.MULTI_SELECT -> {
                     AppDatabase.getInstance(applicationContext).notionOptionDao().findAllInProperty(dbId, property.getId())
-//                        .map { NotionPostTemplate.Select(it.name, it.color, it.id) }
                 }
 
                 NotionApiPropertyEnum.STATUS -> {
+                    println("---start status---")
                     AppDatabase.getInstance(applicationContext).notionOptionDao().findAllInProperty(dbId, property.getId())
-//                        .map { NotionPostTemplate.Select(it.name, it.color, it.groupName) }
                 }
 
-                NotionApiPropertyEnum.RELATION -> listOf(
-//                    NotionPostTemplate.Select(
-//                        "リレーション確認1",
-//                        NotionColorEnum.DEFAULT,
-//                        "c12b6304652a443292ea47b73bee7b84"
-//                    ),
-//                    NotionPostTemplate.Select(
-//                        "リレーション確認2",
-//                        NotionColorEnum.DEFAULT,
-//                        "77b73b9fa06e4cf18eadb37b5ca713c8"
-//                    ),
-//                    NotionPostTemplate.Select(
-//                        "リレーション確認3",
-//                        NotionColorEnum.DEFAULT,
-//                        "652c65adba874f08a1fd7cc236d52b1f"
-//                    ),
-//                    NotionPostTemplate.Select(
-//                        "こいつがメイン",
-//                        NotionColorEnum.DEFAULT,
-//                        "ecd1c8b627f54ecca674a309b5826279"
-//                    )
-                )
+                NotionApiPropertyEnum.RELATION -> {
+                    val option = AppDatabase.getInstance(applicationContext).notionOptionDao().findAllInProperty(dbId, property.getId())[0] //todo: 重複管理
+                    val service = NotionApiGetUtil()
+                    val a = service.queryDatabase(option.id, object: NotionApiGetUtil.QueryDatabaseListener{
+                        override fun doOnEnd(resultMapList: List<Map<String, Any>>) {
 
+                        }
+                    } )
+                    val titleName = service.searchTitleNameKey(a[0]["properties"] as Map<String, Any>)
+                    a.map {
+                        NotionOption(
+                            NotionApiPropertyEnum.RELATION, "", "",
+                            it["id"].toString(),
+                            service.unveilTitle(((it["properties"] as Map<String, Any>)[titleName] as Map<String, Any>)["title"] as List<Map<String, Any>>)?: "",
+                            NotionColorEnum.DEFAULT,
+                            null, null
+                        )
+                    }
+                }
                 else -> listOf()
             }
         }
