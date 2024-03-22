@@ -42,6 +42,27 @@ class NotionApiProvider {
         return getResponseBody(request)
     }
 
+    suspend fun queryDatabase(dbId: String, startCursor: String? = null, filter: String? = null, sorts: String? = null): String {
+        val request = Request.Builder()
+            .url("https://api.notion.com/v1/databases/$dbId/query")
+            .addHeader("Notion-Version", "2022-06-28")
+            .addHeader("accept", "application/json")
+            .addHeader("Authorization", "Bearer ${getApiKey()}")
+            .addHeader("Content-Type", "application/json")
+            .post(
+                """
+                {
+                    ${if(filter == null) "" else "\"filter\": $filter,"}
+                    ${if(sorts == null) "" else "\"sorts\": $sorts,"}
+                    ${if(startCursor == null) "" else "\"start_cursor\": \"$startCursor\""}
+                }
+            """.trimIndent().toRequestBody("application/json".toMediaType())
+            )
+            .build()
+
+        return getResponseBody(request)
+    }
+
     suspend fun postPage(requestBodyString: String): String {
         val requestBody = requestBodyString.toRequestBody("application/json".toMediaType())
         val request = Request.Builder()
