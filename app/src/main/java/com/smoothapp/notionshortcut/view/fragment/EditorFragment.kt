@@ -192,6 +192,18 @@ class EditorFragment : Fragment() {
                                                     }
                                                 }
                                             }
+                                            NotionApiPropertyEnum.RELATION -> {
+                                                val propertyId = value["id"] as String
+                                                val property = value[type.key/*relation*/] as Map<String, Any>
+                                                val databaseId = property["database_id"] as String
+                                                val option = NotionOption(type, dbId, propertyId, databaseId, "", NotionColorEnum.DEFAULT, null, null)
+                                                options.add(option)
+                                                MainScope().launch {
+                                                    withContext(Dispatchers.IO){
+                                                        AppDatabase.getInstance(requireContext()).notionOptionDao().insert(option)
+                                                    }
+                                                }
+                                            }
                                             else -> {}
                                         }
 
