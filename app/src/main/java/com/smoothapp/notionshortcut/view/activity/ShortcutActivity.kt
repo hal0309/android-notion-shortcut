@@ -255,18 +255,11 @@ class ShortcutActivity : AppCompatActivity() {
                     AppDatabase.getInstance(applicationContext).notionOptionDao().findAllInProperty(dbId, property.getId())
                         .map { NotionPostTemplate.Select(it.name, NotionColorEnum.fromString(it.color), it.id) }
                 }
-//                listOf(
-//                    NotionPostTemplate.Select("default", NotionColorEnum.DEFAULT),
-//                    NotionPostTemplate.Select("gray", NotionColorEnum.GRAY),
-//                    NotionPostTemplate.Select("brown", NotionColorEnum.BROWN),
-//                    NotionPostTemplate.Select("orange", NotionColorEnum.ORANGE),
-//                    NotionPostTemplate.Select("yellow", NotionColorEnum.YELLOW),
-//                    NotionPostTemplate.Select("green", NotionColorEnum.GREEN),
-//                    NotionPostTemplate.Select("blue", NotionColorEnum.BLUE),
-//                    NotionPostTemplate.Select("purple", NotionColorEnum.PURPLE),
-//                    NotionPostTemplate.Select("pink", NotionColorEnum.PINK),
-//                    NotionPostTemplate.Select("red", NotionColorEnum.RED)
-//                )
+
+                NotionApiPropertyEnum.STATUS -> {
+                    AppDatabase.getInstance(applicationContext).notionOptionDao().findAllInProperty(dbId, property.getId())
+                        .map { NotionPostTemplate.Select(it.name, NotionColorEnum.fromString(it.color), it.groupName) }
+                }
 
                 NotionApiPropertyEnum.RELATION -> listOf(
                     NotionPostTemplate.Select(
@@ -288,29 +281,6 @@ class ShortcutActivity : AppCompatActivity() {
                         "こいつがメイン",
                         NotionColorEnum.DEFAULT,
                         "ecd1c8b627f54ecca674a309b5826279"
-                    )
-                )
-
-                NotionApiPropertyEnum.STATUS -> listOf(
-                    NotionPostTemplate.Select(
-                        "come soon",
-                        NotionColorEnum.DEFAULT,
-                        NotionApiPropertyStatusEnum.TO_DO.getName()
-                    ),
-                    NotionPostTemplate.Select(
-                        "Not started",
-                        NotionColorEnum.DEFAULT,
-                        NotionApiPropertyStatusEnum.TO_DO.getName()
-                    ),
-                    NotionPostTemplate.Select(
-                        "In progress",
-                        NotionColorEnum.BLUE,
-                        NotionApiPropertyStatusEnum.IN_PROGRESS.getName()
-                    ),
-                    NotionPostTemplate.Select(
-                        "Done",
-                        NotionColorEnum.ORANGE,
-                        NotionApiPropertyStatusEnum.COMPLETE.getName()
                     )
                 )
 
