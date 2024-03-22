@@ -12,6 +12,7 @@ import com.smoothapp.notionshortcut.controller.db.AppDatabase
 import com.smoothapp.notionshortcut.controller.util.NotionApiGetUtil
 import com.smoothapp.notionshortcut.databinding.FragmentEditorBinding
 import com.smoothapp.notionshortcut.model.constant.NotionApiPropertyEnum
+import com.smoothapp.notionshortcut.model.constant.NotionColorEnum
 import com.smoothapp.notionshortcut.model.entity.NotionOption
 import com.smoothapp.notionshortcut.model.entity.NotionPostTemplate
 import com.smoothapp.notionshortcut.model.entity.get.NotionDatabase
@@ -166,7 +167,7 @@ class EditorFragment : Fragment() {
                                                 for (o in optionsMap){
                                                     val name = o["name"] as String
                                                     val id = o["id"] as String
-                                                    val color = o["color"] as String
+                                                    val color = NotionColorEnum.fromString(o["color"] as String)
                                                     val option = NotionOption(dbId, propertyId, id, name, color, null, null)
                                                     println(option)
                                                     options.add(option)

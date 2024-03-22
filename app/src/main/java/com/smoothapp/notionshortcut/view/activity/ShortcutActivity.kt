@@ -253,12 +253,12 @@ class ShortcutActivity : AppCompatActivity() {
             return@withContext when (property.getType()) {
                 NotionApiPropertyEnum.SELECT, NotionApiPropertyEnum.MULTI_SELECT -> {
                     AppDatabase.getInstance(applicationContext).notionOptionDao().findAllInProperty(dbId, property.getId())
-                        .map { NotionPostTemplate.Select(it.name, NotionColorEnum.fromString(it.color), it.id) }
+                        .map { NotionPostTemplate.Select(it.name, it.color, it.id) }
                 }
 
                 NotionApiPropertyEnum.STATUS -> {
                     AppDatabase.getInstance(applicationContext).notionOptionDao().findAllInProperty(dbId, property.getId())
-                        .map { NotionPostTemplate.Select(it.name, NotionColorEnum.fromString(it.color), it.groupName) }
+                        .map { NotionPostTemplate.Select(it.name, it.color, it.groupName) }
                 }
 
                 NotionApiPropertyEnum.RELATION -> listOf(
