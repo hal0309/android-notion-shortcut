@@ -36,11 +36,11 @@ class NotionPostTemplate(
     fun getUUID() = uuid
 
 
-    data class Select(
-        val name: String,
-        val color: NotionColorEnum,
-        val id: String? = null
-    )
+//    data class Select(
+//        val name: String,
+//        val color: NotionColorEnum,
+//        val id: String? = null
+//    )
 
     data class Preset(
         val contentList: List<String?>

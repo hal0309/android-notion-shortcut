@@ -10,14 +10,18 @@ import androidx.activity.viewModels
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.smoothapp.notionshortcut.R
+import com.smoothapp.notionshortcut.controller.db.AppDatabase
 import com.smoothapp.notionshortcut.controller.provider.NotionApiProvider
+import com.smoothapp.notionshortcut.controller.util.NotionApiGetUtil
 import com.smoothapp.notionshortcut.controller.util.NotionApiPostUtil
 import com.smoothapp.notionshortcut.databinding.ActivityShortcutBinding
 import com.smoothapp.notionshortcut.model.constant.NotionApiPropertyEnum
 import com.smoothapp.notionshortcut.model.constant.NotionApiPropertyStatusEnum
 import com.smoothapp.notionshortcut.model.constant.NotionColorEnum
 import com.smoothapp.notionshortcut.model.constant.PreferenceKeys
+import com.smoothapp.notionshortcut.model.entity.NotionOption
 import com.smoothapp.notionshortcut.model.entity.NotionPostTemplate
+import com.smoothapp.notionshortcut.model.entity.get.NotionDatabase
 import com.smoothapp.notionshortcut.model.entity.notiondatabaseproperty.NotionDatabaseProperty
 import com.smoothapp.notionshortcut.model.entity.notiondatabaseproperty.NotionDatabasePropertyCheckbox
 import com.smoothapp.notionshortcut.model.entity.notiondatabaseproperty.NotionDatabasePropertyDate
@@ -36,6 +40,7 @@ import com.smoothapp.notionshortcut.view.component.notionshortcut.mainelement.Sh
 import com.smoothapp.notionshortcut.view.component.notionshortcut.mainelement.ShortcutStatusView
 import com.smoothapp.notionshortcut.view.component.notionshortcut.mainelement.select.BaseShortcutSelectView
 import com.smoothapp.notionshortcut.view.dataStore
+import com.smoothapp.notionshortcut.view.fragment.editor.CharacterFragment
 import com.smoothapp.notionshortcut.view.fragment.shortcut.NotionDateFragment
 import com.smoothapp.notionshortcut.view.fragment.shortcut.NotionSelectFragment
 import com.smoothapp.notionshortcut.view.fragment.shortcut.NotionStatusFragment
@@ -221,19 +226,19 @@ class ShortcutActivity : AppCompatActivity() {
                 NotionApiPropertyEnum.CHECKBOX -> addCheckboxBlock(NotionDatabasePropertyCheckbox.fromParent(property))
                 NotionApiPropertyEnum.SELECT -> {
                     val convertedProperty = NotionDatabasePropertySelect.fromParent(property)
-                    addSelectBlock(convertedProperty, listener = createSelectListener(convertedProperty))
+                    addSelectBlock(convertedProperty, listener = createSelectListener(template.dbId, convertedProperty))
                 }
                 NotionApiPropertyEnum.MULTI_SELECT -> {
                     val convertedProperty = NotionDatabasePropertyMultiSelect.fromParent(property)
-                    addMultiSelectBlock(convertedProperty, listener = createSelectListener(convertedProperty))
+                    addMultiSelectBlock(convertedProperty, listener = createSelectListener(template.dbId, convertedProperty))
                 }
                 NotionApiPropertyEnum.STATUS -> {
                     val convertedProperty = NotionDatabasePropertyStatus.fromParent(property)
-                    addStatusBlock(convertedProperty, createStatusListener(convertedProperty))
+                    addStatusBlock(convertedProperty, createStatusListener(template.dbId, convertedProperty))
                 }
                 NotionApiPropertyEnum.RELATION -> {
                     val convertedProperty = NotionDatabasePropertyRelation.fromParent(property)
-                    addRelationBlock(convertedProperty, createSelectListener(convertedProperty))
+                    addRelationBlock(convertedProperty, createSelectListener(template.dbId, convertedProperty))
                 }
                 NotionApiPropertyEnum.DATE -> {
                     val convertedProperty = NotionDatabasePropertyDate.fromParent(property)
@@ -243,74 +248,48 @@ class ShortcutActivity : AppCompatActivity() {
         }
     }
 
-    private suspend fun getSelectList(property: NotionDatabaseProperty) =
+    private suspend fun getSelectList(dbId: String, property: NotionDatabaseProperty) =
         withContext(Dispatchers.IO) {
 //            delay(500)
             return@withContext when (property.getType()) {
-                NotionApiPropertyEnum.SELECT, NotionApiPropertyEnum.MULTI_SELECT -> listOf(
-                    NotionPostTemplate.Select("default", NotionColorEnum.DEFAULT),
-                    NotionPostTemplate.Select("gray", NotionColorEnum.GRAY),
-                    NotionPostTemplate.Select("brown", NotionColorEnum.BROWN),
-                    NotionPostTemplate.Select("orange", NotionColorEnum.ORANGE),
-                    NotionPostTemplate.Select("yellow", NotionColorEnum.YELLOW),
-                    NotionPostTemplate.Select("green", NotionColorEnum.GREEN),
-                    NotionPostTemplate.Select("blue", NotionColorEnum.BLUE),
-                    NotionPostTemplate.Select("purple", NotionColorEnum.PURPLE),
-                    NotionPostTemplate.Select("pink", NotionColorEnum.PINK),
-                    NotionPostTemplate.Select("red", NotionColorEnum.RED)
-                )
+                NotionApiPropertyEnum.SELECT, NotionApiPropertyEnum.MULTI_SELECT -> {
+                    AppDatabase.getInstance(applicationContext).notionOptionDao().findAllInProperty(dbId, property.getId())
+//                        .map { NotionPostTemplate.Select(it.name, it.color, it.id) }
+                }
+
+                NotionApiPropertyEnum.STATUS -> {
+                    AppDatabase.getInstance(applicationContext).notionOptionDao().findAllInProperty(dbId, property.getId())
+//                        .map { NotionPostTemplate.Select(it.name, it.color, it.groupName) }
+                }
 
                 NotionApiPropertyEnum.RELATION -> listOf(
-                    NotionPostTemplate.Select(
-                        "リレーション確認1",
-                        NotionColorEnum.DEFAULT,
-                        "c12b6304652a443292ea47b73bee7b84"
-                    ),
-                    NotionPostTemplate.Select(
-                        "リレーション確認2",
-                        NotionColorEnum.DEFAULT,
-                        "77b73b9fa06e4cf18eadb37b5ca713c8"
-                    ),
-                    NotionPostTemplate.Select(
-                        "リレーション確認3",
-                        NotionColorEnum.DEFAULT,
-                        "652c65adba874f08a1fd7cc236d52b1f"
-                    ),
-                    NotionPostTemplate.Select(
-                        "こいつがメイン",
-                        NotionColorEnum.DEFAULT,
-                        "ecd1c8b627f54ecca674a309b5826279"
-                    )
-                )
-
-                NotionApiPropertyEnum.STATUS -> listOf(
-                    NotionPostTemplate.Select(
-                        "come soon",
-                        NotionColorEnum.DEFAULT,
-                        NotionApiPropertyStatusEnum.TO_DO.getName()
-                    ),
-                    NotionPostTemplate.Select(
-                        "Not started",
-                        NotionColorEnum.DEFAULT,
-                        NotionApiPropertyStatusEnum.TO_DO.getName()
-                    ),
-                    NotionPostTemplate.Select(
-                        "In progress",
-                        NotionColorEnum.BLUE,
-                        NotionApiPropertyStatusEnum.IN_PROGRESS.getName()
-                    ),
-                    NotionPostTemplate.Select(
-                        "Done",
-                        NotionColorEnum.ORANGE,
-                        NotionApiPropertyStatusEnum.COMPLETE.getName()
-                    )
+//                    NotionPostTemplate.Select(
+//                        "リレーション確認1",
+//                        NotionColorEnum.DEFAULT,
+//                        "c12b6304652a443292ea47b73bee7b84"
+//                    ),
+//                    NotionPostTemplate.Select(
+//                        "リレーション確認2",
+//                        NotionColorEnum.DEFAULT,
+//                        "77b73b9fa06e4cf18eadb37b5ca713c8"
+//                    ),
+//                    NotionPostTemplate.Select(
+//                        "リレーション確認3",
+//                        NotionColorEnum.DEFAULT,
+//                        "652c65adba874f08a1fd7cc236d52b1f"
+//                    ),
+//                    NotionPostTemplate.Select(
+//                        "こいつがメイン",
+//                        NotionColorEnum.DEFAULT,
+//                        "ecd1c8b627f54ecca674a309b5826279"
+//                    )
                 )
 
                 else -> listOf()
             }
         }
 
-    private fun createSelectListener(property: NotionDatabaseProperty) =
+    private fun createSelectListener(dbId: String, property: NotionDatabaseProperty) =
         object : BaseShortcutSelectView.Listener {
             override fun onClick(baseShortcutSelectView: BaseShortcutSelectView) {
                 val fragment = NotionSelectFragment.newInstance(property.getName()).apply {
@@ -324,13 +303,13 @@ class ShortcutActivity : AppCompatActivity() {
                     }
                     setListener(
                         object : NotionSelectFragment.Listener {
-                            override fun onSelectChanged(selectedList: List<NotionPostTemplate.Select>) {
+                            override fun onSelectChanged(selectedList: List<NotionOption>) {
                                 baseShortcutSelectView.setSelected(selectedList)
                             }
                         }
                     )
                     MainScope().launch {
-                        val unselectedList = getSelectList(property).toMutableList()
+                        val unselectedList = getSelectList(dbId, property).toMutableList()
                         val selectedList = baseShortcutSelectView.getSelected()
                         unselectedList.removeAll(selectedList)
                         setSelectList(unselectedList, selectedList)
@@ -340,27 +319,27 @@ class ShortcutActivity : AppCompatActivity() {
             }
         }
 
-    private fun createStatusListener(property: NotionDatabasePropertyStatus) =
+    private fun createStatusListener(dbId: String, property: NotionDatabasePropertyStatus) =
         object : ShortcutStatusView.Listener {
             override fun onClick(shortcutStatusView: ShortcutStatusView) {
                 val fragment = NotionStatusFragment.newInstance(property.getName()).apply {
                     setListener(
                         object : NotionStatusFragment.Listener {
-                            override fun onSelectChanged(selected: NotionPostTemplate.Select?) {
+                            override fun onSelectChanged(selected: NotionOption?) {
                                 shortcutStatusView.setSelected(selected)
                             }
                         }
                     )
                     MainScope().launch {
-                        val allStatusList = getSelectList(property)
+                        val allStatusList = getSelectList(dbId, property)
                         val toDoList =
-                            allStatusList.filter { it.id == NotionApiPropertyStatusEnum.TO_DO.getName() }
+                            allStatusList.filter { it.groupName == NotionApiPropertyStatusEnum.TO_DO.getName() }
                                 .toMutableList()
                         val inProgressList =
-                            allStatusList.filter { it.id == NotionApiPropertyStatusEnum.IN_PROGRESS.getName() }
+                            allStatusList.filter { it.groupName == NotionApiPropertyStatusEnum.IN_PROGRESS.getName() }
                                 .toMutableList()
                         val completeList =
-                            allStatusList.filter { it.id == NotionApiPropertyStatusEnum.COMPLETE.getName() }
+                            allStatusList.filter { it.groupName == NotionApiPropertyStatusEnum.COMPLETE.getName() }
                                 .toMutableList()
                         val selected = shortcutStatusView.getSelected()
                         setSelectList(toDoList, inProgressList, completeList, selected)

@@ -51,10 +51,10 @@ class MainActivity : AppCompatActivity() {
         window.statusBarColor = this.getColor(R.color.transparent)
 
         //todo: 削除 テスト用
-//        deleteDatabase("app_database")
-        val intent = Intent(this, ShortcutActivity::class.java)
-        startActivity(intent)
-        return
+        deleteDatabase("app_database")
+//        val intent = Intent(this, ShortcutActivity::class.java)
+//        startActivity(intent)
+//        return
 
         
 //        initialize()

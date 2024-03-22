@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.smoothapp.notionshortcut.databinding.FragmentNotionStatusBinding
+import com.smoothapp.notionshortcut.model.entity.NotionOption
 import com.smoothapp.notionshortcut.model.entity.NotionPostTemplate
 import com.smoothapp.notionshortcut.view.adapter.NotionSelectListAdapter
 
@@ -17,10 +18,10 @@ class NotionStatusFragment(private val title: String) : ShortcutBottomSheetFragm
     private lateinit var binding: FragmentNotionStatusBinding
     private var listener: Listener? = null
 
-    private var selected: NotionPostTemplate.Select? = null
-    private lateinit var toDoList: MutableList<NotionPostTemplate.Select>
-    private lateinit var inProgressList: MutableList<NotionPostTemplate.Select>
-    private lateinit var completeList: MutableList<NotionPostTemplate.Select>
+    private var selected: NotionOption? = null
+    private lateinit var toDoList: MutableList<NotionOption>
+    private lateinit var inProgressList: MutableList<NotionOption>
+    private lateinit var completeList: MutableList<NotionOption>
 
 
     private lateinit var selectedListAdapter: NotionSelectListAdapter
@@ -39,28 +40,28 @@ class NotionStatusFragment(private val title: String) : ShortcutBottomSheetFragm
         binding.apply {
             title.text = this@NotionStatusFragment.title
             toDoListAdapter = NotionSelectListAdapter(object : NotionSelectListAdapter.Listener {
-                override fun onClickItem(select: NotionPostTemplate.Select) {
-                    selected = select
+                override fun onClickItem(option: NotionOption) {
+                    selected = option
                     updateSelectList()
                 }
             })
             inProgressListAdapter =
                 NotionSelectListAdapter(object : NotionSelectListAdapter.Listener {
-                    override fun onClickItem(select: NotionPostTemplate.Select) {
-                        selected = select
+                    override fun onClickItem(option: NotionOption) {
+                        selected = option
                         updateSelectList()
                     }
                 })
             completeListAdapter =
                 NotionSelectListAdapter(object : NotionSelectListAdapter.Listener {
-                    override fun onClickItem(select: NotionPostTemplate.Select) {
-                        selected = select
+                    override fun onClickItem(option: NotionOption) {
+                        selected = option
                         updateSelectList()
                     }
                 })
             selectedListAdapter =
                 NotionSelectListAdapter(object : NotionSelectListAdapter.Listener {
-                    override fun onClickItem(select: NotionPostTemplate.Select) {
+                    override fun onClickItem(option: NotionOption) {
                         selected = null
                         updateSelectList()
                     }
@@ -75,7 +76,7 @@ class NotionStatusFragment(private val title: String) : ShortcutBottomSheetFragm
         }
     }
 
-    private fun MutableList<NotionPostTemplate.Select>.sort(): MutableList<NotionPostTemplate.Select> {
+    private fun MutableList<NotionOption>.sort(): MutableList<NotionOption> {
         return sortedWith(compareBy { it.name }).toMutableList()
     }
 
@@ -84,10 +85,10 @@ class NotionStatusFragment(private val title: String) : ShortcutBottomSheetFragm
     }
 
     fun setSelectList(
-        toDoList: MutableList<NotionPostTemplate.Select>,
-        inProgressList: MutableList<NotionPostTemplate.Select>,
-        completeList: MutableList<NotionPostTemplate.Select>,
-        selected: NotionPostTemplate.Select?
+        toDoList: MutableList<NotionOption>,
+        inProgressList: MutableList<NotionOption>,
+        completeList: MutableList<NotionOption>,
+        selected: NotionOption?
     ) {
         this.toDoList = toDoList.toMutableList().sort()
         this.inProgressList = inProgressList.toMutableList().sort()
@@ -136,7 +137,7 @@ class NotionStatusFragment(private val title: String) : ShortcutBottomSheetFragm
     }
 
     interface Listener {
-        fun onSelectChanged(selected: NotionPostTemplate.Select?)
+        fun onSelectChanged(selected: NotionOption?)
     }
 
     companion object {
