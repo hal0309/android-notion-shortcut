@@ -2,6 +2,7 @@ package com.smoothapp.notionshortcut.view.component.notionshortcut.mainelement.s
 
 import android.content.Context
 import android.util.AttributeSet
+import com.smoothapp.notionshortcut.model.constant.NotionApiPropertyEnum
 import com.smoothapp.notionshortcut.model.constant.NotionColorEnum
 import com.smoothapp.notionshortcut.model.entity.NotionOption
 import com.smoothapp.notionshortcut.model.entity.NotionPostTemplate
@@ -30,7 +31,7 @@ class ShortcutMultiSelectView @JvmOverloads constructor(
         for(i in nameList.indices){
             selectedList.add(
                 NotionOption(
-                    "", "", "",
+                    NotionApiPropertyEnum.MULTI_SELECT, "", "", "",
                     nameList[i], colorList[i]?: NotionColorEnum.DEFAULT,
                     null, null
                 )

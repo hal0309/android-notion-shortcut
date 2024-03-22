@@ -2,6 +2,7 @@ package com.smoothapp.notionshortcut.view.component.notionshortcut.mainelement.s
 
 import android.content.Context
 import android.util.AttributeSet
+import com.smoothapp.notionshortcut.model.constant.NotionApiPropertyEnum
 import com.smoothapp.notionshortcut.model.constant.NotionColorEnum
 import com.smoothapp.notionshortcut.model.entity.NotionOption
 import com.smoothapp.notionshortcut.model.entity.NotionPostTemplate
@@ -24,7 +25,8 @@ class ShortcutSelectView @JvmOverloads constructor(
     override fun getSelected(): List<NotionOption> {
         property as NotionDatabasePropertySelect
         return listOf(
-            NotionOption("", "", "",
+            NotionOption(
+                NotionApiPropertyEnum.SELECT, "", "", "",
                 property.getSelectName()?: return listOf(),
                 property.getSelectColor()?: NotionColorEnum.DEFAULT,
                 null, null

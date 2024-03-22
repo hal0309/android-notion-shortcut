@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.smoothapp.notionshortcut.R
 import com.smoothapp.notionshortcut.databinding.ViewShortcutBaseSelectBinding
+import com.smoothapp.notionshortcut.model.constant.NotionApiPropertyEnum
 import com.smoothapp.notionshortcut.model.constant.NotionColorEnum
 import com.smoothapp.notionshortcut.model.entity.NotionOption
 import com.smoothapp.notionshortcut.model.entity.NotionPostTemplate
@@ -48,7 +49,7 @@ class ShortcutStatusView @JvmOverloads constructor(
 
     fun getSelected(): NotionOption? {
         return NotionOption(
-            "", "", "",
+            NotionApiPropertyEnum.STATUS, "", "", "",
             property.getStatusName()?: return null,
             property.getStatusColor()?: return null,
             null, null
@@ -70,7 +71,7 @@ class ShortcutStatusView @JvmOverloads constructor(
         selectedListAdapter.submitList(
             when (selected) {
                 null -> listOf(
-                    NotionOption("", "", "", " + ", NotionColorEnum.DEFAULT, null, null)
+                    NotionOption(NotionApiPropertyEnum.STATUS,"", "", "", " + ", NotionColorEnum.DEFAULT, null, null)
                 )
                 else -> listOf(selected)
             }

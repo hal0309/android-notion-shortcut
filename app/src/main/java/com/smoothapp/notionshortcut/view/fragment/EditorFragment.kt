@@ -168,7 +168,7 @@ class EditorFragment : Fragment() {
                                                     val name = o["name"] as String
                                                     val id = o["id"] as String
                                                     val color = NotionColorEnum.fromString(o["color"] as String)
-                                                    val option = NotionOption(dbId, propertyId, id, name, color, null, null)
+                                                    val option = NotionOption(type, dbId, propertyId, id, name, color, null, null)
                                                     println(option)
                                                     options.add(option)
                                                 }

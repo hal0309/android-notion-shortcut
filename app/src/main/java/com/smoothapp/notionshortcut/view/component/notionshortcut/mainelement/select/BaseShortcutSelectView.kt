@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.smoothapp.notionshortcut.R
 import com.smoothapp.notionshortcut.databinding.ViewShortcutBaseSelectBinding
+import com.smoothapp.notionshortcut.model.constant.NotionApiPropertyEnum
 import com.smoothapp.notionshortcut.model.constant.NotionColorEnum
 import com.smoothapp.notionshortcut.model.entity.NotionOption
 import com.smoothapp.notionshortcut.model.entity.NotionPostTemplate
@@ -55,8 +56,8 @@ abstract class BaseShortcutSelectView @JvmOverloads constructor(
     protected fun applySelected() {
         val selectedList = getSelected()
         selectedListAdapter.submitList(when(selectedList.isEmpty()){
-            true -> listOf(NotionOption(
-                "","","","+", NotionColorEnum.DEFAULT, null, null
+            true -> listOf(NotionOption( // todo: selectとmultiSelect変えなくて大丈夫？
+                NotionApiPropertyEnum.SELECT, "","","","+", NotionColorEnum.DEFAULT, null, null
             ))
             else -> selectedList
         })
