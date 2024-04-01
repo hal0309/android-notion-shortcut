@@ -31,9 +31,6 @@ class NotionDatabasePropertyMultiSelect(
 
     fun getOptions(): List<NotionOption> = options
 
-    // todo: IDの参照を必要に応じて実装
-//    fun getMultiSelectId(): List<String>  = multiSelectId
-
     companion object {
         fun fromParent(property: NotionDatabaseProperty): NotionDatabasePropertyMultiSelect {
             val contents = property.getContents().toMutableList()

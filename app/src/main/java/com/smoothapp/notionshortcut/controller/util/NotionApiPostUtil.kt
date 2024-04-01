@@ -101,10 +101,10 @@ class NotionApiPostUtil {
 
     private fun NotionDatabaseProperty.createPropertySelectObject(): String {
         this as NotionDatabasePropertySelect
-        return getSelectName().let {
+        return getOption().let {
             when(it) {
                 null -> ""
-                else -> NotionApiPostPageObj.propertySelect(getName(), it, getSelectColor()) + ","  //todo 確認 colorを新規作成する場合などはどうなる？
+                else -> NotionApiPostPageObj.propertySelect(getName(), it) + ","  //todo 確認 colorを新規作成する場合などはどうなる？
             }
         }
     }

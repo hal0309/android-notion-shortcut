@@ -53,14 +53,15 @@ object NotionApiPostPageObj {
 
 
 
-    fun propertySelect(name: String, selectName: String, color: NotionColorEnum?): String{
+    fun propertySelect(name: String, option: NotionOption): String{
         var result = """
             "$name": {
                 "select": {
-                    "name": "$selectName"
+                    "name": "${option.name}"
         """
-        if(color != null){
-            result += """ ,"color": "${color.getName()}"  """
+        /* todo: ここにcolorの判定は不要？ */
+        if(option.color != null){
+            result += """ ,"color": "${option.color.getName()}"  """
         }
         result += "}}"
 
