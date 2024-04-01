@@ -33,11 +33,12 @@ class NotionDatabasePropertyMultiSelect(
 
     companion object {
         fun fromParent(property: NotionDatabaseProperty): NotionDatabasePropertyMultiSelect {
-            val contents = property.getContents().toMutableList()
+            var contents = property.getContents()
             val options: MutableList<NotionOption> = mutableListOf()
             while(contents.isNotEmpty()){
                 val option = NotionOption.fromStringList(contents.subList(0, NotionOption.SIZE))
                 options.add(option)
+                contents = contents.subList(NotionOption.SIZE, contents.size)
             }
             return NotionDatabasePropertyMultiSelect(
                 property.getName(),

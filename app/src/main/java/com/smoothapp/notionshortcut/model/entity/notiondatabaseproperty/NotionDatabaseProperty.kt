@@ -62,9 +62,8 @@ open class NotionDatabaseProperty(
                 NotionApiPropertyEnum.SELECT -> NotionDatabasePropertySelect(key, id, null, parentUUID)
                 NotionApiPropertyEnum.MULTI_SELECT -> NotionDatabasePropertyMultiSelect(key, id, listOf(), parentUUID)
                 NotionApiPropertyEnum.STATUS -> NotionDatabasePropertyStatus(key, id, null, null, parentUUID)
-                NotionApiPropertyEnum.RELATION -> NotionDatabasePropertyRelation(key, id, listOf(), listOf(), parentUUID)
+                NotionApiPropertyEnum.RELATION -> NotionDatabasePropertyRelation(key, id, listOf(), parentUUID)
                 NotionApiPropertyEnum.DATE -> NotionDatabasePropertyDate(key, id, null, null, false, false, parentUUID)
-                else -> throw IllegalArgumentException("type: $type")
             }
         }
     }

@@ -121,9 +121,9 @@ class NotionApiPostUtil {
 
     private fun NotionDatabaseProperty.createPropertyRelationObject(): String {
         this as NotionDatabasePropertyRelation
-        return getRelationId().let {
-            when(it) {
-                null -> ""
+        return getOptions().let {
+            when(it.isEmpty()) {
+                true -> ""
                 else -> NotionApiPostPageObj.propertyRelation(getName(), it) + ","
             }
         }

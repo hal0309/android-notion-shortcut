@@ -101,16 +101,16 @@ object NotionApiPostPageObj {
     """.trimIndent()
 
     /*todo: relation has more への対応*/
-    fun propertyRelation(name: String, relationIdList: List<String>): String{
+    fun propertyRelation(name: String, options: List<NotionOption>): String{
         var result = """
             "$name": {
                 "relation": [
         """
 
-        for(relationId in relationIdList){
+        for(option in options){
             result += """
                 {
-                    "id": "$relationId"
+                    "id": "${option.id}"
                 }
             """.trimIndent()
 
