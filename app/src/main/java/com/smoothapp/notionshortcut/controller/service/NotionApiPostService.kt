@@ -1,4 +1,4 @@
-package com.smoothapp.notionshortcut.controller.util
+package com.smoothapp.notionshortcut.controller.service
 
 import android.util.Log
 import com.smoothapp.notionshortcut.controller.provider.NotionApiProvider
@@ -15,7 +15,7 @@ import com.smoothapp.notionshortcut.model.entity.notiondatabaseproperty.NotionDa
 import com.smoothapp.notionshortcut.model.entity.notiondatabaseproperty.NotionDatabasePropertyStatus
 import com.smoothapp.notionshortcut.model.entity.notiondatabaseproperty.NotionDatabasePropertyTitle
 
-class NotionApiPostUtil {
+class NotionApiPostService {
 
     suspend fun postPageToDatabase(
         dbId: String,

@@ -7,13 +7,12 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
-import androidx.fragment.app.Fragment
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.smoothapp.notionshortcut.R
 import com.smoothapp.notionshortcut.controller.db.AppDatabase
 import com.smoothapp.notionshortcut.controller.provider.NotionApiProvider
-import com.smoothapp.notionshortcut.controller.util.NotionApiGetUtil
-import com.smoothapp.notionshortcut.controller.util.NotionApiPostUtil
+import com.smoothapp.notionshortcut.controller.service.NotionApiGetService
+import com.smoothapp.notionshortcut.controller.service.NotionApiPostService
 import com.smoothapp.notionshortcut.databinding.ActivityShortcutBinding
 import com.smoothapp.notionshortcut.model.constant.NotionApiPropertyEnum
 import com.smoothapp.notionshortcut.model.constant.NotionApiPropertyStatusEnum
@@ -21,7 +20,6 @@ import com.smoothapp.notionshortcut.model.constant.NotionColorEnum
 import com.smoothapp.notionshortcut.model.constant.PreferenceKeys
 import com.smoothapp.notionshortcut.model.entity.NotionOption
 import com.smoothapp.notionshortcut.model.entity.NotionPostTemplate
-import com.smoothapp.notionshortcut.model.entity.get.NotionDatabase
 import com.smoothapp.notionshortcut.model.entity.notiondatabaseproperty.NotionDatabaseProperty
 import com.smoothapp.notionshortcut.model.entity.notiondatabaseproperty.NotionDatabasePropertyCheckbox
 import com.smoothapp.notionshortcut.model.entity.notiondatabaseproperty.NotionDatabasePropertyDate
@@ -40,7 +38,6 @@ import com.smoothapp.notionshortcut.view.component.notionshortcut.mainelement.Sh
 import com.smoothapp.notionshortcut.view.component.notionshortcut.mainelement.ShortcutStatusView
 import com.smoothapp.notionshortcut.view.component.notionshortcut.mainelement.select.BaseShortcutSelectView
 import com.smoothapp.notionshortcut.view.dataStore
-import com.smoothapp.notionshortcut.view.fragment.editor.CharacterFragment
 import com.smoothapp.notionshortcut.view.fragment.shortcut.NotionDateFragment
 import com.smoothapp.notionshortcut.view.fragment.shortcut.NotionSelectFragment
 import com.smoothapp.notionshortcut.view.fragment.shortcut.NotionStatusFragment
@@ -56,7 +53,7 @@ import kotlinx.coroutines.withContext
 class ShortcutActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityShortcutBinding
-    private val notionPostUtil = NotionApiPostUtil()
+    private val service = NotionApiPostService()
 
     private val viewModel: AppViewModel by viewModels {
         AppViewModelFactory((application as MyApplication).repository)
@@ -111,7 +108,7 @@ class ShortcutActivity : AppCompatActivity() {
                             }
                             MainScope().launch {
                                 Log.d(
-                                    "", notionPostUtil.postPageToDatabase(
+                                    "", service.postPageToDatabase(
                                         tmp.dbId,
                                         blockList.map { it.getContents() }
                                     )
@@ -263,14 +260,14 @@ class ShortcutActivity : AppCompatActivity() {
 
                 NotionApiPropertyEnum.RELATION -> {
                     val option = AppDatabase.getInstance(applicationContext).notionOptionDao().findAllInProperty(dbId, property.getId())[0] //todo: 重複管理
-                    val service = NotionApiGetUtil()
-                    val a = service.queryDatabase(option.id, object: NotionApiGetUtil.QueryDatabaseListener{
+                    val service = NotionApiGetService()
+                    val result = service.queryDatabase(option.id, object: NotionApiGetService.QueryDatabaseListener{
                         override fun doOnEnd(resultMapList: List<Map<String, Any>>) {
 
                         }
                     } )
-                    val titleName = service.searchTitleNameKey(a[0]["properties"] as Map<String, Any>)
-                    a.map {
+                    val titleName = service.searchTitleNameKey(result[0]["properties"] as Map<String, Any>)
+                    result.map {
                         NotionOption(
                             NotionApiPropertyEnum.RELATION, "", "",
                             it["id"].toString(),

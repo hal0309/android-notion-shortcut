@@ -1,14 +1,15 @@
-package com.smoothapp.notionshortcut.controller.util
+package com.smoothapp.notionshortcut.controller.service
 
 import com.smoothapp.notionshortcut.controller.exception.IllegalApiStateException
 import com.smoothapp.notionshortcut.controller.provider.NotionApiProvider
+import com.smoothapp.notionshortcut.controller.util.ApiCommonUtil
 import com.smoothapp.notionshortcut.model.entity.get.NotionDatabase
 import com.smoothapp.notionshortcut.model.entity.get.PageOrDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class NotionApiGetUtil {
+class NotionApiGetService {
 
     interface GetDatabaseDetailListener {
         fun doOnEnd(notionDatabase: NotionDatabase)

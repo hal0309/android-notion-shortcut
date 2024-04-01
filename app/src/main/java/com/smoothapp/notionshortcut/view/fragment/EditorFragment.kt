@@ -2,14 +2,13 @@ package com.smoothapp.notionshortcut.view.fragment
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import com.smoothapp.notionshortcut.controller.db.AppDatabase
-import com.smoothapp.notionshortcut.controller.util.NotionApiGetUtil
+import com.smoothapp.notionshortcut.controller.service.NotionApiGetService
 import com.smoothapp.notionshortcut.databinding.FragmentEditorBinding
 import com.smoothapp.notionshortcut.model.constant.NotionApiPropertyEnum
 import com.smoothapp.notionshortcut.model.constant.NotionColorEnum
@@ -35,7 +34,7 @@ class EditorFragment : Fragment() {
     private val mainActivity by lazy { activity as MainActivity }
     private val viewModel by lazy { mainActivity.getMyViewModel() }
 
-    private val notionGetUtil = NotionApiGetUtil()
+    private val service = NotionApiGetService()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -99,7 +98,7 @@ class EditorFragment : Fragment() {
     private fun startDownload() {
         MainScope().launch {
             try {
-                notionGetUtil.getAllObjects(object : NotionApiGetUtil.GetPageListener {
+                service.getAllObjects(object : NotionApiGetService.GetPageListener {
                     override fun doOnUpdate(total: Int) {
                         viewModel.setBalloonText("Connecting to Notion... ($total/???)")
                     }
@@ -140,7 +139,7 @@ class EditorFragment : Fragment() {
         viewModel.setBalloonText("Loading ${notionDatabase.title}")
         enableBlocker(true)
         MainScope().launch {
-            notionGetUtil.getDatabaseDetail(notionDatabase.id, object : NotionApiGetUtil.GetDatabaseDetailListener {
+            service.getDatabaseDetail(notionDatabase.id, object : NotionApiGetService.GetDatabaseDetailListener {
                 override fun doOnEnd(notionDatabase: NotionDatabase) {
                     showLargeBalloon("database detail: $notionDatabase", object : CharacterFragment.LargeBalloonListener {
                         override fun onCanceled() {
