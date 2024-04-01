@@ -2,8 +2,11 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="gray">#FFEEEEEE</color>
+    <color name="dark_gray">#FF888888</color>
 
     <color name="transparent">#00000000</color>
+    <color name="transparent_gray">#10000000</color>
 
     <color name="notion_light_default">#F1F0EF</color>
     <color name="notion_light_gray"   >#E3E2E0</color>

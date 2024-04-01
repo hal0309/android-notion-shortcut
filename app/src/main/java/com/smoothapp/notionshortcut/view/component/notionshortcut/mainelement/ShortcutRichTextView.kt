@@ -21,7 +21,7 @@ class ShortcutRichTextView @JvmOverloads constructor(
         inflate(context, R.layout.view_shortcut_rich_text, this)
         binding = ViewShortcutRichTextBinding.bind(this)
         binding.apply {
-            content.hint = property.getName()
+            textField.hint = property.getName()
             content.setText(property.getRichText())
             content.doOnTextChanged { text, _, _, _ ->
                 property.updateContents(text?.toString())

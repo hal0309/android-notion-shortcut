@@ -53,38 +53,35 @@ object NotionApiPostPageObj {
 
 
 
-    fun propertySelect(name: String, selectName: String, color: NotionColorEnum?): String{
+    fun propertySelect(name: String, option: NotionOption): String{
         var result = """
             "$name": {
                 "select": {
-                    "name": "$selectName"
+                    "name": "${option.name}"
         """
-        if(color != null){
-            result += """ ,"color": "${color.getName()}"  """
+        /* todo: ここにcolorの判定は不要？ */
+        if(option.color != null){
+            result += """ ,"color": "${option.color.getName()}"  """
         }
         result += "}}"
 
         return result.trimIndent()
     }
 
-    fun propertyMultiSelect(name: String, selectNameList: List<String>, colorList: List<NotionColorEnum?>?): String{
+    fun propertyMultiSelect(name: String, options: List<NotionOption>): String{
         var result = """
             "$name": {
                 "multi_select": [
         """
 
-        for(i in selectNameList.indices){
-            val selectName = selectNameList[i]
+        for(opt in options){
             result += """
                 {
-                    "name": "$selectName"
+                    "name": "${opt.name}"
             """
-
-            if(colorList != null){
-                val color = colorList[i]
-                if(color != null) {
-                    result += """ ,"color": "${color.getName()}" """
-                }
+            /* todo: ここにcolorの判定は不要？ */
+            if(opt.color != null){
+                result += """ ,"color": "${opt.color.getName()}" """
             }
             result += "},"
         }
@@ -95,25 +92,25 @@ object NotionApiPostPageObj {
     }
 
     //todo: 要素追加時の引数(group, color)
-    fun propertyStatus(name: String, statusName: String) = """
+    fun propertyStatus(name: String, option: NotionOption) = """
         "$name": {
             "status": {
-                "name": "$statusName"
+                "name": "${option.name}"
             }
         }
     """.trimIndent()
 
     /*todo: relation has more への対応*/
-    fun propertyRelation(name: String, relationIdList: List<String>): String{
+    fun propertyRelation(name: String, options: List<NotionOption>): String{
         var result = """
             "$name": {
                 "relation": [
         """
 
-        for(relationId in relationIdList){
+        for(option in options){
             result += """
                 {
-                    "id": "$relationId"
+                    "id": "${option.id}"
                 }
             """.trimIndent()
 

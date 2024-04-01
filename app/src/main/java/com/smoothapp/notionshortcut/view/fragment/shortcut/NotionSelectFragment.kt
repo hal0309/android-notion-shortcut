@@ -1,25 +1,24 @@
-package com.smoothapp.notionshortcut.view.fragment
+package com.smoothapp.notionshortcut.view.fragment.shortcut
 
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.smoothapp.notionshortcut.databinding.FragmentNotionSelectBinding
-import com.smoothapp.notionshortcut.model.constant.NotionColorEnum
+import com.smoothapp.notionshortcut.model.entity.NotionOption
 import com.smoothapp.notionshortcut.model.entity.NotionPostTemplate
 import com.smoothapp.notionshortcut.view.adapter.NotionSelectListAdapter
 
-class NotionSelectFragment(private val title: String) : Fragment() {
+class NotionSelectFragment(private val title: String) : ShortcutBottomSheetFragment() {
 
 
     private lateinit var binding: FragmentNotionSelectBinding
     private var listener: Listener? = null
-    private lateinit var unselectedList: MutableList<NotionPostTemplate.Select>
-    private lateinit var selectedList: MutableList<NotionPostTemplate.Select>
+    private lateinit var unselectedList: MutableList<NotionOption>
+    private lateinit var selectedList: MutableList<NotionOption>
 
     private lateinit var unselectedListAdapter: NotionSelectListAdapter
     private lateinit var selectedListAdapter: NotionSelectListAdapter
@@ -36,22 +35,22 @@ class NotionSelectFragment(private val title: String) : Fragment() {
         binding.apply {
             title.text = this@NotionSelectFragment.title
             unselectedListAdapter = NotionSelectListAdapter(object : NotionSelectListAdapter.Listener{
-                override fun onClickItem(select: NotionPostTemplate.Select) {
-                    unselectedList.remove(select)
+                override fun onClickItem(option: NotionOption) {
+                    unselectedList.remove(option)
                     if(!canSelectMultiple && selectedList.isNotEmpty()){
                         val removed = selectedList.removeAt(0)
                         unselectedList.add(removed)
                         unselectedList = unselectedList.sort()
                     }
-                    selectedList.add(select)
+                    selectedList.add(option)
                     selectedList = selectedList.sort()
                     updateSelectList()
                 }
             })
             selectedListAdapter = NotionSelectListAdapter(object : NotionSelectListAdapter.Listener{
-                override fun onClickItem(select: NotionPostTemplate.Select) {
-                    selectedList.remove(select)
-                    unselectedList.add(select)
+                override fun onClickItem(option: NotionOption) {
+                    selectedList.remove(option)
+                    unselectedList.add(option)
                     unselectedList = unselectedList.sort()
                     updateSelectList()
                 }
@@ -65,7 +64,7 @@ class NotionSelectFragment(private val title: String) : Fragment() {
         }
     }
 
-    private fun MutableList<NotionPostTemplate.Select>.sort(): MutableList<NotionPostTemplate.Select>{
+    private fun MutableList<NotionOption>.sort(): MutableList<NotionOption>{
         return sortedWith(compareBy{it.name}).toMutableList()
     }
 
@@ -77,7 +76,7 @@ class NotionSelectFragment(private val title: String) : Fragment() {
         this.listener = listener
     }
 
-    fun setSelectList(unselectedList: List<NotionPostTemplate.Select>, selectedList: List<NotionPostTemplate.Select>){
+    fun setSelectList(unselectedList: List<NotionOption>, selectedList: List<NotionOption>){
         this.unselectedList = unselectedList.toMutableList().sort()
         this.selectedList = selectedList.toMutableList().sort()
         isListInitialized = true
@@ -99,8 +98,7 @@ class NotionSelectFragment(private val title: String) : Fragment() {
                 unselectedListAdapter.submitList(unselectedList)
                 selectedListAdapter.submitList(selectedList)
 
-                Log.d("", unselectedList.toString())
-                Log.d("", selectedList.toString())
+                finishLoading()
             }
         }
     }
@@ -109,13 +107,18 @@ class NotionSelectFragment(private val title: String) : Fragment() {
         binding.apply {
             unselectedListAdapter.submitList(unselectedList)
             selectedListAdapter.submitList(selectedList)
-            Log.e("", unselectedList.toString())
             listener?.onSelectChanged(selectedList)
         }
     }
 
+    private fun finishLoading(){
+        binding.apply {
+            loadingLottie.visibility = View.GONE
+        }
+    }
+
     interface Listener {
-        fun onSelectChanged(selectedList: List<NotionPostTemplate.Select>)
+        fun onSelectChanged(selectedList: List<NotionOption>)
     }
 
     companion object {

@@ -4,8 +4,10 @@ import com.smoothapp.notionshortcut.model.constant.NotionApiPropertyEnum
 
 class NotionDatabasePropertyTitle(
     name: String,
-    private var title: String?
-) : NotionDatabaseProperty(NotionApiPropertyEnum.TITLE, name, listOf(title)) {
+    id: String,
+    private var title: String?,
+    private var parentUUID: String
+) : NotionDatabaseProperty(NotionApiPropertyEnum.TITLE, name, id, listOf(title), parentUUID) {
 
     init {
         updateParentContents()
@@ -20,6 +22,18 @@ class NotionDatabasePropertyTitle(
     }
 
     fun getTitle(): String? = title
+
+    companion object {
+        fun fromParent(property: NotionDatabaseProperty): NotionDatabasePropertyTitle {
+            return NotionDatabasePropertyTitle(
+                property.getName(),
+                property.getId(),
+                property.getContents()[0],
+                property.getParentUUID()
+            )
+        }
+    }
+
 }
 
 

@@ -7,7 +7,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.smoothapp.notionshortcut.R
 import com.smoothapp.notionshortcut.databinding.ViewShortcutBaseSelectBinding
+import com.smoothapp.notionshortcut.model.constant.NotionApiPropertyEnum
 import com.smoothapp.notionshortcut.model.constant.NotionColorEnum
+import com.smoothapp.notionshortcut.model.entity.NotionOption
 import com.smoothapp.notionshortcut.model.entity.NotionPostTemplate
 import com.smoothapp.notionshortcut.model.entity.notiondatabaseproperty.NotionDatabasePropertyStatus
 import com.smoothapp.notionshortcut.view.adapter.NotionSelectListAdapter
@@ -33,7 +35,7 @@ class ShortcutStatusView @JvmOverloads constructor(
 
             selectedListAdapter =
                 NotionSelectListAdapter(object : NotionSelectListAdapter.Listener {
-                    override fun onClickItem(select: NotionPostTemplate.Select) {
+                    override fun onClickItem(option: NotionOption) {
                         listener?.onClick(this@ShortcutStatusView)
                     }
                 })
@@ -45,20 +47,12 @@ class ShortcutStatusView @JvmOverloads constructor(
         }
     }
 
-    fun getSelected(): NotionPostTemplate.Select? {
-        return NotionPostTemplate.Select(
-            property.getStatusName()?: return null,
-            property.getStatusColor()?: return null
-        )
+    fun getSelected(): NotionOption? {
+        return property.getOption()
     }
 
-    fun setSelected(selected: NotionPostTemplate.Select?) {
-        when(selected){
-            null -> property.updateContents(null, null)
-            else -> {
-                property.updateContents(selected.name, selected.color)
-            }
-        }
+    fun setSelected(selected: NotionOption?) {
+        property.updateContents(selected)
         applySelected()
     }
 
@@ -66,7 +60,9 @@ class ShortcutStatusView @JvmOverloads constructor(
         val selected = getSelected()
         selectedListAdapter.submitList(
             when (selected) {
-                null -> listOf(NotionPostTemplate.Select(" + ", NotionColorEnum.DEFAULT))
+                null -> listOf(
+                    NotionOption(NotionApiPropertyEnum.STATUS,"", "", "", " + ", NotionColorEnum.DEFAULT, null, null)
+                )
                 else -> listOf(selected)
             }
         )
