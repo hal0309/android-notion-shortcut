@@ -15,7 +15,7 @@ import com.smoothapp.notionshortcut.model.entity.notiondatabaseproperty.NotionDa
 import com.smoothapp.notionshortcut.model.entity.notiondatabaseproperty.NotionDatabasePropertyStatus
 import com.smoothapp.notionshortcut.model.entity.notiondatabaseproperty.NotionDatabasePropertyTitle
 
-class NotionApiPostUtil {
+class NotionApiPostService {
 
     suspend fun postPageToDatabase(
         dbId: String,
