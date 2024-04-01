@@ -60,7 +60,7 @@ open class NotionDatabaseProperty(
                 NotionApiPropertyEnum.NUMBER -> NotionDatabasePropertyNumber(key, id, null, parentUUID)
                 NotionApiPropertyEnum.CHECKBOX -> NotionDatabasePropertyCheckbox(key, id, false, parentUUID)
                 NotionApiPropertyEnum.SELECT -> NotionDatabasePropertySelect(key, id, null, null, parentUUID)
-                NotionApiPropertyEnum.MULTI_SELECT -> NotionDatabasePropertyMultiSelect(key, id, listOf(), listOf(), parentUUID)
+                NotionApiPropertyEnum.MULTI_SELECT -> NotionDatabasePropertyMultiSelect(key, id, listOf(), parentUUID)
                 NotionApiPropertyEnum.STATUS -> NotionDatabasePropertyStatus(key, id, null, null, parentUUID)
                 NotionApiPropertyEnum.RELATION -> NotionDatabasePropertyRelation(key, id, listOf(), listOf(), parentUUID)
                 NotionApiPropertyEnum.DATE -> NotionDatabasePropertyDate(key, id, null, null, false, false, parentUUID)

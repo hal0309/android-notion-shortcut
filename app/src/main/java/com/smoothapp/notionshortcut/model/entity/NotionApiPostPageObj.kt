@@ -67,24 +67,20 @@ object NotionApiPostPageObj {
         return result.trimIndent()
     }
 
-    fun propertyMultiSelect(name: String, selectNameList: List<String>, colorList: List<NotionColorEnum?>?): String{
+    fun propertyMultiSelect(name: String, options: List<NotionOption>): String{
         var result = """
             "$name": {
                 "multi_select": [
         """
 
-        for(i in selectNameList.indices){
-            val selectName = selectNameList[i]
+        for(opt in options){
             result += """
                 {
-                    "name": "$selectName"
+                    "name": "${opt.name}"
             """
-
-            if(colorList != null){
-                val color = colorList[i]
-                if(color != null) {
-                    result += """ ,"color": "${color.getName()}" """
-                }
+            /* todo: ここにcolorの判定は不要？ */
+            if(opt.color != null){
+                result += """ ,"color": "${opt.color.getName()}" """
             }
             result += "},"
         }

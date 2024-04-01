@@ -111,10 +111,10 @@ class NotionApiPostUtil {
 
     private fun NotionDatabaseProperty.createPropertyMultiSelectObject(): String {
         this as NotionDatabasePropertyMultiSelect
-        return getMultiSelectName().let {
-            when(it) {
-                null -> ""
-                else -> NotionApiPostPageObj.propertyMultiSelect(getName(), it, getMultiSelectColor()) + ","
+        return getOptions().let {
+            when(it.isEmpty()) {
+                true -> ""
+                else -> NotionApiPostPageObj.propertyMultiSelect(getName(), it) + ","
             }
         }
     }
