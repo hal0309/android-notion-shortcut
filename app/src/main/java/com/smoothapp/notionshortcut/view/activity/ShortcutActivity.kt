@@ -11,8 +11,8 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.smoothapp.notionshortcut.R
 import com.smoothapp.notionshortcut.controller.db.AppDatabase
 import com.smoothapp.notionshortcut.controller.provider.NotionApiProvider
-import com.smoothapp.notionshortcut.controller.util.NotionApiGetService
-import com.smoothapp.notionshortcut.controller.util.NotionApiPostService
+import com.smoothapp.notionshortcut.controller.service.NotionApiGetService
+import com.smoothapp.notionshortcut.controller.service.NotionApiPostService
 import com.smoothapp.notionshortcut.databinding.ActivityShortcutBinding
 import com.smoothapp.notionshortcut.model.constant.NotionApiPropertyEnum
 import com.smoothapp.notionshortcut.model.constant.NotionApiPropertyStatusEnum

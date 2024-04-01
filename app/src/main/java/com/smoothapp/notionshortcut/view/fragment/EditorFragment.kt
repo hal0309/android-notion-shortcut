@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import com.smoothapp.notionshortcut.controller.db.AppDatabase
-import com.smoothapp.notionshortcut.controller.util.NotionApiGetService
+import com.smoothapp.notionshortcut.controller.service.NotionApiGetService
 import com.smoothapp.notionshortcut.databinding.FragmentEditorBinding
 import com.smoothapp.notionshortcut.model.constant.NotionApiPropertyEnum
 import com.smoothapp.notionshortcut.model.constant.NotionColorEnum

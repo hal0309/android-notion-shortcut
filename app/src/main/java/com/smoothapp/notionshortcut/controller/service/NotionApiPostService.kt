@@ -1,4 +1,4 @@
-package com.smoothapp.notionshortcut.controller.util
+package com.smoothapp.notionshortcut.controller.service
 
 import android.util.Log
 import com.smoothapp.notionshortcut.controller.provider.NotionApiProvider
