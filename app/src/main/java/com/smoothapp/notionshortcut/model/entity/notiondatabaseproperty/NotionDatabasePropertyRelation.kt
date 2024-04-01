@@ -3,12 +3,13 @@ package com.smoothapp.notionshortcut.model.entity.notiondatabaseproperty
 import android.util.Log
 import com.smoothapp.notionshortcut.controller.exception.DifferentListSizeException
 import com.smoothapp.notionshortcut.model.constant.NotionApiPropertyEnum
+import com.smoothapp.notionshortcut.model.entity.NotionOption
+import java.security.cert.PKIXRevocationChecker.Option
 
 class NotionDatabasePropertyRelation(
     name: String,
     id: String,
-    private var relationId: List<String>,
-    private var relationName: List<String?>,
+    private var options: List<NotionOption>,
     parentUUID: String
 ) : NotionDatabaseProperty(NotionApiPropertyEnum.RELATION, name, id, listOf(), parentUUID) {
 
@@ -17,50 +18,35 @@ class NotionDatabasePropertyRelation(
     }
 
     private fun updateParentContents() {
-        val size = relationId.size
-        if(size != relationName.size) throw DifferentListSizeException("relation name")
-
-        val contents: MutableList<String?> = MutableList(size* SET_SIZE){null}
-        for(i in 0 until size){
-            contents[i* SET_SIZE + ID_INDEX] = relationId[i]
-            contents[i* SET_SIZE + NAME_INDEX] = relationName[i]
+        val contents: MutableList<String?> = mutableListOf()
+        for(option in options){
+            contents.addAll(option.toStringList())
         }
         setPropertyContents(contents)
     }
 
-    fun updateContents(relationId: List<String>, relationName: List<String?>){
-        this.relationId = relationId
-        this.relationName = relationName
-        Log.d("", "relation updated property")
-        Log.d("", "relationId: $relationId relationName: $relationName")
+    fun updateContents(options: List<NotionOption>){
+        this.options = options
         updateParentContents()
     }
 
-    fun getRelationId(): List<String> = relationId
-
-    fun getRelationName(): List<String?> = relationName
+    fun getOptions(): List<NotionOption> = options
 
 
     companion object {
-        private const val ID_INDEX = 0 // primary
-        private const val NAME_INDEX = 1
-
-        private const val SET_SIZE = 2
-
         fun fromParent(property: NotionDatabaseProperty): NotionDatabasePropertyRelation {
-            val contents = property.getContents()
-            val size = contents.size / SET_SIZE
-            val relationId: MutableList<String> = mutableListOf()
-            val relationName: MutableList<String?> = mutableListOf()
-            for(i in 0 until size){
-                relationId.add(contents[i* SET_SIZE + ID_INDEX]!!)
-                relationName.add(contents[i* SET_SIZE + NAME_INDEX])
+            var contents = property.getContents()
+            val options: MutableList<NotionOption> = mutableListOf()
+            while(contents.isNotEmpty()){
+                val option = NotionOption.fromStringList(contents.subList(0, NotionOption.SIZE))
+                options.add(option)
+                contents = contents.subList(NotionOption.SIZE, contents.size)
             }
+
             return NotionDatabasePropertyRelation(
                 property.getName(),
                 property.getId(),
-                relationId,
-                relationName,
+                options,
                 property.getParentUUID()
             )
         }

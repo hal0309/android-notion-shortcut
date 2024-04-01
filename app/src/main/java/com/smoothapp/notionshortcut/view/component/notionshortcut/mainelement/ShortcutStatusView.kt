@@ -48,21 +48,11 @@ class ShortcutStatusView @JvmOverloads constructor(
     }
 
     fun getSelected(): NotionOption? {
-        return NotionOption(
-            NotionApiPropertyEnum.STATUS, "", "", "",
-            property.getStatusName()?: return null,
-            property.getStatusColor()?: return null,
-            null, null
-        )
+        return property.getOption()
     }
 
     fun setSelected(selected: NotionOption?) {
-        when(selected){
-            null -> property.updateContents(null, null)
-            else -> {
-                property.updateContents(selected.name, selected.color)
-            }
-        }
+        property.updateContents(selected)
         applySelected()
     }
 

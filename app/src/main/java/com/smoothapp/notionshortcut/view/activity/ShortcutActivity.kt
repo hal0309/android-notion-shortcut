@@ -306,6 +306,8 @@ class ShortcutActivity : AppCompatActivity() {
                     MainScope().launch {
                         val unselectedList = getSelectList(dbId, property).toMutableList()
                         val selectedList = baseShortcutSelectView.getSelected()
+                        Log.e("", "selectedList: $selectedList")
+//                        unselectedList.removeIf { unSelect -> selectedList.any { select -> select.id == unSelect.id } }
                         unselectedList.removeAll(selectedList)
                         setSelectList(unselectedList, selectedList)
                     }

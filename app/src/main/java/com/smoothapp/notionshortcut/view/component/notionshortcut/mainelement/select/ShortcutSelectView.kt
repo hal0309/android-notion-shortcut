@@ -24,25 +24,12 @@ class ShortcutSelectView @JvmOverloads constructor(
 
     override fun getSelected(): List<NotionOption> {
         property as NotionDatabasePropertySelect
-        return listOf(
-            NotionOption(
-                NotionApiPropertyEnum.SELECT, "", "", "",
-                property.getSelectName()?: return listOf(),
-                property.getSelectColor()?: NotionColorEnum.DEFAULT,
-                null, null
-            )
-        )
+        return property.getOption()?.let { listOf(it) } ?: listOf()
     }
 
     override fun setSelected(selectedList: List<NotionOption>) {
         property as NotionDatabasePropertySelect
-        when(selectedList.isEmpty()){
-            true -> property.updateContents(null, null)
-            else -> {
-                val selected = selectedList[0]
-                property.updateContents(selected.name, selected.color)
-            }
-        }
+        property.updateContents(selectedList.firstOrNull())
         applySelected()
     }
 

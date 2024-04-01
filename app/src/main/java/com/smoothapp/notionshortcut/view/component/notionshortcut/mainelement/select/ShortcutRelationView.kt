@@ -24,27 +24,12 @@ class ShortcutRelationView @JvmOverloads constructor(
 
     override fun getSelected(): List<NotionOption> {
         property as NotionDatabasePropertyRelation
-        val idList = property.getRelationId()
-        val nameList = property.getRelationName()
-
-        val selectedList = mutableListOf<NotionOption>()
-        for(i in idList.indices){
-            selectedList.add(
-                NotionOption(
-                NotionApiPropertyEnum.RELATION, "", "", "",
-                nameList[i]?: "", NotionColorEnum.DEFAULT,
-                idList[i], null
-            )
-            )
-        }
-        return selectedList
+        return property.getOptions()
     }
 
     override fun setSelected(selectedList: List<NotionOption>) {
         property as NotionDatabasePropertyRelation
-        val idList = selectedList.map { it.id?: "" } // todo: nameからidをsearchする処理
-        val nameList = selectedList.map { it.name } // todo: nameからidをsearchする処理
-        property.updateContents(idList, nameList)
+        property.updateContents(selectedList)
         applySelected()
     }
 

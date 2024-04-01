@@ -101,29 +101,29 @@ class NotionApiPostUtil {
 
     private fun NotionDatabaseProperty.createPropertySelectObject(): String {
         this as NotionDatabasePropertySelect
-        return getSelectName().let {
+        return getOption().let {
             when(it) {
                 null -> ""
-                else -> NotionApiPostPageObj.propertySelect(getName(), it, getSelectColor()) + ","  //todo 確認 colorを新規作成する場合などはどうなる？
+                else -> NotionApiPostPageObj.propertySelect(getName(), it) + ","  //todo 確認 colorを新規作成する場合などはどうなる？
             }
         }
     }
 
     private fun NotionDatabaseProperty.createPropertyMultiSelectObject(): String {
         this as NotionDatabasePropertyMultiSelect
-        return getMultiSelectName().let {
-            when(it) {
-                null -> ""
-                else -> NotionApiPostPageObj.propertyMultiSelect(getName(), it, getMultiSelectColor()) + ","
+        return getOptions().let {
+            when(it.isEmpty()) {
+                true -> ""
+                else -> NotionApiPostPageObj.propertyMultiSelect(getName(), it) + ","
             }
         }
     }
 
     private fun NotionDatabaseProperty.createPropertyRelationObject(): String {
         this as NotionDatabasePropertyRelation
-        return getRelationId().let {
-            when(it) {
-                null -> ""
+        return getOptions().let {
+            when(it.isEmpty()) {
+                true -> ""
                 else -> NotionApiPostPageObj.propertyRelation(getName(), it) + ","
             }
         }
@@ -131,7 +131,7 @@ class NotionApiPostUtil {
 
     private fun NotionDatabaseProperty.createPropertyStatusObject(): String {
         this as NotionDatabasePropertyStatus
-        return getStatusName().let {
+        return getOption().let {
             when(it) {
                 null -> ""
                 else -> NotionApiPostPageObj.propertyStatus(getName(), it) + ","

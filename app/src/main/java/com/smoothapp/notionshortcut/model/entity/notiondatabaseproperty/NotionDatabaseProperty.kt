@@ -59,12 +59,11 @@ open class NotionDatabaseProperty(
                 NotionApiPropertyEnum.RICH_TEXT -> NotionDatabasePropertyRichText(key, id, null, parentUUID)
                 NotionApiPropertyEnum.NUMBER -> NotionDatabasePropertyNumber(key, id, null, parentUUID)
                 NotionApiPropertyEnum.CHECKBOX -> NotionDatabasePropertyCheckbox(key, id, false, parentUUID)
-                NotionApiPropertyEnum.SELECT -> NotionDatabasePropertySelect(key, id, null, null, parentUUID)
-                NotionApiPropertyEnum.MULTI_SELECT -> NotionDatabasePropertyMultiSelect(key, id, listOf(), listOf(), parentUUID)
-                NotionApiPropertyEnum.STATUS -> NotionDatabasePropertyStatus(key, id, null, null, parentUUID)
-                NotionApiPropertyEnum.RELATION -> NotionDatabasePropertyRelation(key, id, listOf(), listOf(), parentUUID)
+                NotionApiPropertyEnum.SELECT -> NotionDatabasePropertySelect(key, id, null, parentUUID)
+                NotionApiPropertyEnum.MULTI_SELECT -> NotionDatabasePropertyMultiSelect(key, id, listOf(), parentUUID)
+                NotionApiPropertyEnum.STATUS -> NotionDatabasePropertyStatus(key, id, null, parentUUID)
+                NotionApiPropertyEnum.RELATION -> NotionDatabasePropertyRelation(key, id, listOf(), parentUUID)
                 NotionApiPropertyEnum.DATE -> NotionDatabasePropertyDate(key, id, null, null, false, false, parentUUID)
-                else -> throw IllegalArgumentException("type: $type")
             }
         }
     }

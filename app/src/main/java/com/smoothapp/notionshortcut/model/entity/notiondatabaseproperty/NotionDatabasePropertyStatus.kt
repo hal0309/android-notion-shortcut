@@ -2,12 +2,12 @@ package com.smoothapp.notionshortcut.model.entity.notiondatabaseproperty
 
 import com.smoothapp.notionshortcut.model.constant.NotionApiPropertyEnum
 import com.smoothapp.notionshortcut.model.constant.NotionColorEnum
+import com.smoothapp.notionshortcut.model.entity.NotionOption
 
 class NotionDatabasePropertyStatus(
     name: String,
     id: String,
-    private var statusName: String?,
-    private var statusColor: NotionColorEnum?,
+    private var option: NotionOption?,
     parentUUID: String
 ) : NotionDatabaseProperty(NotionApiPropertyEnum.STATUS, name, id, listOf(), parentUUID) {
 
@@ -16,69 +16,24 @@ class NotionDatabasePropertyStatus(
     }
 
     private fun updateParentContents() {
-        val contents: MutableList<String?> = MutableList(SET_SIZE){null}
-        contents[NAME_INDEX] = statusName
-        contents[COLOR_INDEX] = statusColor?.getName()
-        setPropertyContents(contents)
+        setPropertyContents(option?.toStringList() ?: listOf())
     }
 
-    fun updateContents(statusName: String?, statusColor: NotionColorEnum?){
-        this.statusName = statusName
-        this.statusColor = statusColor
+    fun updateContents(option: NotionOption?){
+        this.option = option
         updateParentContents()
     }
 
-    fun getStatusName(): String? = statusName
-
-    fun getStatusColor(): NotionColorEnum? = statusColor
-
-//    fun getStatusId(): String?{
-//        return when(hasContents()){
-//            false -> null
-//            true -> contents[ID_INDEX]
-//        }
-//    }
-//
-//    fun getStatusGroupName(): String?{
-//        return when(hasContents()){
-//            false -> null
-//            true -> contents[GROUP_NAME_INDEX]
-//        }
-//    }
-//
-//    fun getStatusGroupColor(): String?{
-//        return when(hasContents()){
-//            false -> null
-//            true -> contents[GROUP_COLOR_INDEX]
-//        }
-//    }
-//
-//    fun getStatusGroupId(): String?{
-//        return when(hasContents()){
-//            false -> null
-//            true -> contents[GROUP_ID_INDEX]
-//        }
-//    }
-
-
+    fun getOption(): NotionOption? = option
 
     companion object {
-        private const val NAME_INDEX = 0 // primary
-        private const val COLOR_INDEX = 1
-        private const val ID_INDEX = 2
-        private const val GROUP_NAME_INDEX = 3
-        private const val GROUP_COLOR_INDEX = 4
-        private const val GROUP_ID_INDEX = 5
-
-        private const val SET_SIZE = 6
-
         fun fromParent(property: NotionDatabaseProperty): NotionDatabasePropertyStatus {
             val contents = property.getContents()
+            val option = if(contents.isEmpty()) null else NotionOption.fromStringList(contents)
             return NotionDatabasePropertyStatus(
                 property.getName(),
                 property.getId(),
-                contents[NAME_INDEX],
-                contents[COLOR_INDEX]?.let { NotionColorEnum.fromString(it) },
+                option,
                 property.getParentUUID()
             )
         }
