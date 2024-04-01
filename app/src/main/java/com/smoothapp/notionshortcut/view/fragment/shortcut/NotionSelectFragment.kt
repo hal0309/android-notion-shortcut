@@ -98,6 +98,8 @@ class NotionSelectFragment(private val title: String) : ShortcutBottomSheetFragm
                 unselectedListAdapter.submitList(unselectedList)
                 selectedListAdapter.submitList(selectedList)
 
+                finishLoading()
+
                 Log.d("", unselectedList.toString())
                 Log.d("", selectedList.toString())
             }
@@ -110,6 +112,12 @@ class NotionSelectFragment(private val title: String) : ShortcutBottomSheetFragm
             selectedListAdapter.submitList(selectedList)
             Log.e("", unselectedList.toString())
             listener?.onSelectChanged(selectedList)
+        }
+    }
+
+    private fun finishLoading(){
+        binding.apply {
+            loadingLottie.visibility = View.GONE
         }
     }
 
