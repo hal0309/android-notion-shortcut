@@ -92,10 +92,10 @@ object NotionApiPostPageObj {
     }
 
     //todo: 要素追加時の引数(group, color)
-    fun propertyStatus(name: String, statusName: String) = """
+    fun propertyStatus(name: String, option: NotionOption) = """
         "$name": {
             "status": {
-                "name": "$statusName"
+                "name": "${option.name}"
             }
         }
     """.trimIndent()

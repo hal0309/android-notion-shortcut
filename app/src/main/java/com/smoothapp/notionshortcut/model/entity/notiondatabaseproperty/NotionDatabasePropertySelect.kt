@@ -29,10 +29,11 @@ class NotionDatabasePropertySelect(
     companion object {
         fun fromParent(property: NotionDatabaseProperty): NotionDatabasePropertySelect {
             val contents = property.getContents()
+            val option = if(contents.isEmpty()) null else NotionOption.fromStringList(contents)
             return NotionDatabasePropertySelect(
                 property.getName(),
                 property.getId(),
-                if(contents.isEmpty()) null else NotionOption.fromStringList(contents),
+                option,
                 property.getParentUUID()
             )
         }

@@ -29,13 +29,7 @@ class ShortcutSelectView @JvmOverloads constructor(
 
     override fun setSelected(selectedList: List<NotionOption>) {
         property as NotionDatabasePropertySelect
-        when(selectedList.isEmpty()){
-            true -> property.updateContents(null)
-            else -> {
-                val selected = selectedList[0]
-                property.updateContents(selected)
-            }
-        }
+        property.updateContents(selectedList.firstOrNull())
         applySelected()
     }
 

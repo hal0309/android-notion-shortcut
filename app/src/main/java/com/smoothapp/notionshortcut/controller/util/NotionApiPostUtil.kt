@@ -131,7 +131,7 @@ class NotionApiPostUtil {
 
     private fun NotionDatabaseProperty.createPropertyStatusObject(): String {
         this as NotionDatabasePropertyStatus
-        return getStatusName().let {
+        return getOption().let {
             when(it) {
                 null -> ""
                 else -> NotionApiPostPageObj.propertyStatus(getName(), it) + ","
