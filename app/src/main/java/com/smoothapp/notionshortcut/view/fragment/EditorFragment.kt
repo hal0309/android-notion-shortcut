@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
+import com.smoothapp.notionshortcut.R
 import com.smoothapp.notionshortcut.controller.db.AppDatabase
 import com.smoothapp.notionshortcut.controller.service.NotionApiGetService
 import com.smoothapp.notionshortcut.databinding.FragmentEditorBinding
@@ -46,6 +47,8 @@ class EditorFragment : Fragment() {
             MainScope().launch {
 
             }
+
+            mainActivity.setWindowBackgroundColor(R.color.gray)
 
 
             startCharacterFragment()
