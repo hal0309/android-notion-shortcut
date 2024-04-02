@@ -10,14 +10,19 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 
-class AppRepository(val dao: NotionPostTemplateDao) { //todo: 引数をDAOにする
+class AppRepository(private val dao: NotionPostTemplateDao) { //todo: 引数をDAOにする
 
     val allTemplateWithProperty: Flow<List<TemplateAndProperty>> = dao.getAllWithProperty()
 
     @WorkerThread
-    suspend fun insert(notionPostTemplate: NotionPostTemplate){
+    fun insert(notionPostTemplate: NotionPostTemplate){
         dao.insert(notionPostTemplate)
         dao.insertAllProperty(notionPostTemplate.propertyList())
+    }
+
+    @WorkerThread
+    fun delete(notionPostTemplate: NotionPostTemplate){
+        dao.delete(notionPostTemplate)
     }
 
 //    suspend fun getAll(): List<NotionPostTemplate> = withContext(Dispatchers.IO) {

@@ -5,12 +5,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.smoothapp.notionshortcut.databinding.FragmentTemplateSelectorBinding
 import com.smoothapp.notionshortcut.model.entity.NotionPostTemplate
 import com.smoothapp.notionshortcut.view.activity.MainActivity
 import com.smoothapp.notionshortcut.view.adapter.TemplateListAdapter
-import com.smoothapp.notionshortcut.view.component.template.TemplatePropertyView
 import com.smoothapp.notionshortcut.view.fragment.EditorFragment
 
 
@@ -34,12 +34,20 @@ class TemplateSelectorFragment : Fragment() {
 
         binding.apply {
 
-
             listAdapter = TemplateListAdapter(object : TemplateListAdapter.Listener{
-                override fun onClickItem(notionDatabase: NotionPostTemplate) {
+                override fun onClickItem(template: NotionPostTemplate) {
+                    Toast.makeText(context, template.title, Toast.LENGTH_SHORT).show()
+                }
 
+                override fun onLongClickItem(template: NotionPostTemplate) {
+                    viewModel.delete(template)
                 }
             })
+
+            recyclerView.apply {
+                adapter = listAdapter
+                layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            }
 
             viewModel.allTemplateWithProperty.observe(viewLifecycleOwner) {
                 val templates = it.map { templateWithProperty ->
@@ -47,33 +55,8 @@ class TemplateSelectorFragment : Fragment() {
                         propertyList(templateWithProperty.propertyList)
                     }
                 }
-                val tmp = templates.firstOrNull { it.roles.contains("SHORTCUT_1") }
-                if(tmp != null) {
-                    title.text = tmp.title
-                    propertyContainer.removeAllViews()
-                    for (property in tmp.propertyList()) {
-                        val view = TemplatePropertyView(root.context, type = property.getType(), name = property.getName())
-                        propertyContainer.addView(view)
-                    }
-                }
+                listAdapter?.submitList(templates)
             }
-
-
-
-            recyclerView.apply {
-                adapter = listAdapter
-                layoutManager = LinearLayoutManager(context)
-            }
-
-
-//            viewModel.allTemplateWithProperty.observe(viewLifecycleOwner) {
-//                val templates = it.map { templateWithProperty ->
-//                    templateWithProperty.template.apply {
-//                        propertyList(templateWithProperty.propertyList)
-//                    }
-//                }
-//                listAdapter?.submitList(templates)
-//            }
             return root
         }
     }

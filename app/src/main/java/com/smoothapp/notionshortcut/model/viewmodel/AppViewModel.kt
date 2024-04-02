@@ -27,6 +27,12 @@ class AppViewModel(private val repository: AppRepository): ViewModel() {
         }
     }
 
+    fun delete(template: NotionPostTemplate) = viewModelScope.launch {
+        withContext(Dispatchers.IO) {
+            repository.delete(template)
+        }
+    }
+
     fun setBalloonText(text: String) {
         (balloonText as MutableLiveData<String>).postValue(text)
     }

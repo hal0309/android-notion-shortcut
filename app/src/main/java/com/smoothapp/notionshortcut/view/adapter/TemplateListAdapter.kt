@@ -25,6 +25,10 @@ class TemplateListAdapter(val listener: Listener? = null) :
                 }
 
                 root.setOnClickListener { listener?.onClickItem(notionPostTemplate) }
+                root.setOnLongClickListener {
+                    listener?.onLongClickItem(notionPostTemplate)
+                    true
+                }
 //                card.setCardBackgroundColor(select.color.getColor(card.context))
             }
         }
@@ -45,7 +49,9 @@ class TemplateListAdapter(val listener: Listener? = null) :
     }
 
     interface Listener {
-        fun onClickItem(notionDatabase: NotionPostTemplate)
+        fun onClickItem(template: NotionPostTemplate)
+
+        fun onLongClickItem(template: NotionPostTemplate)
     }
 }
 
