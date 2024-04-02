@@ -52,9 +52,9 @@ class MainActivity : AppCompatActivity() {
 
         //todo: 削除 テスト用
 //        deleteDatabase("app_database")
-        val intent = Intent(this, ShortcutActivity::class.java)
-        startActivity(intent)
-        return
+//        val intent = Intent(this, ShortcutActivity::class.java)
+//        startActivity(intent)
+//        return
 
         
 //        initialize()
@@ -82,9 +82,9 @@ class MainActivity : AppCompatActivity() {
             }
             else -> {
                 MainScope().launch {
-//                    dataStore.edit { preferences ->
-//                        preferences[PreferenceKeys.NOTION_API_KEY] = ""
-//                    }
+                    dataStore.edit { preferences ->
+                        preferences[PreferenceKeys.NOTION_API_KEY] = ""
+                    }
                     startInitialFragment()
                 }
 

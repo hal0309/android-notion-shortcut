@@ -11,9 +11,11 @@ import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.get
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.fragment.app.Fragment
+import com.smoothapp.notionshortcut.R
 import com.smoothapp.notionshortcut.controller.provider.NotionApiProvider
 import com.smoothapp.notionshortcut.databinding.FragmentInitialBinding
 import com.smoothapp.notionshortcut.model.constant.PreferenceKeys
@@ -35,12 +37,10 @@ class InitialFragment : Fragment() {
         get() = activity as MainActivity
 
     override fun onStart() {
-        Log.w("InitialFragment", "initialfragment onStart")
         super.onStart()
     }
 
     override fun onDestroy() {
-        Log.w("InitialFragment", "initialfragment onDestroy")
         super.onDestroy()
     }
 
@@ -49,9 +49,11 @@ class InitialFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentInitialBinding.inflate(inflater, container, false)
+        // windowの背景色を(R.color.color_primary)に設定
+        mainActivity.window.setBackgroundDrawable(ResourcesCompat.getDrawable(resources, R.color.color_primary, null))
+
 
         initialize()
-
         binding.apply {
             return root
         }
