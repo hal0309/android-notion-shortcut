@@ -60,11 +60,6 @@ class InitialFragment : Fragment() {
     }
 
     private fun initialize() {
-        if(initializeStep > 0) {
-            val container = binding.initialProgressContainer.getChildAt(initializeStep - 1) as LinearLayout
-            val checkBox = container.getChildAt(0) as CheckBox
-            checkBox.isChecked = true
-        }
         when(initializeStep) {
             0 -> checkApiKey()
             1 -> checkNotifyPermission()
@@ -76,7 +71,7 @@ class InitialFragment : Fragment() {
 
     private fun checkApiKey() {
         MainScope().launch {
-            delay(1000)
+            delay(0)
             mainActivity.dataStore.data.map { preferences ->
                 preferences[PreferenceKeys.NOTION_API_KEY] ?: ""
             }.take(1).collect{
