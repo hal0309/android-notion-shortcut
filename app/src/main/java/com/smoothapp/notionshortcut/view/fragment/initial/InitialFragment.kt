@@ -50,7 +50,7 @@ class InitialFragment : Fragment() {
     ): View {
         binding = FragmentInitialBinding.inflate(inflater, container, false)
         // windowの背景色を(R.color.color_primary)に設定
-        mainActivity.window.setBackgroundDrawable(ResourcesCompat.getDrawable(resources, R.color.color_primary, null))
+        mainActivity.setWindowBackgroundColor(R.color.color_primary)
 
 
         initialize()
@@ -78,6 +78,7 @@ class InitialFragment : Fragment() {
                 Toast.makeText(mainActivity, it, Toast.LENGTH_SHORT).show()
                 NotionApiProvider.setApiKey(it)
                 val success = it.isNotEmpty()
+//                val success = true
                 if(success){
                     initialize()
                 } else {
@@ -107,7 +108,15 @@ class InitialFragment : Fragment() {
     }
 
     private fun doOnInitializeSucceed() {
-        mainActivity.startEditorFragment()
+        binding.apply {
+            notionOauthContainer.visibility = View.GONE
+            welcomeContainer.visibility = View.VISIBLE
+//            iconを右に移動しつつ透明にする
+            icon.animate().translationX(1000f).alpha(0f).setDuration(500).withEndAction {
+                icon.visibility = View.INVISIBLE
+                mainActivity.startEditorFragment()
+            }
+        }
     }
 
     companion object {

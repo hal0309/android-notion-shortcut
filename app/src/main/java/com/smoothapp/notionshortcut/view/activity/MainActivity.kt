@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.res.ResourcesCompat
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.preferencesDataStore
 import com.smoothapp.notionshortcut.R
@@ -82,9 +83,10 @@ class MainActivity : AppCompatActivity() {
             }
             else -> {
                 MainScope().launch {
-                    dataStore.edit { preferences ->
-                        preferences[PreferenceKeys.NOTION_API_KEY] = ""
-                    }
+                    /* todo: テスト用コード */
+//                    dataStore.edit { preferences ->
+//                        preferences[PreferenceKeys.NOTION_API_KEY] = ""
+//                    }
                     startInitialFragment()
                 }
 
@@ -131,6 +133,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
+    fun setWindowBackgroundColor(color: Int) {
+        window.setBackgroundDrawable(ResourcesCompat.getDrawable(resources, color, null))
+    }
 
 }
