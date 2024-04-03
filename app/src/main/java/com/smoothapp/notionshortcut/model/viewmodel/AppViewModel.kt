@@ -23,7 +23,19 @@ class AppViewModel(private val repository: AppRepository): ViewModel() {
 
     fun insert(template: NotionPostTemplate) = viewModelScope.launch {  //todo: scopeやdispatcherの指定が甘い
         withContext(Dispatchers.IO) {
-            repository.insert(template)
+            repository.insertTemplate(template)
+        }
+    }
+
+    fun delete(template: NotionPostTemplate) = viewModelScope.launch {
+        withContext(Dispatchers.IO) {
+            // todo: この削除は不格好
+            allTemplateWithProperty.value.let { templateList ->
+                if(templateList != null && templateList.count{ it.template.dbId == template.dbId } <= 1){
+                    repository.deleteOption(template.dbId)
+                }
+            }
+            repository.deleteTemplate(template)
         }
     }
 

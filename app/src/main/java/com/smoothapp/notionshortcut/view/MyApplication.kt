@@ -17,7 +17,7 @@ class MyApplication: Application() {
 
     val database by lazy { AppDatabase.getInstance(this) }
 //    val database by lazy { AppDatabase.getInstance(this, applicationScope) }
-    val repository by lazy { AppRepository(database.notionPostTemplateDao()) }
+    val repository by lazy { AppRepository(database.notionPostTemplateDao(), database.notionOptionDao()) }
 
     override fun onCreate() {
         super.onCreate()
