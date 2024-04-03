@@ -1,5 +1,6 @@
 package com.smoothapp.notionshortcut.model.viewmodel
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -7,6 +8,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.smoothapp.notionshortcut.controller.repository.AppRepository
+import com.smoothapp.notionshortcut.controller.util.DynamicShortcutUtil.addDynamicShortcut
+import com.smoothapp.notionshortcut.controller.util.DynamicShortcutUtil.removeDynamicShortcut
 import com.smoothapp.notionshortcut.model.dao.TemplateAndProperty
 import com.smoothapp.notionshortcut.model.entity.NotionPostTemplate
 import kotlinx.coroutines.Dispatchers
@@ -20,14 +23,14 @@ class AppViewModel(private val repository: AppRepository): ViewModel() {
 
     val fabEnabled: LiveData<Boolean> = MutableLiveData<Boolean>().apply { value = false }
 
-
-    fun insert(template: NotionPostTemplate) = viewModelScope.launch {  //todo: scopeやdispatcherの指定が甘い
+    fun insert(template: NotionPostTemplate, context: Context) = viewModelScope.launch {  //todo: scopeやdispatcherの指定が甘い
         withContext(Dispatchers.IO) {
             repository.insertTemplate(template)
+            addDynamicShortcut(template, context)
         }
     }
 
-    fun delete(template: NotionPostTemplate) = viewModelScope.launch {
+    fun delete(template: NotionPostTemplate, context: Context) = viewModelScope.launch {
         withContext(Dispatchers.IO) {
             // todo: この削除は不格好
             allTemplateWithProperty.value.let { templateList ->
@@ -36,6 +39,7 @@ class AppViewModel(private val repository: AppRepository): ViewModel() {
                 }
             }
             repository.deleteTemplate(template)
+            removeDynamicShortcut(template, context)
         }
     }
 

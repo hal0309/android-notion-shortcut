@@ -10,6 +10,8 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.pm.ShortcutInfoCompat
+import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.preferencesDataStore
@@ -18,6 +20,7 @@ import com.smoothapp.notionshortcut.controller.provider.NotionOauthProvider
 import com.smoothapp.notionshortcut.controller.util.ApiCommonUtil
 import com.smoothapp.notionshortcut.databinding.ActivityMainBinding
 import com.smoothapp.notionshortcut.model.constant.PreferenceKeys
+import com.smoothapp.notionshortcut.model.entity.NotionPostTemplate
 import com.smoothapp.notionshortcut.model.viewmodel.AppViewModel
 import com.smoothapp.notionshortcut.model.viewmodel.AppViewModelFactory
 import com.smoothapp.notionshortcut.view.MyApplication

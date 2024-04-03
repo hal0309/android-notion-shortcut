@@ -226,7 +226,7 @@ class EditorFragment : Fragment() {
                             }
                             MainScope().launch {
                                 withContext(Dispatchers.IO){
-                                    viewModel.insert(template)
+                                    viewModel.insert(template, mainActivity)
                                 }
                             }
 
