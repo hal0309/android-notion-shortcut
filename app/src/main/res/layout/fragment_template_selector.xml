@@ -20,11 +20,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="アイコンショートカット一覧"
+            android:layout_marginStart="50dp"
             android:textStyle="bold"/>
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="50dp"
+            android:clipToPadding="false"/>
         
     </LinearLayout>
 

@@ -131,9 +131,13 @@ class EditorFragment : Fragment() {
         }
 
         childFragmentManager.beginTransaction()
-            .replace(binding.mainContainer.id, NotionDatabaseSelectorFragment.newInstance(pageOrDatabaseList, listener))
+            .replace(binding.overlayContainer.id, NotionDatabaseSelectorFragment.newInstance(pageOrDatabaseList, listener))
             .addToBackStack(null)
             .commit()
+    }
+
+    private fun finishDatabaseSelectFragment() {
+        childFragmentManager.popBackStack()
     }
 
     fun confirmSelectedDatabase(notionDatabase: PageOrDatabase) {
@@ -166,7 +170,7 @@ class EditorFragment : Fragment() {
                                 }
                                 override fun onEnd() {
                                     enableBlocker(false)
-                                    startTemplateSelectorFragment()
+                                    finishDatabaseSelectFragment()
                                 }
                             })
                         }
