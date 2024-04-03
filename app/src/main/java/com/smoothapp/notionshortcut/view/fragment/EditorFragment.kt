@@ -10,14 +10,12 @@ import androidx.fragment.app.Fragment
 import com.smoothapp.notionshortcut.R
 import com.smoothapp.notionshortcut.controller.db.AppDatabase
 import com.smoothapp.notionshortcut.controller.service.NotionApiGetService
+import com.smoothapp.notionshortcut.controller.util.NotionTemplateUtil
 import com.smoothapp.notionshortcut.databinding.FragmentEditorBinding
-import com.smoothapp.notionshortcut.model.constant.NotionApiPropertyEnum
-import com.smoothapp.notionshortcut.model.constant.NotionColorEnum
 import com.smoothapp.notionshortcut.model.entity.NotionOption
 import com.smoothapp.notionshortcut.model.entity.NotionPostTemplate
 import com.smoothapp.notionshortcut.model.entity.get.NotionDatabase
 import com.smoothapp.notionshortcut.model.entity.get.PageOrDatabase
-import com.smoothapp.notionshortcut.model.entity.notiondatabaseproperty.NotionDatabaseProperty
 import com.smoothapp.notionshortcut.view.activity.MainActivity
 import com.smoothapp.notionshortcut.view.fragment.editor.CharacterFragment
 import com.smoothapp.notionshortcut.view.fragment.editor.NotionDatabaseSelectorFragment
@@ -133,9 +131,13 @@ class EditorFragment : Fragment() {
         }
 
         childFragmentManager.beginTransaction()
-            .replace(binding.mainContainer.id, NotionDatabaseSelectorFragment.newInstance(pageOrDatabaseList, listener))
+            .replace(binding.overlayContainer.id, NotionDatabaseSelectorFragment.newInstance(pageOrDatabaseList, listener))
             .addToBackStack(null)
             .commit()
+    }
+
+    private fun finishDatabaseSelectFragment() {
+        childFragmentManager.popBackStack()
     }
 
     fun confirmSelectedDatabase(notionDatabase: PageOrDatabase) {
@@ -146,94 +148,31 @@ class EditorFragment : Fragment() {
                 override fun doOnEnd(notionDatabase: NotionDatabase) {
                     showLargeBalloon("database detail: $notionDatabase", object : CharacterFragment.LargeBalloonListener {
                         override fun onCanceled() {
-                            viewModel.setBalloonText("Select database ...")
-                            val dbId = notionDatabase.id
-
-                            val template = NotionPostTemplate(
-                                notionDatabase.title.toString(),
-                                dbId,
-                                notionDatabase.title.toString(),
-
-                            ).apply {
-                                val p: MutableList<NotionDatabaseProperty> = mutableListOf()
-                                for (key in notionDatabase.properties.keys) {
-                                    try {
-                                        val value = notionDatabase.properties[key] as Map<String, Any>
-                                        val type = NotionApiPropertyEnum.from(value["type"] as String)
-                                        val options = mutableListOf<NotionOption>()
-                                        when(type){
-                                            NotionApiPropertyEnum.SELECT, NotionApiPropertyEnum.MULTI_SELECT, NotionApiPropertyEnum.STATUS -> {
-                                                val propertyId = value["id"] as String
-                                                val property = value[type.key] as Map<String, Any>
-                                                val optionsMap = property["options"] as List<Map<String, Any>>
-                                                for (o in optionsMap){
-                                                    val name = o["name"] as String
-                                                    val id = o["id"] as String
-                                                    val color = NotionColorEnum.fromString(o["color"] as String)
-                                                    val option = NotionOption(type, dbId, propertyId, id, name, color, null, null)
-                                                    println(option)
-                                                    options.add(option)
-                                                }
-
-                                                if(type == NotionApiPropertyEnum.STATUS){
-                                                    val groupsMap = property["groups"] as List<Map<String, Any>>
-                                                    for (g in groupsMap){
-                                                        val groupId = g["id"] as String
-                                                        val groupName = g["name"] as String
-                                                        val optionIds = g["option_ids"] as List<String>
-                                                        for (optionId in optionIds){
-                                                            val option = options.first { it.id == optionId }
-                                                            option.groupId = groupId
-                                                            option.groupName = groupName
-                                                        }
-                                                    }
-                                                }
-                                                MainScope().launch {
-                                                    withContext(Dispatchers.IO){
-                                                        AppDatabase.getInstance(requireContext()).notionOptionDao().insertAll(options)
-                                                    }
-                                                }
-                                            }
-                                            NotionApiPropertyEnum.RELATION -> {
-                                                val propertyId = value["id"] as String
-                                                val property = value[type.key/*relation*/] as Map<String, Any>
-                                                val databaseId = property["database_id"] as String
-                                                val option = NotionOption(type, dbId, propertyId, databaseId, "", NotionColorEnum.DEFAULT, null, null)
-                                                options.add(option)
-                                                MainScope().launch {
-                                                    withContext(Dispatchers.IO){
-                                                        AppDatabase.getInstance(requireContext()).notionOptionDao().insert(option)
-                                                    }
-                                                }
-                                            }
-                                            else -> {}
-                                        }
-
-                                        val property = NotionDatabaseProperty.from(
-                                            key,
-                                            value,
-                                            getUUID()
-                                        )
-                                        p.add(
-                                            property
-                                        )
-                                    } catch (e: Exception) {
-                                        e.printStackTrace()
-                                    }
-                                }
-                                propertyList(p)
-                                setRole("SHORTCUT_1")
-                            }
-                            MainScope().launch {
-                                withContext(Dispatchers.IO){
-                                    viewModel.insert(template, mainActivity)
-                                }
-                            }
 
                         }
 
                         override fun onConfirmed() {
-                            startTemplateSelectorFragment()
+                            viewModel.setBalloonText("Select database ...")
+                            NotionTemplateUtil.convertFromDatabase(notionDatabase, "SHORTCUT_1", object : NotionTemplateUtil.ConvertFromDatabaseListener {
+                                override fun onOptionsConverted(options: List<NotionOption>) {
+                                    MainScope().launch {
+                                        withContext(Dispatchers.IO){
+                                            AppDatabase.getInstance(requireContext()).notionOptionDao().insertAll(options)
+                                        }
+                                    }
+                                }
+                                override fun onTemplateConverted(template: NotionPostTemplate) {
+                                    MainScope().launch {
+                                        withContext(Dispatchers.IO){
+                                            viewModel.insert(template, mainActivity)
+                                        }
+                                    }
+                                }
+                                override fun onEnd() {
+                                    enableBlocker(false)
+                                    finishDatabaseSelectFragment()
+                                }
+                            })
                         }
                     })
                 }
