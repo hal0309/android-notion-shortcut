@@ -1,15 +1,21 @@
 package com.smoothapp.notionshortcut.view.fragment.editor
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.pm.ShortcutInfoCompat
+import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.smoothapp.notionshortcut.databinding.FragmentTemplateSelectorBinding
 import com.smoothapp.notionshortcut.model.entity.NotionPostTemplate
 import com.smoothapp.notionshortcut.view.activity.MainActivity
+import com.smoothapp.notionshortcut.view.activity.ShortcutActivity
 import com.smoothapp.notionshortcut.view.adapter.TemplateListAdapter
 import com.smoothapp.notionshortcut.view.fragment.EditorFragment
 
@@ -34,13 +40,16 @@ class TemplateSelectorFragment : Fragment() {
 
         binding.apply {
 
+            root.setOnClickListener {
+            }
+
             listAdapter = TemplateListAdapter(object : TemplateListAdapter.Listener{
                 override fun onClickItem(template: NotionPostTemplate) {
                     Toast.makeText(context, template.title, Toast.LENGTH_SHORT).show()
                 }
 
                 override fun onLongClickItem(template: NotionPostTemplate) {
-                    viewModel.delete(template)
+                    viewModel.delete(template, mainActivity)
                 }
             })
 

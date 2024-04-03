@@ -85,16 +85,18 @@ class ShortcutActivity : AppCompatActivity() {
             val bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
 
 
-            viewModel.allTemplateWithProperty.observe(this@ShortcutActivity) {
-                val templates = it.map { templateWithProperty ->
+            viewModel.allTemplateWithProperty.observe(this@ShortcutActivity) { templateAndPropertyList ->
+                val templates = templateAndPropertyList.map { templateWithProperty ->
                     templateWithProperty.template.apply {
                         propertyList(templateWithProperty.propertyList)
                     }
                 }
 
-                val tmp = templates.first { it.roles.contains("SHORTCUT_1") }
+                /* todo: 削除済みを呼び出した場合の処理 */
+                val templateUUID = intent.getStringExtra("templateUUID")
+                val template = templates.first { it.getUUID() == templateUUID }
                 shortcutRoot.apply {
-                    setTemplate(tmp)
+                    setTemplate(template)
                     setListener(object : ShortcutRootView.Listener {
                         override fun onSendBtnClicked() {
                             val blockList = getBlockList()
@@ -109,7 +111,7 @@ class ShortcutActivity : AppCompatActivity() {
                             MainScope().launch {
                                 Log.d(
                                     "", service.postPageToDatabase(
-                                        tmp.dbId,
+                                        template.dbId,
                                         blockList.map { it.getContents() }
                                     )
                                 )
