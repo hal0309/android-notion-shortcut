@@ -15,9 +15,10 @@ object DynamicShortcutUtil {
         }
 
         val shortcut = ShortcutInfoCompat.Builder(context, template.uuid)
+            .setIntent(intent)
             .setShortLabel(template.title)
             .setLongLabel(template.title)
-            .setIntent(intent)
+//            .addCapabilityBinding(Intent.ACTION_EDIT, "template", listOf("title"))
             .build()
         ShortcutManagerCompat.pushDynamicShortcut(context, shortcut)
     }

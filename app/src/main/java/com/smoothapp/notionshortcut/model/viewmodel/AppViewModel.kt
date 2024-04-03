@@ -23,15 +23,12 @@ class AppViewModel(private val repository: AppRepository): ViewModel() {
 
     val fabEnabled: LiveData<Boolean> = MutableLiveData<Boolean>().apply { value = false }
 
-
     fun insert(template: NotionPostTemplate, context: Context) = viewModelScope.launch {  //todo: scopeやdispatcherの指定が甘い
         withContext(Dispatchers.IO) {
             repository.insertTemplate(template)
             addDynamicShortcut(template, context)
         }
     }
-
-
 
     fun delete(template: NotionPostTemplate, context: Context) = viewModelScope.launch {
         withContext(Dispatchers.IO) {
