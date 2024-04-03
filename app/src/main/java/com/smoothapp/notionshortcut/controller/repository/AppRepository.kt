@@ -18,7 +18,7 @@ class AppRepository(private val templateDao: NotionPostTemplateDao, private val 
     }
 
     @WorkerThread
-    fun deleteTemplate(notionPostTemplate: NotionPostTemplate){
+    fun removeTemplate(notionPostTemplate: NotionPostTemplate){
         templateDao.delete(notionPostTemplate)
     }
 

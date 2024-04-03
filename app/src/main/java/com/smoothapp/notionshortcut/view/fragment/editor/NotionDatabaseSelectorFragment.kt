@@ -1,7 +1,6 @@
 package com.smoothapp.notionshortcut.view.fragment.editor
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -15,7 +14,8 @@ import com.smoothapp.notionshortcut.view.activity.MainActivity
 import com.smoothapp.notionshortcut.view.adapter.NotionDatabaseListAdapter
 import com.smoothapp.notionshortcut.view.fragment.EditorFragment
 
-class NotionDatabaseSelectorFragment(private var notionDatabaseList: List<PageOrDatabase>, private val listener: Listener) : Fragment() {
+
+class NotionDatabaseSelectorFragment(private val listener: Listener) : Fragment() {
 
     private lateinit var binding: FragmentNotionDatabaseSelectorBinding
     private lateinit var parent: EditorFragment
@@ -31,6 +31,7 @@ class NotionDatabaseSelectorFragment(private var notionDatabaseList: List<PageOr
         binding = FragmentNotionDatabaseSelectorBinding.inflate(inflater, container, false)
         binding.apply {
             parent = parentFragment as EditorFragment
+            parent.downloadDatabases()
 
             viewModel.setBalloonText("Select database ...")
             listAdapter = NotionDatabaseListAdapter(object : NotionDatabaseListAdapter.Listener{
@@ -45,7 +46,9 @@ class NotionDatabaseSelectorFragment(private var notionDatabaseList: List<PageOr
                 adapter = listAdapter
                 layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
             }
-            listAdapter?.submitList(notionDatabaseList)
+            viewModel.filteredDatabaseList.observe(viewLifecycleOwner) { dbList ->
+                listAdapter?.submitList(dbList)
+            }
 
             searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener{
                 override fun onQueryTextSubmit(p0: String?): Boolean {
@@ -53,28 +56,17 @@ class NotionDatabaseSelectorFragment(private var notionDatabaseList: List<PageOr
                     return false
                 }
                 override fun onQueryTextChange(word: String?): Boolean {
-                    listAdapter?.submitList(
-                        when(word){
-                            null, "" -> notionDatabaseList
-                            else -> notionDatabaseList.filter {
-                                    if(it.title?.contains(word, true) == true) return@filter true
-                                    if(it.parentTitle?.contains(word ?: "", true) == true) return@filter true
-                                    false
-                            }
-                        }
-                    )
+                    viewModel.applyFilterToDatabase(word ?: "")
                     return false
                 }
             })
             searchView.setOnQueryTextFocusChangeListener { view, b ->
-                Log.e("", "onFocusChange $b")
                 if(!b) parent.hideKeyboard(view)
             }
 
             return root
         }
     }
-
 
     interface Listener {
         fun onItemSelected(notionDatabase: PageOrDatabase)
@@ -83,6 +75,6 @@ class NotionDatabaseSelectorFragment(private var notionDatabaseList: List<PageOr
 
     companion object {
         @JvmStatic
-        fun newInstance(pageOrDatabaseList: List<PageOrDatabase>, listener: Listener) = NotionDatabaseSelectorFragment(pageOrDatabaseList, listener)
+        fun newInstance(listener: Listener) = NotionDatabaseSelectorFragment(listener)
     }
 }

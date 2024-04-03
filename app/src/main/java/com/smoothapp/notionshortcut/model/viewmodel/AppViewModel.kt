@@ -12,6 +12,7 @@ import com.smoothapp.notionshortcut.controller.util.DynamicShortcutUtil.addDynam
 import com.smoothapp.notionshortcut.controller.util.DynamicShortcutUtil.removeDynamicShortcut
 import com.smoothapp.notionshortcut.model.dao.TemplateAndProperty
 import com.smoothapp.notionshortcut.model.entity.NotionPostTemplate
+import com.smoothapp.notionshortcut.model.entity.get.PageOrDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -21,16 +22,20 @@ class AppViewModel(private val repository: AppRepository): ViewModel() {
     val allTemplateWithProperty: LiveData<List<TemplateAndProperty>> = repository.allTemplateWithProperty.asLiveData()
     val balloonText: LiveData<String> = MutableLiveData<String>().apply { value = "Hello, World!" }
 
+    private val databaseList: LiveData<List<PageOrDatabase>> = MutableLiveData<List<PageOrDatabase>>().apply { value = emptyList() }
+    private var filterWord: String? = null
+    val filteredDatabaseList: LiveData<List<PageOrDatabase>> = MutableLiveData<List<PageOrDatabase>>().apply { value = emptyList() }
+
     val fabEnabled: LiveData<Boolean> = MutableLiveData<Boolean>().apply { value = false }
 
-    fun insert(template: NotionPostTemplate, context: Context) = viewModelScope.launch {  //todo: scopeやdispatcherの指定が甘い
+    fun insertTemplate(template: NotionPostTemplate, context: Context) = viewModelScope.launch {  //todo: scopeやdispatcherの指定が甘い
         withContext(Dispatchers.IO) {
             repository.insertTemplate(template)
             addDynamicShortcut(template, context)
         }
     }
 
-    fun delete(template: NotionPostTemplate, context: Context) = viewModelScope.launch {
+    fun removeTemplate(template: NotionPostTemplate, context: Context) = viewModelScope.launch {
         withContext(Dispatchers.IO) {
             // todo: この削除は不格好
             allTemplateWithProperty.value.let { templateList ->
@@ -38,8 +43,38 @@ class AppViewModel(private val repository: AppRepository): ViewModel() {
                     repository.deleteOption(template.dbId)
                 }
             }
-            repository.deleteTemplate(template)
+            repository.removeTemplate(template)
             removeDynamicShortcut(template, context)
+        }
+    }
+
+    fun insertDatabases(databases: List<PageOrDatabase>) {
+        (databaseList as MutableLiveData<List<PageOrDatabase>>).postValue(databases)
+        (filteredDatabaseList as MutableLiveData<List<PageOrDatabase>>).postValue(databases.filter {
+            when(filterWord){
+                null, "" -> true
+                else -> {
+                    if (it.title?.contains(filterWord!!, true) == true) return@filter true
+                    if (it.parentTitle?.contains(filterWord!!, true) == true) return@filter true
+                    false
+                }
+            }
+        })
+    }
+
+    /* todo: 上記処理と一体化出来ないか */
+    fun applyFilterToDatabase(filterWord: String?) {
+        this.filterWord = filterWord
+        val dbList = databaseList.value
+        if (dbList != null) {
+            (filteredDatabaseList as MutableLiveData<List<PageOrDatabase>>).postValue(dbList.filter {when(filterWord){
+                null, "" -> true
+                else -> {
+                    if (it.title?.contains(filterWord, true) == true) return@filter true
+                    if (it.parentTitle?.contains(filterWord, true) == true) return@filter true
+                    false
+                }
+            }})
         }
     }
 

@@ -2,6 +2,7 @@ package com.smoothapp.notionshortcut.view.fragment
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -54,7 +55,7 @@ class EditorFragment : Fragment() {
             startTemplateSelectorFragment()
 
             fabCard.setOnClickListener {
-                startDownload()
+                startDatabaseSelectFragment()
             }
         }
         return binding.root
@@ -78,7 +79,6 @@ class EditorFragment : Fragment() {
             imm?.hideSoftInputFromWindow(view.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
             view.clearFocus()
         }
-
     }
 
     private fun startCharacterFragment() {
@@ -96,32 +96,7 @@ class EditorFragment : Fragment() {
             .commit()
     }
 
-    private fun startDownload() {
-        MainScope().launch {
-            try {
-                service.getAllObjects(object : NotionApiGetService.GetPageListener {
-                    override fun doOnUpdate(total: Int) {
-                        viewModel.setBalloonText("Connecting to Notion... ($total/???)")
-                    }
-
-                    override fun doOnEndGetApi(total: Int) {
-                        viewModel.setBalloonText("Connecting to Notion... ($total/$total)")
-                    }
-
-                    override fun doOnEndAll(pageOrDatabaseList: List<PageOrDatabase>) {
-//                        for (pageOrDatabase in pageOrDatabaseList) {
-//                            println(pageOrDatabase)
-//                        }
-                        startDatabaseSelectFragment(pageOrDatabaseList.filter { it.isDatabase})
-                    }
-                })
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
-    }
-
-    private fun startDatabaseSelectFragment(pageOrDatabaseList: List<PageOrDatabase>) {
+    private fun startDatabaseSelectFragment() {
         val listener: NotionDatabaseSelectorFragment.Listener = object : NotionDatabaseSelectorFragment.Listener {
             override fun onItemSelected(notionDatabase: PageOrDatabase) {
                 confirmSelectedDatabase(notionDatabase)
@@ -131,13 +106,33 @@ class EditorFragment : Fragment() {
         }
 
         childFragmentManager.beginTransaction()
-            .replace(binding.overlayContainer.id, NotionDatabaseSelectorFragment.newInstance(pageOrDatabaseList, listener))
+            .replace(binding.overlayContainer.id, NotionDatabaseSelectorFragment.newInstance(listener))
             .addToBackStack(null)
             .commit()
     }
 
     private fun finishDatabaseSelectFragment() {
         childFragmentManager.popBackStack()
+    }
+
+     fun downloadDatabases() {
+        MainScope().launch {
+            try {
+                service.getAllObjects(object : NotionApiGetService.GetPageListener {
+                    override fun doOnUpdate(total: Int) {
+                        viewModel.setBalloonText("Connecting to Notion... ($total/???)")
+                    }
+                    override fun doOnEndGetApi(total: Int) {
+                        viewModel.setBalloonText("Connecting to Notion... ($total/$total)")
+                    }
+                    override fun doOnEndAll(pageOrDatabaseList: List<PageOrDatabase>) {
+                        viewModel.insertDatabases(pageOrDatabaseList.filter { it.isDatabase })
+                    }
+                })
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
     }
 
     fun confirmSelectedDatabase(notionDatabase: PageOrDatabase) {
@@ -164,7 +159,7 @@ class EditorFragment : Fragment() {
                                 override fun onTemplateConverted(template: NotionPostTemplate) {
                                     MainScope().launch {
                                         withContext(Dispatchers.IO){
-                                            viewModel.insert(template, mainActivity)
+                                            viewModel.insertTemplate(template, mainActivity)
                                         }
                                     }
                                 }
@@ -180,6 +175,7 @@ class EditorFragment : Fragment() {
         }
     }
 
+    fun getService() = service
 
     fun enableBlocker(enabled: Boolean){
         characterFragment.enableBlocker(enabled)
