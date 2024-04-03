@@ -149,14 +149,7 @@ class EditorFragment : Fragment() {
 
                         override fun onConfirmed() {
                             viewModel.setBalloonText("Select database ...")
-                            NotionTemplateUtil.convertFromDatabase(notionDatabase, object : NotionTemplateUtil.ConvertFromDatabaseListener {
-                                override fun onOptionConverted(option: NotionOption) {
-                                    MainScope().launch {
-                                        withContext(Dispatchers.IO){
-                                            AppDatabase.getInstance(requireContext()).notionOptionDao().insert(option)
-                                        }
-                                    }
-                                }
+                            NotionTemplateUtil.convertFromDatabase(notionDatabase, "SHORTCUT_1", object : NotionTemplateUtil.ConvertFromDatabaseListener {
                                 override fun onOptionsConverted(options: List<NotionOption>) {
                                     MainScope().launch {
                                         withContext(Dispatchers.IO){
@@ -176,7 +169,6 @@ class EditorFragment : Fragment() {
                                     startTemplateSelectorFragment()
                                 }
                             })
-
                         }
                     })
                 }

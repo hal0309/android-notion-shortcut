@@ -15,8 +15,6 @@ import kotlinx.coroutines.withContext
 object NotionTemplateUtil {
 
     interface ConvertFromDatabaseListener {
-        fun onOptionConverted(option: NotionOption)
-
         fun onOptionsConverted(options: List<NotionOption>)
 
         fun onTemplateConverted(template: NotionPostTemplate)
@@ -24,7 +22,7 @@ object NotionTemplateUtil {
         fun onEnd()
     }
 
-    fun convertFromDatabase(notionDatabase: NotionDatabase, listener: ConvertFromDatabaseListener) {
+    fun convertFromDatabase(notionDatabase: NotionDatabase, role: String, listener: ConvertFromDatabaseListener) {
         val dbId = notionDatabase.id
         val template =  NotionPostTemplate(
             notionDatabase.title.toString(),
@@ -66,7 +64,6 @@ object NotionTemplateUtil {
                                 }
                             }
                             listener.onOptionsConverted(options)
-
                         }
                         NotionApiPropertyEnum.RELATION -> {
                             val propertyId = value["id"] as String
@@ -74,7 +71,7 @@ object NotionTemplateUtil {
                             val databaseId = property["database_id"] as String
                             val option = NotionOption(type, dbId, propertyId, databaseId, "", NotionColorEnum.DEFAULT, null, null)
                             options.add(option)
-                            listener.onOptionConverted(option)
+                            listener.onOptionsConverted(listOf(option))
                         }
                         else -> {}
                     }
@@ -92,7 +89,7 @@ object NotionTemplateUtil {
                 }
             }
             propertyList(p)
-            setRole("SHORTCUT_1")
+            setRole(role) // todo: 未使用
         }
         listener.onTemplateConverted(template)
         listener.onEnd()
