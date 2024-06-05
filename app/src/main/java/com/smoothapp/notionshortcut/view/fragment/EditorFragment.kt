@@ -20,6 +20,7 @@ import com.smoothapp.notionshortcut.model.entity.get.PageOrDatabase
 import com.smoothapp.notionshortcut.view.activity.MainActivity
 import com.smoothapp.notionshortcut.view.fragment.editor.CharacterFragment
 import com.smoothapp.notionshortcut.view.fragment.editor.NotionDatabaseSelectorFragment
+import com.smoothapp.notionshortcut.view.fragment.editor.TemplateEditorFragment
 import com.smoothapp.notionshortcut.view.fragment.editor.TemplateSelectorFragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
@@ -72,7 +73,6 @@ class EditorFragment : Fragment() {
     }
 
 
-
     fun hideKeyboard(view: View) {
         binding.apply {
             val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
@@ -111,24 +111,21 @@ class EditorFragment : Fragment() {
             .commit()
     }
 
+    private fun startTemplateEditorFragment(template: NotionPostTemplate) {
+        childFragmentManager.beginTransaction()
+            .replace(binding.overlayContainer.id, TemplateEditorFragment.newInstance(template))
+            .addToBackStack(null)
+            .commit()
+    }
+
     private fun finishDatabaseSelectFragment() {
         childFragmentManager.popBackStack()
     }
 
-     fun downloadDatabases() {
+     fun downloadDatabases(listener: NotionApiGetService.GetPageListener) {
         MainScope().launch {
             try {
-                service.getAllObjects(object : NotionApiGetService.GetPageListener {
-                    override fun doOnUpdate(total: Int) {
-                        viewModel.setBalloonText("Connecting to Notion... ($total/???)")
-                    }
-                    override fun doOnEndGetApi(total: Int) {
-                        viewModel.setBalloonText("Connecting to Notion... ($total/$total)")
-                    }
-                    override fun doOnEndAll(pageOrDatabaseList: List<PageOrDatabase>) {
-                        viewModel.insertDatabases(pageOrDatabaseList.filter { it.isDatabase })
-                    }
-                })
+                service.getAllObjects(listener)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -141,41 +138,30 @@ class EditorFragment : Fragment() {
         MainScope().launch {
             service.getDatabaseDetail(notionDatabase.id, object : NotionApiGetService.GetDatabaseDetailListener {
                 override fun doOnEnd(notionDatabase: NotionDatabase) {
-                    showLargeBalloon("database detail: $notionDatabase", object : CharacterFragment.LargeBalloonListener {
-                        override fun onCanceled() {
-
+                    NotionTemplateUtil.convertFromDatabase(notionDatabase, "SHORTCUT_1", object : NotionTemplateUtil.ConvertFromDatabaseListener {
+                        override fun onOptionsConverted(options: List<NotionOption>) {
+                            MainScope().launch {
+                                withContext(Dispatchers.IO){
+                                    AppDatabase.getInstance(requireContext()).notionOptionDao().insertAll(options)
+                                }
+                            }
                         }
-
-                        override fun onConfirmed() {
-                            viewModel.setBalloonText("Select database ...")
-                            NotionTemplateUtil.convertFromDatabase(notionDatabase, "SHORTCUT_1", object : NotionTemplateUtil.ConvertFromDatabaseListener {
-                                override fun onOptionsConverted(options: List<NotionOption>) {
-                                    MainScope().launch {
-                                        withContext(Dispatchers.IO){
-                                            AppDatabase.getInstance(requireContext()).notionOptionDao().insertAll(options)
-                                        }
-                                    }
+                        override fun onTemplateConverted(template: NotionPostTemplate) {
+                            MainScope().launch {
+                                withContext(Dispatchers.IO){
+                                    viewModel.insertTemplate(template, mainActivity)
+                                    startTemplateEditorFragment(template)
                                 }
-                                override fun onTemplateConverted(template: NotionPostTemplate) {
-                                    MainScope().launch {
-                                        withContext(Dispatchers.IO){
-                                            viewModel.insertTemplate(template, mainActivity)
-                                        }
-                                    }
-                                }
-                                override fun onEnd() {
-                                    enableBlocker(false)
-                                    finishDatabaseSelectFragment()
-                                }
-                            })
+                            }
+                        }
+                        override fun onEnd() {
+                            enableBlocker(false)
                         }
                     })
                 }
             })
         }
     }
-
-    fun getService() = service
 
     fun enableBlocker(enabled: Boolean){
         characterFragment.enableBlocker(enabled)
