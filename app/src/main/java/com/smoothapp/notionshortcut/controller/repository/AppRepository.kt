@@ -1,23 +1,30 @@
 package com.smoothapp.notionshortcut.controller.repository
 
-import android.content.Context
 import androidx.annotation.WorkerThread
-import com.smoothapp.notionshortcut.controller.db.AppDatabase
+import com.smoothapp.notionshortcut.model.dao.NotionOptionDao
 import com.smoothapp.notionshortcut.model.dao.NotionPostTemplateDao
 import com.smoothapp.notionshortcut.model.dao.TemplateAndProperty
 import com.smoothapp.notionshortcut.model.entity.NotionPostTemplate
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.withContext
 
-class AppRepository(val dao: NotionPostTemplateDao) { //todo: 引数をDAOにする
+class AppRepository(private val templateDao: NotionPostTemplateDao, private val optionDao: NotionOptionDao) { //todo: 引数をDAOにする
 
-    val allTemplateWithProperty: Flow<List<TemplateAndProperty>> = dao.getAllWithProperty()
+    val allTemplateWithProperty: Flow<List<TemplateAndProperty>> = templateDao.getAllWithProperty()
 
     @WorkerThread
-    suspend fun insert(notionPostTemplate: NotionPostTemplate){
-        dao.insert(notionPostTemplate)
-        dao.insertAllProperty(notionPostTemplate.propertyList())
+    fun insertTemplate(notionPostTemplate: NotionPostTemplate){
+        templateDao.insert(notionPostTemplate)
+        templateDao.insertAllProperty(notionPostTemplate.propertyList())
+    }
+
+    @WorkerThread
+    fun removeTemplate(notionPostTemplate: NotionPostTemplate){
+        templateDao.delete(notionPostTemplate)
+    }
+
+    @WorkerThread
+    fun deleteOption(dbId: String){
+        optionDao.deleteAllInDatabase(dbId)
     }
 
 //    suspend fun getAll(): List<NotionPostTemplate> = withContext(Dispatchers.IO) {

@@ -11,9 +11,11 @@ import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.get
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.fragment.app.Fragment
+import com.smoothapp.notionshortcut.R
 import com.smoothapp.notionshortcut.controller.provider.NotionApiProvider
 import com.smoothapp.notionshortcut.databinding.FragmentInitialBinding
 import com.smoothapp.notionshortcut.model.constant.PreferenceKeys
@@ -35,12 +37,10 @@ class InitialFragment : Fragment() {
         get() = activity as MainActivity
 
     override fun onStart() {
-        Log.w("InitialFragment", "initialfragment onStart")
         super.onStart()
     }
 
     override fun onDestroy() {
-        Log.w("InitialFragment", "initialfragment onDestroy")
         super.onDestroy()
     }
 
@@ -49,20 +49,17 @@ class InitialFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentInitialBinding.inflate(inflater, container, false)
+        // windowの背景色を(R.color.color_primary)に設定
+        mainActivity.setWindowBackgroundColor(R.color.color_primary)
+
 
         initialize()
-
         binding.apply {
             return root
         }
     }
 
     private fun initialize() {
-        if(initializeStep > 0) {
-            val container = binding.initialProgressContainer.getChildAt(initializeStep - 1) as LinearLayout
-            val checkBox = container.getChildAt(0) as CheckBox
-            checkBox.isChecked = true
-        }
         when(initializeStep) {
             0 -> checkApiKey()
             1 -> checkNotifyPermission()
@@ -74,13 +71,14 @@ class InitialFragment : Fragment() {
 
     private fun checkApiKey() {
         MainScope().launch {
-            delay(1000)
+            delay(0)
             mainActivity.dataStore.data.map { preferences ->
                 preferences[PreferenceKeys.NOTION_API_KEY] ?: ""
             }.take(1).collect{
                 Toast.makeText(mainActivity, it, Toast.LENGTH_SHORT).show()
                 NotionApiProvider.setApiKey(it)
                 val success = it.isNotEmpty()
+//                val success = true
                 if(success){
                     initialize()
                 } else {
@@ -110,7 +108,15 @@ class InitialFragment : Fragment() {
     }
 
     private fun doOnInitializeSucceed() {
-        mainActivity.startEditorFragment()
+        binding.apply {
+            notionOauthContainer.visibility = View.GONE
+            welcomeContainer.visibility = View.VISIBLE
+//            iconを右に移動しつつ透明にする
+            icon.animate().translationX(1000f).alpha(0f).setDuration(500).withEndAction {
+                icon.visibility = View.INVISIBLE
+                mainActivity.startEditorFragment()
+            }
+        }
     }
 
     companion object {

@@ -1,7 +1,6 @@
 package com.smoothapp.notionshortcut.view.activity
 
 import android.Manifest
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -10,8 +9,9 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.res.ResourcesCompat
 import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.preferencesDataStore
+import androidx.fragment.app.FragmentManager
 import com.smoothapp.notionshortcut.R
 import com.smoothapp.notionshortcut.controller.provider.NotionOauthProvider
 import com.smoothapp.notionshortcut.controller.util.ApiCommonUtil
@@ -52,9 +52,9 @@ class MainActivity : AppCompatActivity() {
 
         //todo: 削除 テスト用
 //        deleteDatabase("app_database")
-        val intent = Intent(this, ShortcutActivity::class.java)
-        startActivity(intent)
-        return
+//        val intent = Intent(this, ShortcutActivity::class.java)
+//        startActivity(intent)
+//        return
 
         
 //        initialize()
@@ -82,6 +82,7 @@ class MainActivity : AppCompatActivity() {
             }
             else -> {
                 MainScope().launch {
+                    /* todo: テスト用コード */
 //                    dataStore.edit { preferences ->
 //                        preferences[PreferenceKeys.NOTION_API_KEY] = ""
 //                    }
@@ -109,6 +110,26 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onBackPressed() {
+        val fm = supportFragmentManager
+        for (frag in fm.fragments) {
+            if (frag.isVisible) {
+                val childFm: FragmentManager = frag.getChildFragmentManager()
+                if (childFm.backStackEntryCount > 0) {
+                    for (childfragnested in childFm.fragments) {
+                        val childFmNestManager: FragmentManager? =
+                            childfragnested.fragmentManager
+                        if (childfragnested.isVisible) {
+                            childFmNestManager?.popBackStack()
+                            return
+                        }
+                    }
+                }
+            }
+        }
+        super.onBackPressed()
+    }
+
     fun getMyViewModel(): AppViewModel = appViewModel
 
     private fun startInitialFragment() {
@@ -131,6 +152,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
+    fun setWindowBackgroundColor(color: Int) {
+        window.setBackgroundDrawable(ResourcesCompat.getDrawable(resources, color, null))
+    }
 
 }

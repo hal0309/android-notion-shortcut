@@ -1,6 +1,7 @@
 package com.smoothapp.notionshortcut.model.dao
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Transaction
@@ -31,6 +32,10 @@ interface NotionPostTemplateDao {
     @Transaction
     @Query("SELECT * FROM notion_post_template")
     fun getAllWithProperty(): Flow<List<TemplateAndProperty>>
+
+
+    @Delete
+    fun delete(notionPostTemplate: NotionPostTemplate)
 
 
 

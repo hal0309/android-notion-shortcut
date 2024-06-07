@@ -86,4 +86,7 @@ dependencies {
 
     /* lottie */
     implementation("com.airbnb.android:lottie:5.2.0")
+
+    /* google assistant shortcut */
+    implementation("androidx.core:core-google-shortcuts:1.1.0")
 }
