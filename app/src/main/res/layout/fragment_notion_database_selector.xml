@@ -55,7 +55,7 @@
             android:id="@+id/loadingText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Notinに接続中"
+            android:text="Notionに接続中"
             app:layout_constraintTop_toBottomOf="@id/lottieFillingBottle"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
