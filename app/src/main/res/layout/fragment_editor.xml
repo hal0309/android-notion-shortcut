@@ -13,7 +13,6 @@
         android:id="@+id/mainContainer"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="50dp"
         android:layout_marginBottom="160dp"
         android:orientation="vertical"
         app:layout_constraintTop_toTopOf="parent"
@@ -35,25 +34,25 @@
         app:layout_constraintBottom_toBottomOf="parent">
     </androidx.appcompat.widget.LinearLayoutCompat>
 
-    <ImageView
-        android:layout_width="20dp"
-        android:layout_height="0dp"
-        android:alpha="0.7"
-        android:src="@drawable/shape_gradient_box"
-        app:layout_constraintTop_toTopOf="@id/mainContainer"
-        app:layout_constraintBottom_toBottomOf="@id/mainContainer"
-        app:layout_constraintStart_toStartOf="parent"
-        android:rotation="180"/>
+<!--    <ImageView-->
+<!--        android:layout_width="20dp"-->
+<!--        android:layout_height="0dp"-->
+<!--        android:alpha="0.7"-->
+<!--        android:src="@drawable/shape_gradient_box"-->
+<!--        app:layout_constraintTop_toTopOf="@id/mainContainer"-->
+<!--        app:layout_constraintBottom_toBottomOf="@id/mainContainer"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        android:rotation="180"/>-->
 
-    <ImageView
-        android:layout_width="20dp"
-        android:layout_height="0dp"
-        android:alpha="0.7"
-        android:src="@drawable/shape_gradient_box"
-        app:layout_constraintTop_toTopOf="@id/mainContainer"
-        app:layout_constraintBottom_toBottomOf="@id/mainContainer"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:rotation="0"/>
+<!--    <ImageView-->
+<!--        android:layout_width="20dp"-->
+<!--        android:layout_height="0dp"-->
+<!--        android:alpha="0.7"-->
+<!--        android:src="@drawable/shape_gradient_box"-->
+<!--        app:layout_constraintTop_toTopOf="@id/mainContainer"-->
+<!--        app:layout_constraintBottom_toBottomOf="@id/mainContainer"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        android:rotation="0"/>-->
 
     <FrameLayout
         android:id="@+id/characterContainer"

@@ -8,8 +8,8 @@
     <color name="transparent">#00000000</color>
     <color name="transparent_gray">#10000000</color>
 
-    <color name="color_primary">#8CC43E</color>
-    <color name="color_accent_1">#E6FBFF</color>
+    <color name="color_primary">#42948E</color>
+    <color name="color_accent_1">#eeeeee</color>
 
     <color name="notion_light_default">#F1F0EF</color>
     <color name="notion_light_gray"   >#E3E2E0</color>

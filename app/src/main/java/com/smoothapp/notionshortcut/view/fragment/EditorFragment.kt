@@ -18,7 +18,6 @@ import com.smoothapp.notionshortcut.model.entity.NotionPostTemplate
 import com.smoothapp.notionshortcut.model.entity.get.NotionDatabase
 import com.smoothapp.notionshortcut.model.entity.get.PageOrDatabase
 import com.smoothapp.notionshortcut.view.activity.MainActivity
-import com.smoothapp.notionshortcut.view.fragment.editor.CharacterFragment
 import com.smoothapp.notionshortcut.view.fragment.editor.NotionDatabaseSelectorFragment
 import com.smoothapp.notionshortcut.view.fragment.editor.TemplateEditorFragment
 import com.smoothapp.notionshortcut.view.fragment.editor.TemplateSelectorFragment
@@ -31,7 +30,6 @@ import kotlinx.coroutines.withContext
 class EditorFragment : Fragment() {
 
     private lateinit var binding: FragmentEditorBinding
-    private val characterFragment = CharacterFragment.newInstance("Connecting to Notion...")
     private val mainActivity by lazy { activity as MainActivity }
     private val viewModel by lazy { mainActivity.getMyViewModel() }
 
@@ -50,8 +48,6 @@ class EditorFragment : Fragment() {
 
             mainActivity.setWindowBackgroundColor(R.color.gray)
 
-
-            startCharacterFragment()
 //            startDownload()
             startTemplateSelectorFragment()
 
@@ -79,13 +75,6 @@ class EditorFragment : Fragment() {
             imm?.hideSoftInputFromWindow(view.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
             view.clearFocus()
         }
-    }
-
-    private fun startCharacterFragment() {
-        childFragmentManager.beginTransaction()
-            .replace(binding.characterContainer.id, characterFragment)
-            .addToBackStack(null)
-            .commit()
     }
 
     private fun startTemplateSelectorFragment() {
@@ -164,12 +153,9 @@ class EditorFragment : Fragment() {
     }
 
     fun enableBlocker(enabled: Boolean){
-        characterFragment.enableBlocker(enabled)
+        // todo: 実装? characterFragmentの残り
     }
 
-    fun showLargeBalloon(text: String, listener: CharacterFragment.LargeBalloonListener) {  // todo: viewmodel に移行
-        characterFragment.showLargeBalloon(text, listener)
-    }
 
 
 
