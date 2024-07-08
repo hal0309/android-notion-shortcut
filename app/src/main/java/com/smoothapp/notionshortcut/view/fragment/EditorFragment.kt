@@ -98,7 +98,7 @@ class EditorFragment : Fragment() {
             .commit()
     }
 
-    private fun startTemplateEditorFragment(template: NotionPostTemplate) {
+    fun startTemplateEditorFragment(template: NotionPostTemplate) {
         childFragmentManager.beginTransaction()
             .replace(binding.overlayContainer.id, TemplateEditorFragment.newInstance(template))
             .addToBackStack(null)
@@ -121,6 +121,7 @@ class EditorFragment : Fragment() {
 
     fun decideDatabase(notionDatabase: NotionDatabase) {
         enableBlocker(true)
+        childFragmentManager.popBackStack()  // todo: 不明瞭な戻り方
         MainScope().launch {
             NotionTemplateUtil.convertFromDatabase(notionDatabase, "SHORTCUT_1", object : NotionTemplateUtil.ConvertFromDatabaseListener {
                 override fun onOptionsConverted(options: List<NotionOption>) {
@@ -133,8 +134,8 @@ class EditorFragment : Fragment() {
                 override fun onTemplateConverted(template: NotionPostTemplate) {
                     MainScope().launch {
                         withContext(Dispatchers.IO){
-                            viewModel.insertTemplate(template, mainActivity)
-                            startTemplateEditorFragment(template)
+                            viewModel.insertTemplate(template.apply { isNew = true }, mainActivity)
+//                            startTemplateEditorFragment(template)
                         }
                     }
                 }
@@ -146,7 +147,7 @@ class EditorFragment : Fragment() {
     }
 
     fun enableBlocker(enabled: Boolean){
-        // todo: 実装? characterFragmentの残り
+        // todo: 実装? characterFragmentの名残
     }
 
 

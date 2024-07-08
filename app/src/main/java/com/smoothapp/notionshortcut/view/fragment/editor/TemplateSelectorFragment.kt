@@ -39,7 +39,7 @@ class TemplateSelectorFragment : Fragment() {
 
             listAdapter = TemplateListAdapter(object : TemplateListAdapter.Listener{
                 override fun onClickItem(template: NotionPostTemplate) {
-                    Toast.makeText(context, template.title, Toast.LENGTH_SHORT).show()
+                    parent.startTemplateEditorFragment(template)  // todo: scopeの見直し
                 }
 
                 override fun onLongClickItem(template: NotionPostTemplate) {
@@ -56,8 +56,10 @@ class TemplateSelectorFragment : Fragment() {
                 val templates = it.map { templateWithProperty ->
                     templateWithProperty.template.apply {
                         propertyList(templateWithProperty.propertyList)
+                        isNew = (uuid == viewModel.newTemplateUuid)
                     }
                 }
+                viewModel.newTemplateUuid = null
                 listAdapter?.submitList(templates)
             }
             return root

@@ -1,13 +1,18 @@
 package com.smoothapp.notionshortcut.view.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.smoothapp.notionshortcut.databinding.ItemTemplateBinding
 import com.smoothapp.notionshortcut.model.entity.NotionPostTemplate
 import com.smoothapp.notionshortcut.view.component.template.TemplatePropertyView
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class TemplateListAdapter(val listener: Listener? = null) :
     ListAdapter<NotionPostTemplate, TemplateListAdapter.Holder>(DIFF_UTIL_CALLBACK) {
@@ -28,6 +33,16 @@ class TemplateListAdapter(val listener: Listener? = null) :
                 root.setOnLongClickListener {
                     listener?.onLongClickItem(notionPostTemplate)
                     true
+                }
+
+
+                if (notionPostTemplate.isNew) {
+                    Toast.makeText(root.context, "is new", Toast.LENGTH_SHORT).show()
+                    notionPostTemplate.isNew = false  // todo: 大元も変わるの？
+                    MainScope().launch {
+                        delay(1000)
+                        root.performClick()
+                    }
                 }
 //                card.setCardBackgroundColor(select.color.getColor(card.context))
             }

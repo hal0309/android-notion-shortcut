@@ -16,6 +16,7 @@ class NotionPostTemplate(
 ){
 
     @Ignore private var propertyList: List<NotionDatabaseProperty> = listOf()
+    @Ignore var isNew = false
 
     // todo: 恐らく機能しない
     override fun equals(other: Any?): Boolean {
