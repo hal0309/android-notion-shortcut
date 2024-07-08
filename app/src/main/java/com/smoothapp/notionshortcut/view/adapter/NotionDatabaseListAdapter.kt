@@ -38,11 +38,12 @@ class NotionDatabaseListAdapter(private val viewModel: NotionDatabaseListViewMod
                 var db: NotionDatabase? = null
 
                 root.setOnClickListener {
-                    viewModel.onItemClicked(adapterPosition)
+                    viewModel.onItemClicked(notionDatabase.id)
                 }
 
-                viewModel.selectedPosition.observe(itemView.context as LifecycleOwner) { selectedPos ->
-                    val isSelected = selectedPos == adapterPosition
+                viewModel.selectedDbId.observe(itemView.context as LifecycleOwner) { selectedDbId ->
+                    val isSelected = (selectedDbId == notionDatabase.id)
+                    propertyContainer.removeAllViews()
                     when {
                         isSelected -> {
                             detailContainer.visibility = View.VISIBLE
@@ -61,7 +62,6 @@ class NotionDatabaseListAdapter(private val viewModel: NotionDatabaseListViewMod
                             }
                         }
                         else -> {
-                            propertyContainer.removeAllViews()
                             detailContainer.visibility = View.GONE
                         }
 
@@ -81,7 +81,7 @@ class NotionDatabaseListAdapter(private val viewModel: NotionDatabaseListViewMod
                 }
 
                 cancelButton.setOnClickListener {
-                    viewModel.onItemClicked(-1) // -1によりすべてのpositionでfalse
+                    viewModel.onItemClicked(null)
                 }
             }
         }

@@ -5,15 +5,15 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
 class NotionDatabaseListViewModel : ViewModel() {
-    private val _selectedPosition = MutableLiveData<Int>()
-    val selectedPosition: LiveData<Int> = _selectedPosition
+    private val _selectedDbId = MutableLiveData<String?>()
+    val selectedDbId: LiveData<String?> = _selectedDbId
 
-    private var previousPosition: Int? = null // 前回の選択位置を保持
+    private var previousDbId: String? = null // 前回の選択位置を保持
 
-    fun onItemClicked(position: Int) {
-        if (position != previousPosition) { // 前回と異なる場合のみ更新
-            _selectedPosition.value = position
-            previousPosition = position
+    fun onItemClicked(dbId: String?) {
+        if (dbId != previousDbId) { // 前回と異なる場合のみ更新
+            _selectedDbId.value = dbId
+            previousDbId = dbId
         }
     }
 }
