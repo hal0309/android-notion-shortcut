@@ -20,7 +20,6 @@ import kotlinx.coroutines.withContext
 class AppViewModel(private val repository: AppRepository): ViewModel() {
 
     val allTemplateWithProperty: LiveData<List<TemplateAndProperty>> = repository.allTemplateWithProperty.asLiveData()
-    val balloonText: LiveData<String> = MutableLiveData<String>().apply { value = "Hello, World!" }
 
     private val databaseList: LiveData<List<PageOrDatabase>> = MutableLiveData<List<PageOrDatabase>>().apply { value = emptyList() }
     private var filterWord: String? = null
@@ -78,12 +77,8 @@ class AppViewModel(private val repository: AppRepository): ViewModel() {
         }
     }
 
-    fun setBalloonText(text: String) {
-        (balloonText as MutableLiveData<String>).postValue(text)
-    }
-
     fun setFabEnabled(enabled: Boolean) {
-        (fabEnabled as MutableLiveData<Boolean>).postValue(enabled)
+        (fabEnabled as MutableLiveData<Boolean>).postValue(enabled)  // todo: 削除
     }
 }
 

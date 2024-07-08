@@ -2,7 +2,6 @@ package com.smoothapp.notionshortcut.view.fragment
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -78,7 +77,6 @@ class EditorFragment : Fragment() {
     }
 
     private fun startTemplateSelectorFragment() {
-        viewModel.setBalloonText("your templates!")
         childFragmentManager.beginTransaction()
             .replace(binding.mainContainer.id, TemplateSelectorFragment.newInstance())
             .addToBackStack(null)
@@ -87,8 +85,8 @@ class EditorFragment : Fragment() {
 
     private fun startDatabaseSelectFragment() {
         val listener: NotionDatabaseSelectorFragment.Listener = object : NotionDatabaseSelectorFragment.Listener {
-            override fun onItemSelected(notionDatabase: PageOrDatabase) {
-                confirmSelectedDatabase(notionDatabase)
+            override fun onItemSelected(notionDatabase: NotionDatabase) {
+                decideDatabase(notionDatabase)  // todo: 確認処理は行わず確定のみ実行
             }
 
             override fun doOnEnd() {}
@@ -121,32 +119,27 @@ class EditorFragment : Fragment() {
         }
     }
 
-    fun confirmSelectedDatabase(notionDatabase: PageOrDatabase) {
-        viewModel.setBalloonText("Loading ${notionDatabase.title}")
+    fun decideDatabase(notionDatabase: NotionDatabase) {
         enableBlocker(true)
         MainScope().launch {
-            service.getDatabaseDetail(notionDatabase.id, object : NotionApiGetService.GetDatabaseDetailListener {
-                override fun doOnEnd(notionDatabase: NotionDatabase) {
-                    NotionTemplateUtil.convertFromDatabase(notionDatabase, "SHORTCUT_1", object : NotionTemplateUtil.ConvertFromDatabaseListener {
-                        override fun onOptionsConverted(options: List<NotionOption>) {
-                            MainScope().launch {
-                                withContext(Dispatchers.IO){
-                                    AppDatabase.getInstance(requireContext()).notionOptionDao().insertAll(options)
-                                }
-                            }
+            NotionTemplateUtil.convertFromDatabase(notionDatabase, "SHORTCUT_1", object : NotionTemplateUtil.ConvertFromDatabaseListener {
+                override fun onOptionsConverted(options: List<NotionOption>) {
+                    MainScope().launch {
+                        withContext(Dispatchers.IO){
+                            AppDatabase.getInstance(requireContext()).notionOptionDao().insertAll(options)
                         }
-                        override fun onTemplateConverted(template: NotionPostTemplate) {
-                            MainScope().launch {
-                                withContext(Dispatchers.IO){
-                                    viewModel.insertTemplate(template, mainActivity)
-                                    startTemplateEditorFragment(template)
-                                }
-                            }
+                    }
+                }
+                override fun onTemplateConverted(template: NotionPostTemplate) {
+                    MainScope().launch {
+                        withContext(Dispatchers.IO){
+                            viewModel.insertTemplate(template, mainActivity)
+                            startTemplateEditorFragment(template)
                         }
-                        override fun onEnd() {
-                            enableBlocker(false)
-                        }
-                    })
+                    }
+                }
+                override fun onEnd() {
+                    enableBlocker(false)
                 }
             })
         }
