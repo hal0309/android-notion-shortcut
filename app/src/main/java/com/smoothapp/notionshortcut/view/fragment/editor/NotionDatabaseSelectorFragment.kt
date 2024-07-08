@@ -65,11 +65,6 @@ class NotionDatabaseSelectorFragment(private val listener: Listener) : Fragment(
             listAdapter = NotionDatabaseListAdapter(notionDatabaseListViewModel, object : NotionDatabaseListAdapter.Listener{
                 override suspend fun onClickItem(notionDatabase: PageOrDatabase): NotionDatabase {
                     return service.getDatabaseDetail(notionDatabase.id)
-//                    parent.apply{
-//                        listener.onItemSelected(notionDatabase)
-//
-//                        hideKeyboard(searchView)
-//                    }
                 }
                 override fun onDecideItem(notionDatabase: NotionDatabase) {
                     parent.apply{

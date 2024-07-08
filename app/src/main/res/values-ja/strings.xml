@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">NotionShortcut</string>
+    <string name="shortcut_label">新規投稿</string> <!-- todo: 用途チェック -->
+
+
+    <!-- kotlin source -->
+    <string name="kt_fetching">データ取得中です...</string>
+</resources>

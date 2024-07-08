@@ -1,7 +1,9 @@
 <resources>
     <string name="app_name">NotionShortcut</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-
     <string name="shortcut_label">New Post</string>
+
+
+    <!-- kotlin source -->
+    <string name="kt_fetching">Fetching data...</string>
+
 </resources>

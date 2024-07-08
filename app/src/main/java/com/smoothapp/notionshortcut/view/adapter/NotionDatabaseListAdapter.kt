@@ -4,11 +4,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.view.get
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
+import com.smoothapp.notionshortcut.R
 import com.smoothapp.notionshortcut.controller.db.AppDatabase
 import com.smoothapp.notionshortcut.controller.util.NotionTemplateUtil
 import com.smoothapp.notionshortcut.databinding.ItemNotionDatabaseBinding
@@ -31,9 +34,9 @@ class NotionDatabaseListAdapter(private val viewModel: NotionDatabaseListViewMod
             binding.apply {
                 title.text = notionDatabase.title?: "UNDEFINED"
                 parentTitle.text = notionDatabase.parentTitle?: "UNDEFINED"
-//                circle.text = notionDatabase.title?.firstOrNull()?.toString() ?: "?"
 
                 var db: NotionDatabase? = null
+
                 root.setOnClickListener {
                     viewModel.onItemClicked(adapterPosition)
                 }
@@ -44,15 +47,15 @@ class NotionDatabaseListAdapter(private val viewModel: NotionDatabaseListViewMod
                         isSelected -> {
                             detailContainer.visibility = View.VISIBLE
                             progressBar.visibility = View.VISIBLE
+                            decideButton.alpha = 0.3f
                             MainScope().launch {
-                                db = listener?.onClickItem(notionDatabase)
-                                    ?: return@launch  // todo: nullのエラー処理
+                                db = listener?.onClickItem(notionDatabase) ?: return@launch  // todo: nullのエラー処理
                                 progressBar.visibility = View.GONE
+                                decideButton.alpha = 1f
 
                                 db?.properties?.forEach {
                                     val view = TextView(root.context)
-                                    view.text =
-                                        "${it.key} (${(it.value as Map<String, Any>).get("type")})" // todo: typeの言語変換
+                                    view.text = "${it.key} (${(it.value as Map<String, Any>).get("type")})" // todo: typeの言語変換
                                     propertyContainer.addView(view)
                                 }  // todo: containerが広がるアニメーションを作成
                             }
@@ -64,20 +67,21 @@ class NotionDatabaseListAdapter(private val viewModel: NotionDatabaseListViewMod
 
                     }
                 }
-//                card.setCardBackgroundColor(select.color.getColor(card.context))
 
-                expandButtonContainer.setOnClickListener {
-                    detailContainer.visibility = View.VISIBLE
-                }
+//                expandButtonContainer.setOnClickListener { // todo: このボタン不要？
+//                    detailContainer.visibility = View.VISIBLE
+//                }
 
-                detailContainer.setOnClickListener {
-                    detailContainer.visibility = View.GONE
-                }
 
                 decideButton.setOnClickListener {
-                    if (db != null) {
-                        listener?.onDecideItem(db!!)  // todo: より安全な書き方を検討
+                    when(db) {
+                        null -> Snackbar.make(itemView, root.context.getString(R.string.kt_fetching), Snackbar.LENGTH_SHORT).show()
+                        else -> listener?.onDecideItem(db!!)
                     }
+                }
+
+                cancelButton.setOnClickListener {
+                    viewModel.onItemClicked(-1) // -1によりすべてのpositionでfalse
                 }
             }
         }
