@@ -5,7 +5,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.smoothapp.notionshortcut.databinding.FragmentTemplateSelectorBinding
 import com.smoothapp.notionshortcut.model.entity.NotionPostTemplate
@@ -21,7 +20,7 @@ class TemplateSelectorFragment : Fragment() {
     private var listAdapter: TemplateListAdapter? = null
 
     private val mainActivity by lazy { activity as MainActivity }
-    private val viewModel by lazy { mainActivity.getMyViewModel() }
+    private val viewModel by lazy { mainActivity.getMainViewModel() }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

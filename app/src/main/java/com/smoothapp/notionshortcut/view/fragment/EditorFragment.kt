@@ -15,7 +15,6 @@ import com.smoothapp.notionshortcut.databinding.FragmentEditorBinding
 import com.smoothapp.notionshortcut.model.entity.NotionOption
 import com.smoothapp.notionshortcut.model.entity.NotionPostTemplate
 import com.smoothapp.notionshortcut.model.entity.get.NotionDatabase
-import com.smoothapp.notionshortcut.model.entity.get.PageOrDatabase
 import com.smoothapp.notionshortcut.view.activity.MainActivity
 import com.smoothapp.notionshortcut.view.fragment.editor.NotionDatabaseSelectorFragment
 import com.smoothapp.notionshortcut.view.fragment.editor.TemplateEditorFragment
@@ -30,7 +29,7 @@ class EditorFragment : Fragment() {
 
     private lateinit var binding: FragmentEditorBinding
     private val mainActivity by lazy { activity as MainActivity }
-    private val viewModel by lazy { mainActivity.getMyViewModel() }
+    private val viewModel by lazy { mainActivity.getMainViewModel() }
 
     private val service = NotionApiGetService()
 

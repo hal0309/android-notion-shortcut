@@ -130,7 +130,7 @@ class MainActivity : AppCompatActivity() {
         super.onBackPressed()
     }
 
-    fun getMyViewModel(): AppViewModel = appViewModel
+    fun getMainViewModel(): AppViewModel = appViewModel  // getAppViewModelとすると競合
 
     private fun startInitialFragment() {
         supportFragmentManager.beginTransaction()
