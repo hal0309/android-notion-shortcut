@@ -7,11 +7,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.smoothapp.notionshortcut.databinding.FragmentTemplateEditorBinding
 import com.smoothapp.notionshortcut.model.entity.NotionPostTemplate
+import com.smoothapp.notionshortcut.model.entity.get.NotionDatabase
 import com.smoothapp.notionshortcut.model.entity.get.PageOrDatabase
+import com.smoothapp.notionshortcut.model.entity.notiondatabaseproperty.NotionDatabaseProperty
+import com.smoothapp.notionshortcut.model.viewmodel.NotionDatabaseListViewModel
+import com.smoothapp.notionshortcut.model.viewmodel.TemplatePropertyListViewModel
 import com.smoothapp.notionshortcut.view.activity.MainActivity
 import com.smoothapp.notionshortcut.view.adapter.NotionDatabaseListAdapter
+import com.smoothapp.notionshortcut.view.adapter.TemplatePropertyListAdapter
 import com.smoothapp.notionshortcut.view.fragment.EditorFragment
 
 
@@ -19,10 +27,12 @@ class TemplateEditorFragment(private val template: NotionPostTemplate) : Fragmen
 
     private lateinit var binding: FragmentTemplateEditorBinding
     private lateinit var parent: EditorFragment
-    private var listAdapter: NotionDatabaseListAdapter? = null
+    private var listAdapter: TemplatePropertyListAdapter? = null
 
     private val mainActivity by lazy { activity as MainActivity }
     private val viewModel by lazy { mainActivity.getMainViewModel() }
+    private val templatePropertyListViewModel : TemplatePropertyListViewModel by viewModels()
+
 
     var isLoadFinished = false
 
@@ -37,6 +47,21 @@ class TemplateEditorFragment(private val template: NotionPostTemplate) : Fragmen
             titleText.setText(template.title)
             dbNameText.text = template.dbTitle
 //            parentNameText.text = template.dbTitle
+
+
+            listAdapter = TemplatePropertyListAdapter(templatePropertyListViewModel, object : TemplatePropertyListAdapter.Listener{
+                override fun onClickItem(property: NotionDatabaseProperty){
+                }
+                override fun onDecideItem(notionDatabase: NotionDatabase) {
+                }
+            })
+
+            recyclerView.apply {
+                adapter = listAdapter
+                layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+            }
+
+            listAdapter?.submitList(template.propertyList())
 
 
             editIcon.setOnClickListener {

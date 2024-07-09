@@ -9,4 +9,17 @@
     <!-- kotlin source -->
     <string name="kt_fetching">Fetching data...</string>
 
+
+    <!-- notion -->
+    <string name="notion_title">title</string>
+    <string name="notion_rich_text">rich text</string>
+    <string name="notion_number">number</string>
+    <string name="notion_checkbox">checkbox</string>
+    <string name="notion_select">select</string>
+    <string name="notion_multi_select">multi-select</string>
+    <string name="notion_status">status</string>
+    <string name="notion_relation">relation</string>
+    <string name="notion_date">date</string>
+
+
 </resources>

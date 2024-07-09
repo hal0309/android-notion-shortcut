@@ -8,4 +8,16 @@
 
     <!-- kotlin source -->
     <string name="kt_fetching">データ取得中です...</string>
+
+    <!-- notion -->
+    <string name="notion_title">タイトル</string>
+    <string name="notion_rich_text">テキスト</string>
+    <string name="notion_number">数値</string>
+    <string name="notion_checkbox">チェックボックス</string>
+    <string name="notion_select">セレクト</string>
+    <string name="notion_multi_select">マルチセレクト</string>
+    <string name="notion_status">ステータス</string>
+    <string name="notion_relation">リレーション</string>
+    <string name="notion_date">日付</string>
+
 </resources>

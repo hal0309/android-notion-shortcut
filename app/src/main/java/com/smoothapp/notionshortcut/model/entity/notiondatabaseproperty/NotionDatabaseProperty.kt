@@ -35,6 +35,10 @@ open class NotionDatabaseProperty(
     }
 
 
+    // todo: グレーアウトの原因究明
+    override fun equals(other: Any?): Boolean {
+        return super.equals(other)
+    }
 
 
     fun getType() = type
