@@ -1,11 +1,14 @@
 package com.smoothapp.notionshortcut.view.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
@@ -23,6 +26,12 @@ import kotlinx.coroutines.launch
 class TemplatePropertyListAdapter(private val viewModel: TemplatePropertyListViewModel, val listener: Listener? = null) :
     ListAdapter<NotionDatabaseProperty, TemplatePropertyListAdapter.Holder>(DIFF_UTIL_CALLBACK) {
 
+    init {
+        viewModel.templatePropertyList.observeForever {
+            submitList(it)
+        }
+    }
+
     class Holder(private val binding: ItemTemplatePropertyBinding, private val viewModel: TemplatePropertyListViewModel, private val listener: Listener?) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(property: NotionDatabaseProperty) {
@@ -34,28 +43,19 @@ class TemplatePropertyListAdapter(private val viewModel: TemplatePropertyListVie
                     viewModel.onItemClicked(property.getUuid())
                 }
 
-                viewModel.selectedUuid.observe(itemView.context as LifecycleOwner) { selectedUuid ->
+                dragHandle.setOnClickListener {
+                    Snackbar.make(root, it.context.getString(R.string.kt_hint_reorder), Snackbar.LENGTH_SHORT).show()
+                }
+
+
+                viewModel.selectedUuid.observe(itemView.context as LifecycleOwner) { selectedUuid ->  // todo: 初回呼び出されないから、itemが多い際に変になりそう
                     val isSelected = (selectedUuid == property.getUuid())
                     when {
                         isSelected -> {
-                            root.setBackgroundColor(root.context.getColor(R.color.black))
-//                            detailContainer.visibility = View.VISIBLE
-//                            progressBar.visibility = View.VISIBLE
-//                            decideButton.alpha = 0.3f
-//                            MainScope().launch {
-//                                db = listener?.onClickItem(notionDatabase) ?: return@launch  // todo: nullのエラー処理
-//                                progressBar.visibility = View.GONE
-//                                decideButton.alpha = 1f
-//
-//                                db?.properties?.forEach {
-//                                    val view = TextView(root.context)
-//                                    view.text = "${it.key} (${(it.value as Map<String, Any>).get("type")})" // todo: typeの言語変換
-//                                    propertyContainer.addView(view)
-//                                }  // todo: containerが広がるアニメーションを作成
-//                            }
+                            root.alpha = 0.3f
                         }
                         else -> {
-                            root.setBackgroundColor(root.context.getColor(R.color.white))
+                            root.alpha = 1f
                         }
 
                     }

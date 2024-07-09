@@ -7,7 +7,9 @@
     <string name="xml_title_hint">Enter title</string>
 
     <!-- kotlin source -->
-    <string name="kt_fetching">Fetching data...</string>
+    <string name="kt_fetching">Fetching data…</string>
+    <string name="kt_hint_reorder">Long press to reorder</string>
+
 
 
     <!-- notion -->

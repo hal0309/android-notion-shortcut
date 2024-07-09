@@ -1,15 +1,19 @@
 package com.smoothapp.notionshortcut.view.fragment.editor
 
 import android.content.Context
+import android.graphics.Canvas
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.smoothapp.notionshortcut.databinding.FragmentTemplateEditorBinding
 import com.smoothapp.notionshortcut.model.entity.NotionPostTemplate
 import com.smoothapp.notionshortcut.model.entity.get.NotionDatabase
@@ -46,7 +50,19 @@ class TemplateEditorFragment(private val template: NotionPostTemplate) : Fragmen
 
             titleText.setText(template.title)
             dbNameText.text = template.dbTitle
-//            parentNameText.text = template.dbTitle
+
+            val helper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(
+                ItemTouchHelper.UP or ItemTouchHelper.DOWN,
+                ItemTouchHelper.START or ItemTouchHelper.END
+            ) {
+                override fun onMove(recyclerView: RecyclerView, viewHolder: ViewHolder, target: ViewHolder): Boolean {
+                    templatePropertyListViewModel.onItemMoved(viewHolder.adapterPosition, target.adapterPosition)
+                    return true
+                }
+                override fun onSwiped(viewHolder: ViewHolder, direction: Int) {
+                    //                adapter.remove(viewHolder.adapterPosition)
+                }
+            })
 
 
             listAdapter = TemplatePropertyListAdapter(templatePropertyListViewModel, object : TemplatePropertyListAdapter.Listener{
@@ -56,12 +72,16 @@ class TemplateEditorFragment(private val template: NotionPostTemplate) : Fragmen
                 }
             })
 
+
+
             recyclerView.apply {
                 adapter = listAdapter
                 layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
             }
+            helper.attachToRecyclerView(recyclerView)
 
-            listAdapter?.submitList(template.propertyList())
+//            listAdapter?.submitList(template.propertyList())
+            templatePropertyListViewModel.setTemplatePropertyList(template.propertyList())  // submitListの代替
 
 
             editIcon.setOnClickListener {

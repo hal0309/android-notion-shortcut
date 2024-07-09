@@ -7,7 +7,9 @@
     <string name="xml_title_hint">タイトルを入力</string>
 
     <!-- kotlin source -->
-    <string name="kt_fetching">データ取得中です...</string>
+    <string name="kt_fetching">データ取得中です…</string>
+    <string name="kt_hint_reorder">長押しで並び替え</string>
+
 
     <!-- notion -->
     <string name="notion_title">タイトル</string>
