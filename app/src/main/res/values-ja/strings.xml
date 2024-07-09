@@ -3,6 +3,8 @@
     <string name="app_name">NotionShortcut</string>
     <string name="shortcut_label">新規投稿</string> <!-- todo: 用途チェック -->
 
+    <!-- xml source -->
+    <string name="xml_title_hint">タイトルを入力</string>
 
     <!-- kotlin source -->
     <string name="kt_fetching">データ取得中です...</string>

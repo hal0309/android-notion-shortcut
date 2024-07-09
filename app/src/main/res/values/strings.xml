@@ -3,6 +3,9 @@
     <string name="shortcut_label">New Post</string>
 
 
+    <!-- xml source -->
+    <string name="xml_title_hint">Enter title</string>
+
     <!-- kotlin source -->
     <string name="kt_fetching">Fetching data...</string>
 
