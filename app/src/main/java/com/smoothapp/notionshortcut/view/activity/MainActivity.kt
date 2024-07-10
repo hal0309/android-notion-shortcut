@@ -48,7 +48,11 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        window.statusBarColor = this.getColor(R.color.transparent)
+        if (Build.VERSION.SDK_INT <= 34) {
+            /* statusBarColorは35でDeprecated(標準で透明になった) */
+            window.statusBarColor = this.getColor(R.color.transparent)
+        }
+
 
         //todo: 削除 テスト用
 //        deleteDatabase("app_database")

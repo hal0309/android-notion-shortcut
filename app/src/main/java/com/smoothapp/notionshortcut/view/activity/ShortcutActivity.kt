@@ -2,6 +2,7 @@ package com.smoothapp.notionshortcut.view.activity
 
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -63,7 +64,10 @@ class ShortcutActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityShortcutBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        window.statusBarColor = this.getColor(R.color.transparent)
+        if (Build.VERSION.SDK_INT <= 34) {
+            /* statusBarColorは35でDeprecated(標準で透明になった) */
+            window.statusBarColor = this.getColor(R.color.transparent)
+        }
 
         /* preferenceとの通信 */
         MainScope().launch {
