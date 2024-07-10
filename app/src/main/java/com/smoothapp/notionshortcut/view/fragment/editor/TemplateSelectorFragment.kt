@@ -51,10 +51,10 @@ class TemplateSelectorFragment : Fragment() {
                 layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             }
 
-            viewModel.allTemplateWithProperty.observe(viewLifecycleOwner) {
+            viewModel.allTemplateWithProperty.observe(viewLifecycleOwner) { it ->
                 val templates = it.map { templateWithProperty ->
                     templateWithProperty.template.apply {
-                        propertyList(templateWithProperty.propertyList)
+                        propertyList(templateWithProperty.propertyList.sortedBy { it.getIndex() })
                         isNew = (uuid == viewModel.newTemplateUuid)
                     }
                 }

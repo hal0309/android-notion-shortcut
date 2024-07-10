@@ -22,11 +22,11 @@ class TemplatePropertyListViewModel : ViewModel() {
 
     fun onItemMoved(from: Int, to: Int) {
         val list = _templatePropertyList.value?.toMutableList() ?: return
+        list[from].setIndex(to)
+        list[to].setIndex(from)
         val item = list.removeAt(from)
         list.add(to, item)
-        list.forEachIndexed { index, notionDatabaseProperty ->
-            notionDatabaseProperty.setIndex(index)
-        }
+
         _templatePropertyList.value = list
     }
 

@@ -10,10 +10,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
+import com.smoothapp.notionshortcut.controller.util.CoroutineUtil.debounce
 import com.smoothapp.notionshortcut.databinding.FragmentTemplateEditorBinding
 import com.smoothapp.notionshortcut.model.entity.NotionPostTemplate
 import com.smoothapp.notionshortcut.model.entity.get.NotionDatabase
@@ -25,6 +29,11 @@ import com.smoothapp.notionshortcut.view.activity.MainActivity
 import com.smoothapp.notionshortcut.view.adapter.NotionDatabaseListAdapter
 import com.smoothapp.notionshortcut.view.adapter.TemplatePropertyListAdapter
 import com.smoothapp.notionshortcut.view.fragment.EditorFragment
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
 class TemplateEditorFragment(private val template: NotionPostTemplate) : Fragment() {
@@ -80,9 +89,9 @@ class TemplateEditorFragment(private val template: NotionPostTemplate) : Fragmen
 
 //            listAdapter?.submitList(template.propertyList())
             templatePropertyListViewModel.setTemplatePropertyList(template.propertyList())  // submitListの代替
-//            templatePropertyListViewModel.templatePropertyList.observeForever {
-//                viewModel.updateAllProperty(it)  // todo: 順序の記録がしたい
-//            }
+            templatePropertyListViewModel.templatePropertyList
+                .debounce(1000L, viewModel.viewModelScope)  // 連続処理を防止
+                .observeForever { viewModel.updateAllProperty(it) }
 
 
             editIcon.setOnClickListener {

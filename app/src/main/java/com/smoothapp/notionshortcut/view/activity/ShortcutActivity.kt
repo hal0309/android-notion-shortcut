@@ -92,7 +92,7 @@ class ShortcutActivity : AppCompatActivity() {
             viewModel.allTemplateWithProperty.observe(this@ShortcutActivity) { templateAndPropertyList ->
                 val templates = templateAndPropertyList.map { templateWithProperty ->
                     templateWithProperty.template.apply {
-                        propertyList(templateWithProperty.propertyList)
+                        propertyList(templateWithProperty.propertyList.sortedBy { it.getIndex() })
                     }
                 }
 

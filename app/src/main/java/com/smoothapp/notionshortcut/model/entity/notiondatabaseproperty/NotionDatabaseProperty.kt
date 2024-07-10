@@ -15,7 +15,7 @@ import com.smoothapp.notionshortcut.model.entity.NotionPostTemplate
 @Entity(
     tableName = "notion_database_property",
     primaryKeys = ["uuid"],
-    indices = [Index(value = ["index"])],
+    indices = [Index(value = ["parentUUID"])],
     foreignKeys = [ForeignKey(entity = NotionPostTemplate::class,
         parentColumns = ["uuid"],
         childColumns = ["parentUUID"],
@@ -57,6 +57,16 @@ open class NotionDatabaseProperty(
         this.index = index
     }
     fun getIndex() = index
+    override fun hashCode(): Int {
+        var result = type.hashCode()
+        result = 31 * result + name.hashCode()
+        result = 31 * result + id.hashCode()
+        result = 31 * result + contents.hashCode()
+        result = 31 * result + parentUUID.hashCode()
+        result = 31 * result + uuid.hashCode()
+        result = 31 * result + index
+        return result
+    }
 
     companion object {
         fun from(key: String, value: Map<String, Any>, parentUUID: String): NotionDatabaseProperty {
