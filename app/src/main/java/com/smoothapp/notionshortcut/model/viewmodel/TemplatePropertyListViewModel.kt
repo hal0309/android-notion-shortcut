@@ -24,10 +24,16 @@ class TemplatePropertyListViewModel : ViewModel() {
         val list = _templatePropertyList.value?.toMutableList() ?: return
         val item = list.removeAt(from)
         list.add(to, item)
+        list.forEachIndexed { index, notionDatabaseProperty ->
+            notionDatabaseProperty.setIndex(index)
+        }
         _templatePropertyList.value = list
     }
 
     fun setTemplatePropertyList(templatePropertyList: List<NotionDatabaseProperty>) {
+        templatePropertyList.forEachIndexed { index, notionDatabaseProperty ->
+            notionDatabaseProperty.setIndex(index)
+        }
         _templatePropertyList.value = templatePropertyList
     }
 }

@@ -15,7 +15,7 @@ import com.smoothapp.notionshortcut.model.entity.NotionPostTemplate
 @Entity(
     tableName = "notion_database_property",
     primaryKeys = ["uuid"],
-    indices = [Index(value = ["parentUUID"])],
+    indices = [Index(value = ["index"])],
     foreignKeys = [ForeignKey(entity = NotionPostTemplate::class,
         parentColumns = ["uuid"],
         childColumns = ["parentUUID"],
@@ -28,7 +28,8 @@ open class NotionDatabaseProperty(
     private var id: String,
     private var contents: List<String?>,
     private var parentUUID: String,
-    private val uuid: String = java.util.UUID.randomUUID().toString()
+    private val uuid: String = java.util.UUID.randomUUID().toString(), // todo: 子クラスに引き継がなくて良いのか
+    private var index : Int = -1
 ){
     protected fun setPropertyContents(contents: List<String?>){
         this.contents = contents
@@ -51,6 +52,11 @@ open class NotionDatabaseProperty(
     fun getParentUUID() = parentUUID
 
     fun getUuid() = uuid
+
+    fun setIndex(index: Int){
+        this.index = index
+    }
+    fun getIndex() = index
 
     companion object {
         fun from(key: String, value: Map<String, Any>, parentUUID: String): NotionDatabaseProperty {

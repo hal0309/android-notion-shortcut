@@ -13,6 +13,7 @@ import com.smoothapp.notionshortcut.controller.util.DynamicShortcutUtil.removeDy
 import com.smoothapp.notionshortcut.model.dao.TemplateAndProperty
 import com.smoothapp.notionshortcut.model.entity.NotionPostTemplate
 import com.smoothapp.notionshortcut.model.entity.get.PageOrDatabase
+import com.smoothapp.notionshortcut.model.entity.notiondatabaseproperty.NotionDatabaseProperty
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -49,6 +50,15 @@ class AppViewModel(private val repository: AppRepository): ViewModel() {
             }
             repository.removeTemplate(template)
             removeDynamicShortcut(template, context)
+        }
+    }
+
+    fun updateAllProperty(propertyList: List<NotionDatabaseProperty>) = viewModelScope.launch {
+        propertyList.forEach {
+            println(it.getIndex().toString() + it.getName() )
+        }
+        withContext(Dispatchers.IO) {
+            repository.updateAllProperty(propertyList)
         }
     }
 

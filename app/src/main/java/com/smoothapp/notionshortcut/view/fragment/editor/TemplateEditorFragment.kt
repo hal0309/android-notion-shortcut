@@ -72,8 +72,6 @@ class TemplateEditorFragment(private val template: NotionPostTemplate) : Fragmen
                 }
             })
 
-
-
             recyclerView.apply {
                 adapter = listAdapter
                 layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
@@ -82,6 +80,9 @@ class TemplateEditorFragment(private val template: NotionPostTemplate) : Fragmen
 
 //            listAdapter?.submitList(template.propertyList())
             templatePropertyListViewModel.setTemplatePropertyList(template.propertyList())  // submitListの代替
+//            templatePropertyListViewModel.templatePropertyList.observeForever {
+//                viewModel.updateAllProperty(it)  // todo: 順序の記録がしたい
+//            }
 
 
             editIcon.setOnClickListener {

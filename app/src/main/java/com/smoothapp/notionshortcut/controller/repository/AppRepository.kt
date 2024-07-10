@@ -5,6 +5,7 @@ import com.smoothapp.notionshortcut.model.dao.NotionOptionDao
 import com.smoothapp.notionshortcut.model.dao.NotionPostTemplateDao
 import com.smoothapp.notionshortcut.model.dao.TemplateAndProperty
 import com.smoothapp.notionshortcut.model.entity.NotionPostTemplate
+import com.smoothapp.notionshortcut.model.entity.notiondatabaseproperty.NotionDatabaseProperty
 import kotlinx.coroutines.flow.Flow
 
 class AppRepository(private val templateDao: NotionPostTemplateDao, private val optionDao: NotionOptionDao) { //todo: 引数をDAOにする
@@ -20,6 +21,11 @@ class AppRepository(private val templateDao: NotionPostTemplateDao, private val 
     @WorkerThread
     fun removeTemplate(notionPostTemplate: NotionPostTemplate){
         templateDao.delete(notionPostTemplate)
+    }
+
+    @WorkerThread
+    fun updateAllProperty(propertyList: List<NotionDatabaseProperty>){
+        templateDao.updateAllProperty(propertyList)
     }
 
     @WorkerThread

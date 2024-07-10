@@ -5,6 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Transaction
+import androidx.room.Update
 import com.smoothapp.notionshortcut.model.entity.NotionPostTemplate
 import com.smoothapp.notionshortcut.model.entity.notiondatabaseproperty.NotionDatabaseProperty
 import kotlinx.coroutines.flow.Flow
@@ -28,6 +29,9 @@ interface NotionPostTemplateDao {
 
     @Insert
     fun insertAllProperty(notionDatabasePropertyList: List<NotionDatabaseProperty>)
+
+    @Update
+    fun updateAllProperty(notionDatabasePropertyList: List<NotionDatabaseProperty>)
 
     @Transaction
     @Query("SELECT * FROM notion_post_template")
